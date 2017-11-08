@@ -208,7 +208,7 @@ Returns:
   	    callset_id			=>	$segVals{callset_id},
         reference_name  =>	$segVals{reference_name},
         start	  				=>	1 * $segVals{start},
-        end		  				=>	1 * $segVals{end},
+        end             =>  1 * $segVals{end},
         info						=>	{
         	value					=>	1 * $segVals{value},
         	svlen					=>	1 * ($segVals{end} - $segVals{start}),

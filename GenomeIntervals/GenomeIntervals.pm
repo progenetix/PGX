@@ -17,11 +17,11 @@ Expects:
     [
       {
         no    =>  __integer__,            # not used
-        reference_name  =>	__string__,
-        start	=>	__integer__,
-        end	  =>	__integer__,
-        stain	=>	__string__,            # not used
-        label	=>	__string__,            # not used
+        reference_name  =>  __string__,
+        start =>  __integer__,
+        end   =>  __integer__,
+        stain =>  __string__,            # not used
+        label =>  __string__,            # not used
       },
       {
       ...
@@ -36,10 +36,10 @@ Returns:
     [
       {
         no    =>  __integer__,          # 1 -> n
-        reference_name  =>	__string__,
-        start	=>	__integer__,
-        end	  =>	__integer__,
-        label	=>	__string__,
+        reference_name  =>  __string__,
+        start =>  __integer__,
+        end   =>  __integer__,
+        label =>  __string__,
       },
       {
       ...
