@@ -1,0 +1,29 @@
+#
+---
+pubmed:
+  - '^\d+?$'
+  - pubmed
+pmc:
+  - '^PMC\d+?$'
+  - pmc
+geogsm:
+  - '^GSM\d+?$'
+  - geo
+geogse:
+  - '^GSE\d+?$'
+  - geo
+geogpl:
+  - '^GPL\d+?$'
+  - geo
+egastudy:
+  - '^EGAS\d{11}$'
+  - ega.study
+egadataset:
+  - '^EGAD\d{11}$'
+  - ega.dataset
+biostudies:
+  - '^S\-\w+?\d+?$'
+  - biostudies
+cellosaurus:
+  - 'CVCL_[A-Z0-9]{4}'
+  - cellosaurus

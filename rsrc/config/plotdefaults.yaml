@@ -1,0 +1,100 @@
+#
+---
+chr2plot: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,'X','Y']
+genome: 'hg18'
+
+# array
+cna_gain_threshold: 0.15
+cna_loss_threshold: -0.15
+segment_probecount_min: 2
+format_inputfiles: 'progenetix'
+simulated_probes: 'n'
+
+local_overrides:
+  - 'cna_gain_threshold'
+  - 'cna_loss_threshold'
+  - 'segment_probecount_min'
+  - 'value_plot_y_max'
+
+# values
+value_plot_y_max: 100
+label_y_m: [-75,-50,-25,0,25,50,75]
+plot_unit_y: ""
+plottype_values:
+ array:
+  value_plot_y_max: 3.2
+  label_y_m: [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3]
+  plot_unit_y: ""
+ histogram:
+  value_plot_y_max: 100
+  label_y_m: [-75,-50,-25,0,25,50,75]
+  plot_unit_y: "%"
+ ideogram:
+  value_plot_y_max: 100
+  label_y_m: [-75,-50,-25,0,25,50,75]
+  plot_unit_y: "%"
+text_bottom_left: ""
+text_bottom_right: ""
+title: ""
+
+# directives
+do_label_y: 'y'
+do_plottype: 'histogram'
+do_chromosomes_proportional: y
+
+# sizes
+size_plotmargin_px: 30
+size_plotmargin_top_px: 30
+size_plotmargin_bottom_px: 30
+size_text_px: 12
+size_text_lab_px: 8
+size_plotarea_h_px: 140
+size_plotimage_w_px: 1600
+size_fracbarea_h_px: 100
+size_label_y_w_px: 25
+size_chromosome_w_px: 16
+size_chromosome_padding_px: 3
+size_samplestrip_w_px: 14
+size_frequencystrip_w_px: 14
+size_matrixline_w_px: 14
+size_segments_stroke_px: 4
+size_centerline_stroke_px: 1
+size_clustertree_w_px: -1
+factor_probedots: 1
+
+# colors
+color_plotarea_hex: '#f3f9ff'
+color_plotbackground_hex: '#ffffff'
+color_plotgrid_hex: '#c0e3ee'
+color_text_hex: '#000000'
+color_label_y_hex: '#666666'
+color_label_bottom_hex: '#999999'
+color_var_break_hex: '#EE00DD'
+color_var_dup_hex: '#FFC633'
+color_var_del_hex: '#33A0FF'
+color_var_amp_hex: '#FF6600'
+color_var_homoloss_hex: '#0033CC'
+color_connection_opacity: 0.2
+
+colorschema: orangeblue
+colorschemas:
+ orangeblue:
+  color_var_dup_hex: '#FFC633'
+  color_var_del_hex: '#33A0FF'
+  color_var_amp_hex: '#FF6600'
+  color_var_homoloss_hex: '#0033CC'
+ redgreen:
+  color_var_dup_hex: '#EE4500'
+  color_var_del_hex: '#09F911'
+  color_var_amp_hex: '#CD0000'
+  color_var_homoloss_hex: '#008B00'
+ greenred:
+  color_var_del_hex: '#EE4500'
+  color_var_dup_hex: '#09F911'
+  color_var_amp_hex: '#008B00'
+  color_var_homoloss_hex: '#CD0000'
+ bluered:
+  color_var_dup_hex: '#FFC633'
+  color_var_del_hex: '#33A0FF'
+  color_var_amp_hex: '#FF6600'
+  color_var_homoloss_hex: '#0033CC'
