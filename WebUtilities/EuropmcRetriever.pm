@@ -27,69 +27,69 @@ notes:
 
 =cut
 
-	my $pmid	=		$_[0];
+  my $pmid  =   $_[0];
   my $pub   =   {};
 
   my $epmc_web  =   'http://europepmc.org/abstract/MED/';
   my $epmc_q    =   'https://www.ebi.ac.uk/europepmc/webservices/rest/search?resulttype=core&query=ext_id:'.$pmid.'%20src:med';
   my $epmcxml   =   get($epmc_q);
   $epmcxml      =   $epmcxml;
-	$epmcxml	    =~	s/\n//gs;
-	$epmcxml	    =~	s/>\s+?</></gs;
+  $epmcxml      =~  s/\n//gs;
+  $epmcxml      =~  s/>\s+?</></gs;
 
-	if ($epmcxml =~ /<doi>([^<]+?)<\/doi/) {
-		$pub->{DOI} =   $1 }
+  if ($epmcxml =~ /<doi>([^<]+?)<\/doi/) {
+    $pub->{DOI} =   $1 }
 
   if ($epmcxml =~ /<pmcid>(PMC\d+?)<\/pmcid/) {
-		$pub->{PMCID} 	=   $1 }
+    $pub->{PMCID}   =   $1 }
 
   if ($epmcxml =~ /<pmid>(\d+?)<\/pmid/) {
-		$pub->{PMID}    =   $1 }
+    $pub->{PMID}    =   $1 }
 
-	if ($epmcxml =~ /<affiliation>(.+?)<\/affiliation/) {
-		$pub->{AFFILIATION} =   $1 }
+  if ($epmcxml =~ /<affiliation>(.+?)<\/affiliation/) {
+    $pub->{AFFILIATION} =   $1 }
 
-	if ($epmcxml =~ /<title>(.+?)<\/title/) {
-		$pub->{TITLE}	      =   $1 }
+  if ($epmcxml =~ /<title>(.+?)<\/title/) {
+    $pub->{TITLE}       =   $1 }
 
-	if ($epmcxml =~ /<journalInfo>(.+?)<\/journalInfo>/) {
+  if ($epmcxml =~ /<journalInfo>(.+?)<\/journalInfo>/) {
 
-		my $journalData		  =   $1;
+    my $journalData     =   $1;
 
-		if ($journalData =~ /<title>(.+?)<\/title>/) {
-			$pub->{JOURNALTITLE}	    =   $1 }
-		if ($journalData =~ /<ISOAbbreviation>([^>]+?)<\/ISOAbbreviation>/) {
-			$pub->{JOURNAL}	  =	$1 }
-		if ($journalData =~ /<volume>([^>]+?)<\/volume>/) {
-			$pub->{JOURNAL}	  .=	' '.$1 }
-		if ($journalData =~ /<issue>([^>]+?)<\/issue>/) {
-			$pub->{JOURNAL}	  .=	'('.$1.')' }
-		if ($journalData =~ /<yearOfPublication>(\d\d\d\d)<\/yearOfPublication>/) {
-			$pub->{JOURNAL}   .=	', '.$1;
-			$pub->{YEAR}	    =	  $1;
+    if ($journalData =~ /<title>(.+?)<\/title>/) {
+      $pub->{JOURNALTITLE}      =   $1 }
+    if ($journalData =~ /<ISOAbbreviation>([^>]+?)<\/ISOAbbreviation>/) {
+      $pub->{JOURNAL}   = $1 }
+    if ($journalData =~ /<volume>([^>]+?)<\/volume>/) {
+      $pub->{JOURNAL}   .=  ' '.$1 }
+    if ($journalData =~ /<issue>([^>]+?)<\/issue>/) {
+      $pub->{JOURNAL}   .=  '('.$1.')' }
+    if ($journalData =~ /<yearOfPublication>(\d\d\d\d)<\/yearOfPublication>/) {
+      $pub->{JOURNAL}   .=  ', '.$1;
+      $pub->{YEAR}      =   $1;
 
-	}}
+  }}
 
-	if ($epmcxml =~ /<abstractText>(.+?)<\/abstractText>/) {
-		$pub->{ABSTRACT}    =	$1;
-		$pub->{ABSTRACT}    =~	s/<[^<]*?>/######/g;
-		$pub->{ABSTRACT}    =~	s/^######//g;
-		$pub->{ABSTRACT}    =~	s/######$//g;
-		$pub->{ABSTRACT}    =~	s/######/ /g;
-		$pub->{ABSTRACT}    =~	s/######/ /g;
-	}
+  if ($epmcxml =~ /<abstractText>(.+?)<\/abstractText>/) {
+    $pub->{ABSTRACT}    = $1;
+    $pub->{ABSTRACT}    =~  s/<[^<]*?>/######/g;
+    $pub->{ABSTRACT}    =~  s/^######//g;
+    $pub->{ABSTRACT}    =~  s/######$//g;
+    $pub->{ABSTRACT}    =~  s/######/ /g;
+    $pub->{ABSTRACT}    =~  s/######/ /g;
+  }
 
-	if ($epmcxml =~ /<authorString>(.+?)<\/authorString>/) {
-		$pub->{AUTHORS} =   $1 }
+  if ($epmcxml =~ /<authorString>(.+?)<\/authorString>/) {
+    $pub->{AUTHORS} =   $1 }
 
   $pub->{CITETAG}   =   $pub->{AUTHORS};
   $pub->{CITETAG}   =~  s/^(.+?\w\w\w) .*?$/$1 et al./;
   my $shortT    =   $pub->{TITLE};
-	$shortT       =~	  s/^(.{50,100} ).*?$/$1.../;;
+  $shortT       =~    s/^(.{50,100} ).*?$/$1.../;;
 
-	$pub->{CITETAG}		.=	' ('.$pub->{YEAR}.'): '.$shortT;
+  $pub->{CITETAG}   .=  ' ('.$pub->{YEAR}.'): '.$shortT;
 
-	return $pub;
+  return $pub;
 
 }
 

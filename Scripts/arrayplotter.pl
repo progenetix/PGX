@@ -60,6 +60,7 @@ _printFeedback();
 $plot           =   plot_add_probedata($args{'-probefile'}, $plot);
 $plot           =   plot_add_segmentdata($args{'-segfile'}, $plot);
 $plot           =   plot_add_probedata_fracb($args{'-fracbprobefile'}, $plot);
+$plot           =   plot_add_segmentdata_fracb($args{'-fracbsegfile'}, $plot);
 $plot           =   plot_adjust_random_probevalues($plot);
 
 # limiting the plot to regions, if given; this includes adjusting the

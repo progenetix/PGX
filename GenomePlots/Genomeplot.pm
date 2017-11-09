@@ -90,6 +90,7 @@ sub plot_add_segmentdata_fracb {
   my $segfile   =   shift;
   my $plot      =   shift;
   $plot->{segmentdata_fracb}  =   read_segmentfile($segfile, $plot);
+
   return $plot;
 
 }

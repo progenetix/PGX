@@ -88,6 +88,10 @@ Returns:
   my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
   my $lowSegY   =   $area_yn + $plot->{parameters}->{size_segments_stroke_px};
 
+  my $probeSize	=		$plot->{parameters}->{factor_probedots};
+  if (scalar @{ $plot->{probedata} } < 200000) { $probeSize *= 2 }
+  if (scalar @{ $plot->{probedata} } < 8000) 	{ $probeSize *= 2 }
+
   # Y labels ###    ####    ####    ####    ####    ####    ####    ####    ####
 
 
@@ -131,7 +135,7 @@ Returns:
     # probes are plotted using GD
 
     my $probeArea       =   GD::Image->new($areaW, $plot->{parameters}->{size_plotarea_h_px}, 1);
-    my $gdDotS          =   1 * $plot->{parameters}->{factor_probedots};
+    my $gdDotS          =   1 * $probeSize;
     my $gdAreaCol       =   $probeArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotarea_hex}) } );
     $probeArea->transparent($gdAreaCol);
     my $gdDotcol        = $probeArea->colorAllocateAlpha(32,32,32,63);
@@ -241,10 +245,16 @@ Returns:
   .fb {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: #FF3333; opacity: 0.8  }
 ]]></style>';
 
+  # area init; here, $area_y0 is the lower margin, corresponding then to
+  # a 0-value
   my $area_x0   =   $plot->{parameters}->{size_plotmargin_px};
   my $area_y0   =   $plot->{Y} + $plot->{parameters}->{size_fracbarea_h_px};
   my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_fracbarea_h_px} / 2;
   my $fbPixYfac =   1 / $plot->{parameters}->{size_fracbarea_h_px};
+
+  my $probeSize	=		$plot->{parameters}->{factor_probedots};
+  if (scalar @{ $plot->{probedata} } < 200000) { $probeSize *= 2 }
+  if (scalar @{ $plot->{probedata} } < 8000) 	{ $probeSize *= 2 }
 
   foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
 
@@ -262,7 +272,7 @@ Returns:
     # probes are plotted using GD
 
     my $probeArea   =   GD::Image->new($areaW, $plot->{parameters}->{size_fracbarea_h_px}, 1);
-    my $gdDotS      =   1 * $plot->{parameters}->{factor_probedots};
+    my $gdDotS      =   1 * $probeSize;
     my $gdAreaCol   =   $probeArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotarea_hex}) } );
     $probeArea->transparent($gdAreaCol);
     my $gdDotcol    = $probeArea->colorAllocateAlpha(0,0,0,111);
@@ -286,7 +296,7 @@ Returns:
 
     # / probes #    ####    ####    ####    ####    ####    ####    ####    ####
 
-    # segments #    ####    ####    ####    ####    ####    ####    ####    ####
+    # fracb segments s###    ####    ####    ####    ####    ####    ####    ####
 
     my $areaSegments  =  [ grep{ $_->{reference_name} eq $refName } @{ $plot->{segmentdata_fracb} } ];
     $areaSegments     =  [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areaSegments];

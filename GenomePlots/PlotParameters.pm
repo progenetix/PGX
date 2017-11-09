@@ -41,13 +41,13 @@ Returns:
   # take precedence later on
   my $locDefaults       =   {};
   my $defaultsDir;
-  
+
 
   if ($args->{'-defaultsfile'} =~ /\w+?\.\w+?$/) {
-  	$defaultsDir		=	$args->{'-defaultsfile'};
-  	$defaultsDir		=~	s/\/[\w\.\,]+?$//;
+    $defaultsDir        = $args->{'-defaultsfile'};
+    $defaultsDir        =~  s/\/[\w\.\,]+?$//;
   }
-  
+
 
   if (-f $args->{'-defaultsfile'}) {
     $locDefaults        =   LoadFile($args->{'-defaultsfile'});
@@ -86,24 +86,24 @@ Returns:
       else {
         $plotPars->{$par}   =   $args->{'-'.$par} }
       if (grep{ $_ eq $par } @{ $plotPars->{local_overrides} }) {
-        $locDefaults->{$par}  =   $plotPars->{$par};     
+        $locDefaults->{$par}  =   $plotPars->{$par};
       }
     }
   }
 
   # derived
   $plotPars->{pixyfactor}   =   1 * $plotPars->{size_plotarea_h_px} / (2 * $plotPars->{value_plot_y_max});
-  
+
   foreach my $override (keys %$locDefaults) {
     if (! grep{ $_ eq $override } @{ $plotPars->{local_overrides} }) {
       delete $locDefaults->{$override};
     }
   }
-  
+
   if (-d $defaultsDir) {
-  	DumpFile($args->{'-defaultsfile'}, $locDefaults);
+    DumpFile($args->{'-defaultsfile'}, $locDefaults);
   }
-  
+
   return $plotPars;
 
 }
@@ -112,7 +112,7 @@ Returns:
 
 sub hex2rgb {
 
-    my ($r, $g, $b)			=		$_[0]	=~	m/^\#?(\w{2})(\w{2})(\w{2})$/;
+    my ($r, $g, $b)     =   $_[0] =~  m/^\#?(\w{2})(\w{2})(\w{2})$/;
 
     return [ CORE::hex($r), CORE::hex($g), CORE::hex($b) ];
 
