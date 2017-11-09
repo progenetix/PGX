@@ -93,7 +93,6 @@ Returns:
 
   # derived
   $plotPars->{pixyfactor}   =   1 * $plotPars->{size_plotarea_h_px} / (2 * $plotPars->{value_plot_y_max});
-
   foreach my $override (keys %$locDefaults) {
     if (! grep{ $_ eq $override } @{ $plotPars->{local_overrides} }) {
       delete $locDefaults->{$override};

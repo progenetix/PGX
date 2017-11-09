@@ -22,12 +22,13 @@ use PGX::GenomePlots::Genomeplot;
 
 # command line input
 our %args               =   @ARGV;
+$args{'-arraypath'}     ||= q{};
 $args{'-genome'}        ||= 'hg18';
-$args{'-plottype'}      =   'array';
-$args{'-arraypath'}     ||= '';
 $args{'-do_allchros'}   ||= 'y';
-$args{'-plotregions'}   ||= '';
+$args{'-plotregions'}   ||= q{};
+$args{'-plottype'}      =   'array';
 
+# (possibly) derived 
 if ($args{'-chr2plot'} =~ /\w/) { $args{'-do_allchros'} = 'n' }
 $args{'-arraypath'}     =~  s/\/$//;
 

@@ -93,8 +93,6 @@ Returns:
   if (scalar @{ $plot->{probedata} } < 8000) 	{ $probeSize *= 2 }
 
   # Y labels ###    ####    ####    ####    ####    ####    ####    ####    ####
-
-
   foreach my $lab (@{ $plot->{parameters}->{label_y_m} }) {
 
     my $lab_y   =   sprintf "%.1f", $area_ycen - $lab * $plot->{parameters}->{pixyfactor};

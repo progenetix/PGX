@@ -3,6 +3,7 @@ package PGX::GenomePlots::Genomeplot;
 use Data::Dumper;
 use PGX::GenomeIntervals::CytobandReader;
 use PGX::GenomeIntervals::GenomeIntervals;
+use PGX::GenomeIntervals::IntervalStatistics;
 use PGX::GenomePlots::PlotParameters;
 use PGX::FileUtilities::ArrayfileReader;
 
@@ -10,6 +11,7 @@ require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
   new
+  plot_add_frequencymaps
   plot_add_probedata
   plot_add_segmentdata
   plot_add_probedata_fracb
@@ -43,6 +45,19 @@ sub new {
                                     );
 
   return $self;
+
+}
+
+################################################################################
+
+sub plot_add_frequencymaps {
+
+  my $callsets  =   shift;
+  my $plot      =   shift;
+
+  $plot->{frequencymaps}        =   interval_cnv_frequencies([map{$_->{info}->{statusmaps}} @$callsets ], $plot->{genomeintervals});
+
+  return $plot;
 
 }
 
