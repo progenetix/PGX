@@ -9,12 +9,16 @@ use Term::ProgressBar;
 
 # local packages
 
-BEGIN {push @INC, '../..'}
+my $path_of_this_module;
+BEGIN {
+  $path_of_this_module = File::Basename::dirname( eval { ( caller() )[1] } );
+  push @INC, $path_of_this_module.'/../..';
+}
+
 use PGX::GenomeIntervals::GenomeIntervals;
 use PGX::GenomePlots::ArrayPlotter;
 use PGX::GenomeIntervals::CytobandReader;
 use PGX::GenomePlots::Genomeplot;
-
 
 # command line input
 our %args               =   @ARGV;
@@ -217,7 +221,7 @@ END
       my @segGuess      =   grep{ /seg\.txt/ } @arrayDirF;
       if (@segGuess == 1) { $args{'-segfile'} = $args{'-arraypath'}.'/'.$segGuess[0] }
     }
-    $args{'-probefile'}         =   './PGX/rsrc/probemaps/'.genome_names_to_hg($args{'-genome'}).'/GPL6801,probes,cn.tsv';
+    $args{'-probefile'}         =   $path_of_this_module.'/../rsrc/probemaps/'.genome_names_to_hg($args{'-genome'}).'/GPL6801,probes,cn.tsv';
     $args{'-simulated_probes'}  =   'y';
     $args{'-text_bottom_left'}  =   'TCGA (simulated probes)';
 
