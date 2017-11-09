@@ -57,16 +57,16 @@ _printFeedback();
 ########    main    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-$plot           =   plot_add_probedata($args{'-probefile'}, $plot);
-$plot           =   plot_add_segmentdata($args{'-segfile'}, $plot);
-$plot           =   plot_add_probedata_fracb($args{'-fracbprobefile'}, $plot);
-$plot           =   plot_add_segmentdata_fracb($args{'-fracbsegfile'}, $plot);
-$plot           =   plot_adjust_random_probevalues($plot);
+plot_add_probedata($args{'-probefile'}, $plot);
+plot_add_segmentdata($args{'-segfile'}, $plot);
+plot_add_probedata_fracb($args{'-fracbprobefile'}, $plot);
+plot_add_segmentdata_fracb($args{'-fracbsegfile'}, $plot);
+plot_adjust_random_probevalues($plot);
 
 # limiting the plot to regions, if given; this includes adjusting the
 # the boundaries and chr2plot values
-$plot           =   plot_get_plotregions($args{plotregions}, $plot);
-$plot           =   return_arrayplot_svg($plot);
+plot_get_plotregions($args{plotregions}, $plot);
+return_arrayplot_svg($plot);
 
 my $plotfile;
 if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
