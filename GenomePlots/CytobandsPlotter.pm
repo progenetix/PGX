@@ -4,7 +4,12 @@ use Data::Dumper;
 
 require Exporter;
 @ISA        =   qw(Exporter);
-@EXPORT     =   qw(get_cytobands_svg get_title_svg get_bottom_labels_svg);
+@EXPORT     =   qw(
+  get_cytobands_svg
+  get_labels_y_svg
+  get_title_svg
+  get_bottom_labels_svg
+);
 
 ################################################################################
 
@@ -32,6 +37,64 @@ Returns:
 <text x="'.($plot->{areawidth} / 2 + $plot->{parameters}->{size_plotmargin_px}).'" y="'.$plot->{Y}.'" style="text-anchor: middle; font-size: '.$titleSize.'px">'.$plot->{parameters}->{title}.'</text>';
 
   $plot->{Y}    +=  $plot->{parameters}->{size_chromosome_padding_px};
+  return $plot;
+
+
+}
+
+################################################################################
+
+sub get_labels_y_svg {
+
+=pod
+
+Expects:
+
+Returns:
+
+=cut
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+  my $plot      =   shift;
+
+  if (@{ $plot->{parameters}->{label_y_m} } < 1) { return $plot }
+
+  $plot->{svg}  .=  '
+<style type="text/css"><![CDATA[
+  .cen {stroke-width: '.$plot->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
+  .tick {stroke-width: 1px; stroke: '.$plot->{parameters}->{color_label_y_hex}.'; opacity: 0.8 ; }
+  .ylabs {text-anchor: end; font-size: '.$plot->{parameters}->{size_text_lab_px}.'px; fill: '.$plot->{parameters}->{color_label_y_hex}.';}
+  .ylabe {text-anchor: start; font-size: '.$plot->{parameters}->{size_text_lab_px}.'px; fill: '.$plot->{parameters}->{color_label_y_hex}.';}
+]]></style>';
+
+  my $area_x0   =   $plot->{parameters}->{size_plotmargin_px};
+  my $area_y0   =   $plot->{Y};
+  my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px} / 2;
+  my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
+
+  foreach my $lab (@{ $plot->{parameters}->{label_y_m} }) {
+
+    my $lab_y   =   sprintf "%.1f", $area_ycen - $lab * $plot->{parameters}->{pixyfactor};
+
+    # checking area boundaries
+    if ($lab_y < $area_y0 || $lab_y > $area_yn) { next }
+
+    $plot->{svg}        .=  '
+<line x1="'.($area_x0 - 1).'"  y1="'.$lab_y.'"  x2="'.$area_x0.'"  y2="'.$lab_y.'"  class="tick"  />
+<line x1="'.($area_x0 + $plot->{areawidth}).'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $plot->{areawidth} + 1).'"  y2="'.$lab_y.'"  class="tick"  />
+<line x1="'.$area_x0.'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $plot->{areawidth}).'"  y2="'.$lab_y.'"  class="cen"  />';
+
+    # avoiding too dense labels
+    if (@{ $plot->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
+    # positioning the label text
+    $lab_y              +=  ($plot->{parameters}->{size_text_lab_px} / 2) - 1;
+    $plot->{svg}        .=  '
+<text x="'.($area_x0 - 2).'" y="'.$lab_y.'" class="ylabs">'.$lab.$plot->{parameters}->{plot_unit_y}.'</text>
+<text x="'.($area_x0 + $plot->{areawidth} + 2).'" y="'.$lab_y.'" class="ylabe">'.$lab.$plot->{parameters}->{plot_unit_y}.'</text>';
+
+  }
+
   return $plot;
 
 
@@ -69,7 +132,6 @@ Returns:
 
   $plot->{Y}    +=  $plot->{parameters}->{size_chromosome_padding_px};
   return $plot;
-
 
 }
 

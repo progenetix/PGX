@@ -26,9 +26,9 @@ $args{'-arraypath'}     ||= q{};
 $args{'-genome'}        ||= 'hg18';
 $args{'-do_allchros'}   ||= 'y';
 $args{'-plotregions'}   ||= q{};
-$args{'-plottype'}      =   'array';
+$args{'-do_plottype'}   =   'array';
 
-# (possibly) derived 
+# (possibly) derived
 if ($args{'-chr2plot'} =~ /\w/) { $args{'-do_allchros'} = 'n' }
 $args{'-arraypath'}     =~  s/\/$//;
 
@@ -63,10 +63,6 @@ plot_add_segmentdata($args{'-segfile'}, $plot);
 plot_add_probedata_fracb($args{'-fracbprobefile'}, $plot);
 plot_add_segmentdata_fracb($args{'-fracbsegfile'}, $plot);
 plot_adjust_random_probevalues($plot);
-
-# limiting the plot to regions, if given; this includes adjusting the
-# the boundaries and chr2plot values
-plot_get_plotregions($args{plotregions}, $plot);
 return_arrayplot_svg($plot);
 
 my $plotfile;
@@ -198,20 +194,20 @@ END
   }
 
   # plotregions
-  if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
-    foreach my $plotregion (split(',', $args{'-plotregions'})) {
-      if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
-        push(
-          @{ $args{plotregions} },
-          {
-            reference_name  =>  $1,
-            start           =>  $2,
-            end             =>  $3,
-          }
-        );
-
-  }}}
-
+#   if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
+#     foreach my $plotregion (split(',', $args{'-plotregions'})) {
+#       if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
+#         push(
+#           @{ $args{plotregions} },
+#           {
+#             reference_name  =>  $1,
+#             start           =>  $2,
+#             end             =>  $3,
+#           }
+#         );
+#
+#   }}}
+#
   # adjusting for special cases
   opendir DIR, $args{'-arraypath'};
   my @arrayDirF   =   grep{ /^\w[\w\.\,\-]+?\.\w\w\w\w?\w?\w?$/ } -f, readdir(DIR);

@@ -37,7 +37,6 @@ xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 version="1.1"
 id="'.$plot->{plotid}.'"
-onload="init(evt)"
 width="'.$plotW.'px"
 height="'.$plotH.'px"
 style="margin: auto; font-family: Helvetica, sans-serif;">
@@ -62,46 +61,18 @@ Expects:
 
 Returns:
   - the increased end Y value as start for the next elements
-  
+
 =cut
 
   ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
-  $plot->{svg}    .=  '
-<style type="text/css"><![CDATA[
-  .cen {stroke-width: '.$plot->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
-  .tick {stroke-width: 1px; stroke: '.$plot->{parameters}->{color_label_y_hex}.'; opacity: 0.8 ; }
-  .ylab {text-anchor: end; font-size: '.$plot->{parameters}->{size_text_lab_px}.'px; fill: '.$plot->{parameters}->{color_label_y_hex}.';}
-]]></style>';
+
+  get_labels_y_svg($plot);
 
   my $area_x0   =   $plot->{parameters}->{size_plotmargin_px};
   my $area_y0   =   $plot->{Y};
   my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
   my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px} / 2;
 
-  # Y labels ###    ####    ####    ####    ####    ####    ####    ####    ####
-  foreach my $lab (@{ $plot->{parameters}->{label_y_m} }) {
-
-    my $lab_y   =   sprintf "%.1f", $area_ycen - $lab * $plot->{parameters}->{pixyfactor};
-
-    # checking area boundaries
-    if ($lab_y < $area_y0 || $lab_y > $area_yn) { next }
-
-    $plot->{svg}        .=  '
-<line x1="'.($area_x0 - 1).'"  y1="'.$lab_y.'"  x2="'.$area_x0.'"  y2="'.$lab_y.'"  class="tick"  />
-<line x1="'.($area_x0 + $plot->{areawidth}).'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $plot->{areawidth} + 1).'"  y2="'.$lab_y.'"  class="tick"  />
-<line x1="'.$area_x0.'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $plot->{areawidth}).'"  y2="'.$lab_y.'"  class="cen"  />';
-
-    # avoiding too dense labels
-    if (@{ $plot->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
-    # positioning the label text
-    $lab_y              +=  ($plot->{parameters}->{size_text_lab_px} / 2) - 1;
-    $plot->{svg}        .=  '
-<text x="'.($area_x0 - 2).'" y="'.$lab_y.'" class="ylab">'.$lab.$plot->{parameters}->{plot_unit_y}.'</text>';
-
-  }
-
-  # / Y labels #    ####    ####    ####    ####    ####    ####    ####    ####
-  
   foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
 
     my $areaW   =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
@@ -122,14 +93,14 @@ Returns:
 <polygon points="'.$area_x0.' '.$area_ycen;
 
       foreach my $i (@ind) {
-        
+
         my $start       =   $plot->{genomeintervals}->[$i]->{start};
         my $end         =   $plot->{genomeintervals}->[$i]->{end};
         if ($start < $plot->{referencebounds}->{$refName}->[0]) {
         $start  = $plot->{referencebounds}->{$refName}->[0] }
         if ($end > $plot->{referencebounds}->{$refName}->[1]) {
         $end   = $plot->{referencebounds}->{$refName}->[1] }
-        
+
         my $X   =		sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($end - ($end - $start) / 2);
         my $H	  =		sprintf "%.1f", $plot->{frequencymaps}->{$GL}->[$i] * $plot->{parameters}->{pixyfactor};
         $plot->{svg}	  .=	' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );

@@ -41,7 +41,6 @@ xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 version="1.1"
 id="'.$plot->{plotid}.'"
-onload="init(evt)"
 width="'.$plotW.'px"
 height="'.$plotH.'px"
 style="margin: auto; font-family: Helvetica, sans-serif;">
@@ -78,9 +77,9 @@ Returns:
   .DUP {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_var_dup_hex}.'; opacity: 0.8  }
   .DEL {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_var_del_hex}.'; opacity: 0.8  }
   .cen {stroke-width: '.$plot->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
-  .tick {stroke-width: 1px; stroke: '.$plot->{parameters}->{color_label_y_hex}.'; opacity: 0.8 ; }
-  .ylab {text-anchor: end; font-size: '.$plot->{parameters}->{size_text_lab_px}.'px; fill: '.$plot->{parameters}->{color_label_y_hex}.';}
 ]]></style>';
+
+  get_labels_y_svg($plot);
 
   my $area_x0   =   $plot->{parameters}->{size_plotmargin_px};
   my $area_y0   =   $plot->{Y};
@@ -88,32 +87,9 @@ Returns:
   my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
   my $lowSegY   =   $area_yn + $plot->{parameters}->{size_segments_stroke_px};
 
-  my $probeSize	=		$plot->{parameters}->{factor_probedots};
+  my $probeSize =   $plot->{parameters}->{factor_probedots};
   if (scalar @{ $plot->{probedata} } < 200000) { $probeSize *= 2 }
-  if (scalar @{ $plot->{probedata} } < 8000) 	{ $probeSize *= 2 }
-
-  # Y labels ###    ####    ####    ####    ####    ####    ####    ####    ####
-  foreach my $lab (@{ $plot->{parameters}->{label_y_m} }) {
-
-    my $lab_y   =   sprintf "%.1f", $area_ycen - $lab * $plot->{parameters}->{pixyfactor};
-
-    # checking area boundaries
-    if ($lab_y < $area_y0 || $lab_y > $area_yn) { next }
-
-    $plot->{svg}        .=  '
-<line x1="'.($area_x0 - 1).'"  y1="'.$lab_y.'"  x2="'.$area_x0.'"  y2="'.$lab_y.'"  class="tick"  />
-<line x1="'.($area_x0 + $plot->{areawidth}).'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $plot->{areawidth} + 1).'"  y2="'.$lab_y.'"  class="tick"  />';
-
-    # avoiding too dense labels
-    if (@{ $plot->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
-    # positioning the label text
-    $lab_y              +=  ($plot->{parameters}->{size_text_lab_px} / 2) - 1;
-    $plot->{svg}        .=  '
-<text x="'.($area_x0 - 2).'" y="'.$lab_y.'" class="ylab">'.$lab.'</text>';
-
-  }
-
-  # / Y labels #    ####    ####    ####    ####    ####    ####    ####    ####
+  if (scalar @{ $plot->{probedata} } < 8000)  { $probeSize *= 2 }
 
   # probe area, probes & segments   ####    ####    ####    ####    ####    ####
 
@@ -250,9 +226,9 @@ Returns:
   my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_fracbarea_h_px} / 2;
   my $fbPixYfac =   1 / $plot->{parameters}->{size_fracbarea_h_px};
 
-  my $probeSize	=		$plot->{parameters}->{factor_probedots};
+  my $probeSize =   $plot->{parameters}->{factor_probedots};
   if (scalar @{ $plot->{probedata} } < 200000) { $probeSize *= 2 }
-  if (scalar @{ $plot->{probedata} } < 8000) 	{ $probeSize *= 2 }
+  if (scalar @{ $plot->{probedata} } < 8000)  { $probeSize *= 2 }
 
   foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
 

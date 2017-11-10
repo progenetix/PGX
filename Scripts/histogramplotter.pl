@@ -27,23 +27,21 @@ use PGX::GenomePlots::HistoPlotter;
 use PGX::GenomePlots::PlotParameters;
 
 # command line input
-my %args            =   @ARGV;
+my %args        =   @ARGV;
 
 $args{'-dataset'}       ||= 'dipg_ga4gh';
 $args{'-genome'}        ||= 'grch36';
 $args{'-randno'}        ||= -1;
 $args{'-binning'}       ||= 1000000;
 $args{'-query'}         ||= {};
-$args{'-plottype'}      ||= 'histogram';
+$args{'-do_plottype'}   ||= 'histogram';
 $args{'-plotregions'}   ||= q{};
 $args{'-chr2plot'}      ||= join(',', 1..22, 'X');
-
-$args{plotregions}      =   [];
 
 _checkArgs();
 
 # conventions
-my $csColl      =   'callsets_cnv_'.$args{'-genome'};
+my $csColl      =   'callsets_cnv_'.genome_names_to_grch($args{'-genome'});
 my $csQuery     =   $args{'-query'};
 
 # predefined, for recycling
@@ -53,19 +51,18 @@ my $csIds       =   [];
 my $callsets    =   [];
 
 # preconfigured objects
-our $plot       =   new PGX::GenomePlots::Genomeplot(\%args);
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    main    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-my $dbconn	=		MongoDB::MongoClient->new()->get_database($args{'-dataset'});
+my $dbconn  =   MongoDB::MongoClient->new()->get_database($args{'-dataset'});
 
 # retrieving all callset ids to be processed
-$distincts  =		$dbconn->run_command([
-                  "distinct"	  =>	$csColl,
-                  "key"     	  =>	'id',
-                  "query"   	  =>	$csQuery,
+$distincts  =   $dbconn->run_command([
+                  "distinct"    =>  $csColl,
+                  "key"         =>  'id',
+                  "query"       =>  $csQuery,
                 ]);
 $csIds      =   $distincts->{values};
 
@@ -94,10 +91,8 @@ my $cscoll  =   $dbconn->get_collection($csColl);
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-$cursor     =		$dbconn->get_collection($csColl)->find( { "id" => {'$in' => $csIds } } );
+$cursor     =   $dbconn->get_collection($csColl)->find( { "id" => {'$in' => $csIds } } );
 $callsets   =   [ $cursor->all ];
-
-plot_add_frequencymaps($callsets, $plot);
 
 my $endT    =   time();
 $timeLab    =   strftime("%T", gmtime());
@@ -113,17 +108,16 @@ Throughput: $perCs sec. per callset
 
 END
 
-# limiting the plot to regions, if given; this includes adjusting the
-# the boundaries and chr2plot values
-plot_get_plotregions($args{plotregions}, $plot);
+my $plot    =   new PGX::GenomePlots::Genomeplot(\%args);
+plot_add_frequencymaps($callsets, $plot);
 return_histoplot_svg($plot);
 
 my $svgFile     =   './histoplot.svg';
 
-open	(FILE, ">", $svgFile) || warn 'output file '.$svgFile.' could not be created.';
+open  (FILE, ">", $svgFile) || warn 'output file '.$svgFile.' could not be created.';
 binmode(FILE, ":utf8");
-print	FILE  $plot->{svg};
-close	FILE;
+print FILE  $plot->{svg};
+close FILE;
 
 ################################################################################
 # subs #########################################################################
@@ -171,26 +165,6 @@ END
 
   }
 
-  # title
-  if ($args{'-title'} !~ /^[\w \,\-]+?$/) {
-    if ($args{'-arraypath'} =~ /(?:^|\/)([\w\,\-]+?)$/) {
-      $args{'-title'}   =   $1 }
-  }
-
-  # plotregions
-  if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
-    foreach my $plotregion (split(',', $args{'-plotregions'})) {
-      if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
-        push(
-          @{ $args{plotregions} },
-          {
-            reference_name  =>  $1,
-            start           =>  $2,
-            end             =>  $3,
-          }
-        );
-
-  }}}
 
   # adjusting for special cases
 
@@ -215,7 +189,7 @@ size_chromosome_w_px
 
 ################################################################################
 
-You are processing the dataset 
+You are processing the dataset
 
     $args{-dataset}
 
