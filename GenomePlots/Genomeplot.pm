@@ -22,7 +22,9 @@ require Exporter;
   plot_adjust_random_probevalues
 );
 
-################################################################################
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
 sub new {
 
@@ -93,13 +95,16 @@ sub plot_add_frequencymaps {
   my $plot      =   shift;
   my $callsets  =   shift;
 
-  $plot->{frequencymaps}        =   interval_cnv_frequencies([map{$_->{info}->{statusmaps}} @$callsets ], $plot->{genomeintervals});
+  $plot->{frequencymaps}    =   interval_cnv_frequencies(
+                                  [ map{$_->{info}->{statusmaps}} @$callsets],
+                                  $plot->{genomeintervals},
+                                );
 
   return $plot;
 
 }
 
-################################################################################
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
 sub plot_add_probedata {
 
@@ -124,8 +129,6 @@ sub plot_add_segmentdata {
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
 sub plot_add_probedata_fracb {
 
@@ -137,8 +140,6 @@ sub plot_add_probedata_fracb {
 
 }
 
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
 sub plot_add_segmentdata_fracb {
@@ -153,10 +154,16 @@ sub plot_add_segmentdata_fracb {
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
 sub plot_adjust_random_probevalues {
+
+=pod
+
+This method adjusts array probe values for the value of the segment they are 
+mapped to. The method is used for adjusting random probe values such as we are
+using to simulate array data, in cases where only segments data is available.
+
+=cut
 
   use Term::ProgressBar;
 
@@ -165,26 +172,32 @@ sub plot_adjust_random_probevalues {
 	if ($plot->{parameters}->{simulated_probes} =~ /y/i ) {
 
     my $i				=		0;
-    my $progBar =   Term::ProgressBar->new({name => 'Adjusting Simulated Values', count => scalar @{$plot->{segmentdata}}});
+    my $progBar =   Term::ProgressBar->new(
+                      { 
+                        name  => 'Adjusting Simulated Values',
+                        count => scalar @{ $plot->{segmentdata} }
+                      }
+                    );
 
 		foreach my $seg (@{ $plot->{segmentdata} }) {
 
-			my @probeI				=		map{ $_ } grep{
-															$plot->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
-															&&
-															$plot->{probedata}->[$_]->{position} >=  $seg->{start}
-															&&
-															$plot->{probedata}->[$_]->{position} <=  $seg->{end}
-														} (0..$#{ $plot->{probedata} });
+			my @prI   =		map{ $_ } grep{
+                      $plot->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
+                      &&
+                      $plot->{probedata}->[$_]->{position} >=  $seg->{start}
+                      &&
+                      $plot->{probedata}->[$_]->{position} <=  $seg->{end}
+                    } (0..$#{ $plot->{probedata} });
 
 		  $progBar->update($i++);
 
-			foreach (@probeI) {
+			foreach (@prI) {
 				$plot->{probedata}->[$_]->{value}				+=	$seg->{info}->{value};
 	  }}
+	  
 	  $progBar->update(scalar @{$plot->{segmentdata}});
+	  
 	}
-
 
   return $plot;
 
