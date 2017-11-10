@@ -5,6 +5,9 @@ use PGX::GenomeIntervals::CytobandReader;
 use PGX::GenomeIntervals::GenomeIntervals;
 use PGX::GenomeIntervals::IntervalStatistics;
 use PGX::GenomePlots::PlotParameters;
+use PGX::GenomePlots::HistoPlotter;
+use PGX::GenomePlots::ArrayPlotter;
+use PGX::GenomePlots::CytobandsPlotter;
 use PGX::FileUtilities::ArrayfileReader;
 
 require Exporter;
@@ -87,8 +90,8 @@ sub _plot_get_plotregions {
 
 sub plot_add_frequencymaps {
 
-  my $callsets  =   shift;
   my $plot      =   shift;
+  my $callsets  =   shift;
 
   $plot->{frequencymaps}        =   interval_cnv_frequencies([map{$_->{info}->{statusmaps}} @$callsets ], $plot->{genomeintervals});
 
@@ -100,8 +103,9 @@ sub plot_add_frequencymaps {
 
 sub plot_add_probedata {
 
-  my $probefile =   shift;
   my $plot      =   shift;
+  my $probefile =   shift;
+
   $plot->{probedata}    =   read_probefile($probefile, $plot);
   return $plot;
 
@@ -111,8 +115,9 @@ sub plot_add_probedata {
 
 sub plot_add_segmentdata {
 
-  my $segfile   =   shift;
   my $plot      =   shift;
+  my $segfile   =   shift;
+
   $plot->{segmentdata}  =   read_segmentfile($segfile, $plot);
   return $plot;
 
@@ -124,8 +129,9 @@ sub plot_add_segmentdata {
 
 sub plot_add_probedata_fracb {
 
-  my $probefile =   shift;
   my $plot      =   shift;
+  my $probefile =   shift;
+
   $plot->{probedata_fracb}    =   read_probefile($probefile, $plot);
   return $plot;
 
@@ -137,8 +143,9 @@ sub plot_add_probedata_fracb {
 
 sub plot_add_segmentdata_fracb {
 
-  my $segfile   =   shift;
   my $plot      =   shift;
+  my $segfile   =   shift;
+
   $plot->{segmentdata_fracb}  =   read_segmentfile($segfile, $plot);
 
   return $plot;

@@ -37,6 +37,7 @@ $args{'-query'}         ||= {};
 $args{'-do_plottype'}   ||= 'histogram';
 $args{'-plotregions'}   ||= q{};
 $args{'-chr2plot'}      ||= join(',', 1..22, 'X');
+$args{'-svg'}           ||= './histoplot.svg';       
 
 _checkArgs();
 
@@ -58,20 +59,16 @@ my $callsets    =   [];
 
 my $dbconn  =   MongoDB::MongoClient->new()->get_database($args{'-dataset'});
 
-# retrieving all callset ids to be processed
-$distincts  =   $dbconn->run_command([
-                  "distinct"    =>  $csColl,
-                  "key"         =>  'id',
-                  "query"       =>  $csQuery,
-                ]);
-$csIds      =   $distincts->{values};
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+$cursor     =   $dbconn->get_collection($csColl)->find( $csQuery )->fields( { info => 1 } );
+$callsets   =   [ $cursor->all ];
 
 if ($args{'-randno'} > 0) {
-  $csIds    =   [ (shuffle(@$csIds))[0..($args{'-randno'}-1)] ] }
+  $callsets =   [ (shuffle(@$callsets))[0..($args{'-randno'}-1)] ] }
 
-my $csNo    =   scalar @$csIds;
+my $csNo    =   scalar @$callsets;
 
-my $startT  =   time();
 my $timeLab =   strftime("%T", gmtime());
 
 print <<END;
@@ -87,37 +84,25 @@ Start:      $timeLab
 
 END
 
-my $cscoll  =   $dbconn->get_collection($csColl);
+$args{'-text_bottom_left'}      =   $csNo.' samples';
 
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+my $plot        =   new PGX::GenomePlots::Genomeplot(\%args);
+$plot->plot_add_frequencymaps($callsets);
+$plot->return_histoplot_svg();
 
-$cursor     =   $dbconn->get_collection($csColl)->find( { "id" => {'$in' => $csIds } } );
-$callsets   =   [ $cursor->all ];
-
-my $endT    =   time();
-$timeLab    =   strftime("%T", gmtime());
-my $timeD   =   $endT - $startT;
-my $perCs   =   sprintf "%.1f", $timeD / $csNo;
-
-print <<END;
-
-
-End:        $timeLab
-Duration:   $timeD sec.
-Throughput: $perCs sec. per callset
-
-END
-
-my $plot    =   new PGX::GenomePlots::Genomeplot(\%args);
-plot_add_frequencymaps($callsets, $plot);
-return_histoplot_svg($plot);
-
-my $svgFile     =   './histoplot.svg';
-
-open  (FILE, ">", $svgFile) || warn 'output file '.$svgFile.' could not be created.';
+open  (FILE, ">", $args{'-svg'}) || warn 'output file '.$args{'-svg'}.' could not be created.';
 binmode(FILE, ":utf8");
 print FILE  $plot->{svg};
 close FILE;
+
+my $timeLab     =   strftime("%T", gmtime());
+
+print <<END;
+
+End:        $timeLab
+SVG:        $args{'-svg'}
+
+END
 
 ################################################################################
 # subs #########################################################################

@@ -26,7 +26,7 @@ $args{'-arraypath'}     ||= q{};
 $args{'-genome'}        ||= 'hg18';
 $args{'-do_allchros'}   ||= 'y';
 $args{'-plotregions'}   ||= q{};
-$args{'-do_plottype'}   =   'array';
+$args{'-do_plottype'}   =   'array';  # fixed
 
 # (possibly) derived
 if ($args{'-chr2plot'} =~ /\w/) { $args{'-do_allchros'} = 'n' }
@@ -38,8 +38,6 @@ $args{'-segfile'}       ||= $args{'-arraypath'}.'/segments,cn.tsv';
 $args{'-fracbprobefile'}||= $args{'-arraypath'}.'/probes,fracb.tsv';
 $args{'-fracbsegfile'}  ||= $args{'-arraypath'}.'/segments,fracb.tsv';
 $args{'-defaultsfile'}  ||= $args{'-arraypath'}.'/plotdefaults.yaml';
-
-$args{plotregions}      =   [];
 
 _checkArgs();
 
@@ -58,12 +56,12 @@ _printFeedback();
 ########    main    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-plot_add_probedata($args{'-probefile'}, $plot);
-plot_add_segmentdata($args{'-segfile'}, $plot);
-plot_add_probedata_fracb($args{'-fracbprobefile'}, $plot);
-plot_add_segmentdata_fracb($args{'-fracbsegfile'}, $plot);
-plot_adjust_random_probevalues($plot);
-return_arrayplot_svg($plot);
+$plot->plot_add_probedata($args{'-probefile'});
+$plot->plot_add_segmentdata($args{'-segfile'});
+$plot->plot_add_probedata_fracb($args{'-fracbprobefile'});
+$plot->plot_add_segmentdata_fracb($args{'-fracbsegfile'});
+$plot->plot_adjust_random_probevalues();
+$plot->return_arrayplot_svg();
 
 my $plotfile;
 if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
@@ -81,33 +79,32 @@ binmode(FILE, ":utf8");
 print FILE  $plot->{svg};
 close FILE;
 
-if ($args{'-do_allchros'} =~ /y/i) {
+if ($args{'-do_allchros'} !~ /y/i) { exit }
 
-  my $i         =   0;
-  my $progBar   =   Term::ProgressBar->new(scalar @{$plot->{parameters}->{chr2plot}});
-  my $chr2plot  =   $plot->{parameters}->{chr2plot};
+my $i           =   0;
+my $progBar     =   Term::ProgressBar->new(scalar @{$plot->{parameters}->{chr2plot}});
+my $chr2plot    =   $plot->{parameters}->{chr2plot};
 
-  foreach my $chro (@$chr2plot) {
+foreach my $chro (@$chr2plot) {
 
-    # re-initializing some values for multiple plots ...
-    $plot->{parameters}->{chr2plot} =   [$chro];
-    $plot->{svg}                    =   q{};
-    $plot->{genomesize}             =   get_genome_basecount(
-                                          $plot->{cytobands},
-                                          $plot->{parameters}->{chr2plot},
-                                        );
-    $plot       =   return_arrayplot_svg($plot);
-    $plotfile   =   'arrayplot,chr'.$chro.'.svg';
-    open  (FILE, ">", $args{'-arraypath'}.'/'.$plotfile);
-    binmode(FILE, ":utf8");
-    print FILE  $plot->{svg};
-    close FILE;
+  # re-initializing some values for multiple plots ...
+  $plot->{parameters}->{chr2plot} =   [$chro];
+  $plot->{svg}                    =   q{};
+  $plot->{genomesize}             =   get_genome_basecount(
+                                        $plot->{cytobands},
+                                        $plot->{parameters}->{chr2plot},
+                                      );
+  $plot         =   return_arrayplot_svg($plot);
+  $plotfile     =   'arrayplot,chr'.$chro.'.svg';
+  open  (FILE, ">", $args{'-arraypath'}.'/'.$plotfile);
+  binmode(FILE, ":utf8");
+  print FILE  $plot->{svg};
+  close FILE;
 
-    $progBar->update($i++);
-  }
-  $progBar->update(scalar @$chr2plot);
+  $progBar->update($i++);
 }
 
+$progBar->update(scalar @$chr2plot);
 
 ################################################################################
 # / main #######################################################################
@@ -193,21 +190,6 @@ END
       $args{'-title'}   =   $1 }
   }
 
-  # plotregions
-#   if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
-#     foreach my $plotregion (split(',', $args{'-plotregions'})) {
-#       if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
-#         push(
-#           @{ $args{plotregions} },
-#           {
-#             reference_name  =>  $1,
-#             start           =>  $2,
-#             end             =>  $3,
-#           }
-#         );
-#
-#   }}}
-#
   # adjusting for special cases
   opendir DIR, $args{'-arraypath'};
   my @arrayDirF   =   grep{ /^\w[\w\.\,\-]+?\.\w\w\w\w?\w?\w?$/ } -f, readdir(DIR);
