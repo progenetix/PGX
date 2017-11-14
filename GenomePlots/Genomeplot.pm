@@ -169,9 +169,9 @@ using to simulate array data, in cases where only segments data is available.
 
   my $plot      =   shift;
 
-	if ($plot->{parameters}->{simulated_probes} =~ /y/i ) {
+  if ($plot->{parameters}->{simulated_probes} =~ /y/i ) {
 
-    my $i				=		0;
+    my $i       =   0;
     my $progBar =   Term::ProgressBar->new(
                       { 
                         name  => 'Adjusting Simulated Values',
@@ -179,9 +179,9 @@ using to simulate array data, in cases where only segments data is available.
                       }
                     );
 
-		foreach my $seg (@{ $plot->{segmentdata} }) {
+    foreach my $seg (@{ $plot->{segmentdata} }) {
 
-			my @prI   =		map{ $_ } grep{
+      my @prI   =   map{ $_ } grep{
                       $plot->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
                       &&
                       $plot->{probedata}->[$_]->{position} >=  $seg->{start}
@@ -189,15 +189,15 @@ using to simulate array data, in cases where only segments data is available.
                       $plot->{probedata}->[$_]->{position} <=  $seg->{end}
                     } (0..$#{ $plot->{probedata} });
 
-		  $progBar->update($i++);
+      $progBar->update($i++);
 
-			foreach (@prI) {
-				$plot->{probedata}->[$_]->{value}				+=	$seg->{info}->{value};
-	  }}
-	  
-	  $progBar->update(scalar @{$plot->{segmentdata}});
-	  
-	}
+      foreach (@prI) {
+        $plot->{probedata}->[$_]->{value}   +=  $seg->{info}->{value};
+    }}
+    
+    $progBar->update(scalar @{$plot->{segmentdata}});
+    
+  }
 
   return $plot;
 

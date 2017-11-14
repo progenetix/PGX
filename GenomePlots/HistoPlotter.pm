@@ -81,15 +81,12 @@ Returns:
 <rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
      # intervals through index #    ####    ####    ####    ####    ####    ####
-    my @ind     =  grep{
-          $refName eq	$plot->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $plot->{genomeintervals} };
-    @ind        =  grep{
-          $plot->{genomeintervals}->[$_]->{start} <=	$plot->{referencebounds}->{$refName}->[1]  } @ind;
-    @ind        =  grep{
-          $plot->{genomeintervals}->[$_]->{end} >=	$plot->{referencebounds}->{$refName}->[0]  } @ind;
+    my @ind     =  grep{ $refName eq $plot->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $plot->{genomeintervals} };
+    @ind        =  grep{ $plot->{genomeintervals}->[$_]->{start} <=  $plot->{referencebounds}->{$refName}->[1]  } @ind;
+    @ind        =  grep{ $plot->{genomeintervals}->[$_]->{end} >=  $plot->{referencebounds}->{$refName}->[0]  } @ind;
 
     foreach my $GL (qw(dupfrequencies delfrequencies)) {
-      $plot->{svg}	    .=	  '
+      $plot->{svg}      .=    '
 <polygon points="'.$area_x0.' '.$area_ycen;
 
       foreach my $i (@ind) {
@@ -97,18 +94,18 @@ Returns:
         my $start       =   $plot->{genomeintervals}->[$i]->{start};
         my $end         =   $plot->{genomeintervals}->[$i]->{end};
         if ($start < $plot->{referencebounds}->{$refName}->[0]) {
-        $start  = $plot->{referencebounds}->{$refName}->[0] }
+          $start  = $plot->{referencebounds}->{$refName}->[0] }
         if ($end > $plot->{referencebounds}->{$refName}->[1]) {
-        $end   = $plot->{referencebounds}->{$refName}->[1] }
+          $end   = $plot->{referencebounds}->{$refName}->[1] }
 
-        my $X   =		sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($end - ($end - $start) / 2);
-        my $H	  =		sprintf "%.1f", $plot->{frequencymaps}->{$GL}->[$i] * $plot->{parameters}->{pixyfactor};
-        $plot->{svg}	  .=	' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
+        my $X   =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($end - ($end - $start) / 2);
+        my $H   =   sprintf "%.1f", $plot->{frequencymaps}->{$GL}->[$i] * $plot->{parameters}->{pixyfactor};
+        $plot->{svg}    .=  ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
       }
-      $plot->{svg}	    .=  ' '.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'" fill="'.($GL =~ /del/i ? $plot->{parameters}->{color_var_del_hex} : $plot->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
+      $plot->{svg}      .=  ' '.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'" fill="'.($GL =~ /del/i ? $plot->{parameters}->{color_var_del_hex} : $plot->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
 
     }
-    $area_x0		+=	$areaW + $plot->{parameters}->{size_chromosome_padding_px};
+    $area_x0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
   }
 
   # adding a baseline at 0
