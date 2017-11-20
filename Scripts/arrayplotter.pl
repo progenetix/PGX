@@ -1,5 +1,15 @@
 #!/usr/bin/perl
 
+=pod
+
+This is a utility script for plotting positional genome data:
+
+- probes (log value and b-allele fraction)
+- segments (segmented log value and b-allele fractions)
+- labels
+
+=cut
+
 # CPAN packages
 use Data::Dumper;
 use File::Basename;
@@ -22,23 +32,38 @@ use PGX::GenomePlots::Genomeplot;
 
 # command line input
 our %args               =   @ARGV;
-$args{'-arraypath'}     ||= q{};
 $args{'-genome'}        ||= 'hg18';
 $args{'-do_allchros'}   ||= 'y';
 $args{'-plotregions'}   ||= q{};
-$args{'-do_plottype'}   =   'array';  # fixed
+$args{'-plottype'}   =   'array';  # fixed
 
 # (possibly) derived
 if ($args{'-chr2plot'} =~ /\w/) { $args{'-do_allchros'} = 'n' }
-$args{'-arraypath'}     =~  s/\/$//;
 
 $args{'-chr2plot'}      ||= join(',', 1..22, 'X');
-$args{'-probefile'}     ||= $args{'-arraypath'}.'/probes,cn.tsv';
-$args{'-segfile'}       ||= $args{'-arraypath'}.'/segments,cn.tsv';
-$args{'-fracbprobefile'}||= $args{'-arraypath'}.'/probes,fracb.tsv';
-$args{'-fracbsegfile'}  ||= $args{'-arraypath'}.'/segments,fracb.tsv';
-$args{'-defaultsfile'}  ||= $args{'-arraypath'}.'/plotdefaults.yaml';
 
+# file names and paths
+$args{'-probefilename'}     ||= $args{'-pfn'}   ||= '/probes,cn.tsv';
+$args{'-segfilename'}       ||= $args{'-sfn'}   ||= '/segments,cn.tsv';
+$args{'-fracbprobefilename'}||= $args{'-fbpfn'} ||= '/probes,fracb.tsv';
+$args{'-fracbsegfilename'}  ||= $args{'-fbsfn'} ||= '/segments,fracb.tsv';
+$args{'-defaultsfilename'}  ||= $args{'-dfn'}   ||= '/plotdefaults.yaml';
+
+$args{'-arraypath'}     ||= $args{'-in'}  ||= q{};
+$args{'-arraypath'}     =~  s/\/$//;
+
+foreach (grep{ /filename$/} keys %args) {
+  my $file      =   $args{'-arraypath'}.'/'.$args{$_};
+  my $pathK     =   $_;
+  $pathK        =~  s/name//;
+  $args{$pathK} =   $file;
+}
+
+# the output files will be named later, if not given here as a single SVG
+$args{'-out'}           ||= $args{'-arraypath'};
+$args{'-svgfilename'}   ||= $args{'-svgfn'} ||= q{};
+
+# check or feedback
 _checkArgs();
 
 # conventions
@@ -73,8 +98,13 @@ elsif (scalar(@{$plot->{parameters}->{chr2plot}}) < 22) {
   $plotfile     =   'arrayplot,chr'.$args{'-chr2plot'}.'.svg' }
 else {
   $plotfile     =   'arrayplot.svg' }
+  
+if ($args{'-svgfilename'} =~ /^[\w\,\-]+?\.svg/i) {
+  $plotfile     =   $args{'-svgfilename'};
+  $args{'-do_allchros'} =   'n';
+}
 
-open  (FILE, ">", $args{'-arraypath'}.'/'.$plotfile);
+open  (FILE, ">", $args{'-out'}.'/'.$plotfile);
 binmode(FILE, ":utf8");
 print FILE  $plot->{svg};
 close FILE;
@@ -96,7 +126,7 @@ foreach my $chro (@$chr2plot) {
                                       );
   $plot         =   return_arrayplot_svg($plot);
   $plotfile     =   'arrayplot,chr'.$chro.'.svg';
-  open  (FILE, ">", $args{'-arraypath'}.'/'.$plotfile);
+  open  (FILE, ">", $args{'-out'}.'/'.$plotfile);
   binmode(FILE, ":utf8");
   print FILE  $plot->{svg};
   close FILE;
@@ -116,14 +146,21 @@ $progBar->update(scalar @$chr2plot);
 sub _checkArgs {
 
   # terminating if arraypath doesn't exist
-  if (! -d $args{'-arraypath'}) {
+  if (
+(! -d $args{'-arraypath'})
+||
+(! -d $args{'-out'})
+) {
 
     print <<END;
 
 Script parameters:
 
 -arraypath      Path to the directory containging probe nad segment files.
-                Required
+(or -in)        Required
+
+-out            Path to the output directory containging for the SVG files.
+                Defaults to -arraypath value if not specified
 
 -format_inputfiles
                 Allows modification for different column order and file
@@ -155,6 +192,12 @@ Script parameters:
                 The filename will be adjusted accordingly (here
                   "arrayplot,chr9_20000000-22000000,17_0-25000000.svg").
                 This overrides the "-chr2plot" parameter.
+
+-markers        For adding colored overlay block on one or more specified
+                regions, with an optional text label. Colors can be added, or
+                will be ranomised.
+                Example:
+                  11:2000000-3000000:marker:#ffcc00,11:2900000-3400000:another
 
 -value_plot_y_max
                 Maximum Y value of the plot

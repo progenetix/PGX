@@ -60,7 +60,7 @@ Returns:
     }
   }
 
-  # the -do_plottype | -colorschema specific mappings are processed first & removed
+  # the -plottype | -colorschema specific mappings are processed first & removed
   # thereafter (there are still fallbacks if no parameters given)
   if (grep{ $args->{'-colorschema'} eq $_ } keys %{ $plotPars->{colorschemas} }) {
     my $colorschema     =   $args->{'-colorschema'};
@@ -72,39 +72,57 @@ Returns:
     delete $args->{'-colorschema'};
   }
 
-  if (grep{ $args->{'-do_plottype'} eq $_ } keys %{ $plotPars->{plottype_values} }) {
-    foreach (keys %{ $plotPars->{plottype_values}->{ $args->{'-do_plottype'} } }) {
-      $plotPars->{$_} =   $plotPars->{plottype_values}->{ $args->{'-do_plottype'} }->{$_} }
+  # adjusting arguments for the selected plot type
+  if (grep{ $args->{'-plottype'} eq $_ } keys %{ $plotPars->{plottype_values} }) {
+    foreach (keys %{ $plotPars->{plottype_values}->{ $args->{'-plottype'} } }) {
+      $plotPars->{$_} =   $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_} }
     delete $plotPars->{plottype_values};
-    delete $args->{'-do_plottype'};
+    delete $args->{'-plottype'};
   }
 
+  # arguments to parameters 
   foreach my $par (keys %$plotPars) {
-    if ($args->{'-'.$par} =~ /^\-?\#?\w[\. \-\,\(\)\w\:]*?$/) {
 
-    # list style parameters are provided comma concatenated
-      if ($par eq 'plotregions') {
-        if ($args->{'-'.$par} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
-          foreach my $plotregion (split(',', $args->{'-'.$par})) {
-            if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
-              push(
-                @{ $plotPars->{$par} },
-                {
-                  reference_name  =>  $1,
-                  start           =>  $2,
-                  end             =>  $3,
-                }
-              );
+    if ($args->{'-'.$par} !~ /\w/) { next }
 
-      }}}}
-      elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
-        $plotPars->{$par}   =   [ split(',', $args->{'-'.$par}) ] }
-      else {
-        $plotPars->{$par}   =   $args->{'-'.$par} }
-      if (grep{ $_ eq $par } @{ $plotPars->{local_overrides} }) {
-        $locDefaults->{$par}  =   $plotPars->{$par};
-      }
-    }
+    # special evaluation: regions
+    if ($par eq 'plotregions') {
+      foreach my $plotregion (split(',', $args->{'-plotregions'})) {
+        if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
+          my $plotR =   {
+            reference_name  =>  $1,
+            start           =>  $2,
+            end             =>  $3,
+          };
+          push(@{ $plotPars->{'plotregions'} }, $plotR);
+    }}}
+    
+    # special evaluation: markers
+    elsif ($par eq 'markers') {
+      foreach my $plotregion (split(',', $args->{'-markers'})) {
+        if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)(?:\:([\w \-]+?))?(?:\:(\#\w\w\w(?:\w\w\w)?))?$/) {
+           my $mark =   {
+            reference_name  =>  $1,
+            start           =>  $2,
+            end             =>  $3,
+            label           =>  $4,
+            color           =>  $5,
+          };
+          if ($mark->{color} !~ /^\#\w\w\w(?:\w\w\w)?$/) {
+            $mark->{color}  =   random_hexcolor() }
+          push(@{ $plotPars->{'markers'} }, $mark);
+    }}}
+    
+    # list style parameters are provided comma concatenated => deparsed
+    elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
+      $plotPars->{$par}   =   [ split(',', $args->{'-'.$par}) ] }
+    else {
+      $plotPars->{$par}   =   $args->{'-'.$par} }
+
+    # modified parameters stored in the local yaml defaults are collected here
+    if (grep{ $_ eq $par } @{ $plotPars->{local_overrides} }) {
+      $locDefaults->{$par}  =   $plotPars->{$par} }
+
   }
 
   # derived
@@ -116,8 +134,7 @@ Returns:
   }
 
   if (-d $defaultsDir) {
-    DumpFile($args->{'-defaultsfile'}, $locDefaults);
-  }
+    DumpFile($args->{'-defaultsfile'}, $locDefaults) }
 
   return $plotPars;
 
@@ -132,5 +149,27 @@ sub hex2rgb {
     return [ CORE::hex($r), CORE::hex($g), CORE::hex($b) ];
 
 }
+
+################################################################################
+
+sub random_hexcolor {
+
+  use List::Util qw( shuffle);
+
+=pod
+
+random_hexcolor()
+
+=cut
+
+  my @randRGB   =   (
+    (shuffle(0..180))[0],
+    (shuffle(60..255))[0],
+    (shuffle(200..255))[0],
+  );
+  return('#'.sprintf("%x%x%x", shuffle(@randRGB)));
+
+}
+
 
 1;

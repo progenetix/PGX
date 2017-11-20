@@ -15,6 +15,7 @@ sub return_histoplot_svg {
 
   $plot->{Y}    =   $plot->{parameters}->{size_plotmargin_top_px};
   my $plotW             =   $plot->{parameters}->{size_plotimage_w_px};
+  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px};
   $plot->{areawidth}    =   $plotW - 2 * $plot->{parameters}->{size_plotmargin_px};
   if (
     $plot->{parameters}->{do_chromosomes_proportional} =~ /y/i
@@ -25,10 +26,12 @@ sub return_histoplot_svg {
     $plotW      =   $plot->{areawidth} + 2 * $plot->{parameters}->{size_plotmargin_px};
   }
   $plot->{basepixfrac}  =   ( $plot->{areawidth} - ($#{ $plot->{parameters}->{chr2plot} } * $plot->{parameters}->{size_chromosome_padding_px}) ) / $plot->{genomesize};
-  $plot         =   get_title_svg($plot);
-  $plot         =   get_cytobands_svg($plot);
+  $plot         =   svg_add_title($plot);
+  $plot         =   svg_add_cytobands($plot);
+  $plot->{areastarty}   =   $plot->{Y};
   $plot         =   get_histoplot_area($plot);
-  $plot         =   get_bottom_labels_svg($plot);
+  $plot         =   svg_add_markers($plot);
+  $plot         =   svg_add_bottom_text($plot);
   $plot->{Y}    +=   $plot->{parameters}->{size_plotmargin_bottom_px};
   my $plotH     =   sprintf "%.0f", $plot->{Y};
   $plotW        =   sprintf "%.0f", $plotW;
@@ -66,12 +69,16 @@ Returns:
 
   ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  get_labels_y_svg($plot);
+  $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
+
+  svg_add_labels_y($plot);
 
   my $area_x0   =   $plot->{parameters}->{size_plotmargin_px};
   my $area_y0   =   $plot->{Y};
   my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
   my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px} / 2;
+
+  $plot->{areaendy}     =   $area_yn;
 
   foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
 

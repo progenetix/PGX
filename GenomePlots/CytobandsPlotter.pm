@@ -5,17 +5,18 @@ use Data::Dumper;
 require Exporter;
 @ISA        =   qw(Exporter);
 @EXPORT     =   qw(
-  get_cytobands_svg
-  get_labels_y_svg
-  get_title_svg
-  get_bottom_labels_svg
+  svg_add_title
+  svg_add_cytobands
+  svg_add_labels_y
+  svg_add_markers
+  svg_add_bottom_text
 );
 
 ################################################################################
 
 ################################################################################
 
-sub get_title_svg {
+sub svg_add_title {
 
 =pod
 
@@ -44,7 +45,7 @@ Returns:
 
 ################################################################################
 
-sub get_labels_y_svg {
+sub svg_add_labels_y {
 
 =pod
 
@@ -102,7 +103,97 @@ Returns:
 
 ################################################################################
 
-sub get_bottom_labels_svg {
+sub svg_add_markers {
+
+=pod
+
+Expects:
+
+Returns:
+
+=cut
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+  my $plot      =   shift;
+
+  if (@{ $plot->{parameters}->{markers} } < 1) { return $plot }
+
+  $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
+
+  $plot->{svg}  .=  '
+<style type="text/css">
+<![CDATA[
+.marker { text-anchor: middle; font-size: '.$plot->{parameters}->{size_text_marker_px}.'px }
+]]>
+</style>';
+
+  my $areaX_0   =   $plot->{areastartx};
+
+  my $markerLineHeight  =   $plot->{parameters}->{size_text_marker_px} + 4;
+  my %markerLineNo  =   (0 => $areaX_0);
+
+  foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
+
+    my $areaW   =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
+
+    my $areamarkers     =   [ grep{ $_->{reference_name} eq $refName } @{ $plot->{parameters}->{markers} } ];
+    $areamarkers        =   [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areamarkers];
+    $areamarkers        =   [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areamarkers ];
+    %markerLineNo       =   (1 => $areaX_0);
+
+    foreach my $marker (@$areamarkers) {
+      if ($marker->{start} < $plot->{referencebounds}->{$refName}->[0]) {
+        $marker->{start}    =   $plot->{referencebounds}->{$refName}->[0] }
+      if ($marker->{end} > $plot->{referencebounds}->{$refName}->[1]) {
+        $marker->{end}      =   $plot->{referencebounds}->{$refName}->[1] }
+
+      my $mark_X0     =   sprintf "%.1f", $areaX_0 + $marker->{start} * $plot->{basepixfrac};
+      my $mark_W      =   sprintf "%.2f", ($marker->{end} - $marker->{start}) * $plot->{basepixfrac};
+      if ($mark_W < 0.5) {$mark_W = 0.5}
+      my $mark_H      =   sprintf "%.0f", ($plot->{areaendy} - $plot->{areastarty});
+      $plot->{svg}    .=  '
+<rect x="'.$mark_X0.'" y="'.$plot->{areastarty}.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: 0.3; " />';
+
+
+      if ($marker->{label} =~ /\w/) {
+      
+        my $marklablen  =   sprintf "%.0f", length($marker->{label}) * $plot->{parameters}->{size_text_marker_px} * 0.7 + 4;
+        my $marklab_Xcen =   sprintf "%.1f", $mark_X0 + $mark_W / 2;
+        my $marklab_X0  =   $marklab_Xcen - $marklablen / 2;
+        my $marklab_Xn  =   $marklab_X0 + $marklablen;
+        my $markbox_Y   =   $plot->{Y};
+        my $marklab_Y   =   $markbox_Y + $markerLineHeight - 3;
+        foreach my $i (1..100) {
+          if ($markerLineNo{$i} > $marklab_X0) {
+            $marklab_Y  +=  $markerLineHeight + 1;
+            $markbox_Y  +=  $markerLineHeight + 1;
+          } else {
+            $markerLineNo{$i} =   $marklab_Xn;
+            last;
+          }
+        }
+        $plot->{svg}    .=  '
+<rect x="'.$marklab_X0.'" y="'.$markbox_Y.'" width="'.$marklablen.'" height="'.$markerLineHeight.'" style="fill: '.$marker->{color}.'; fill-opacity: 0.3; " />
+<text x="'.$marklab_Xcen.'" y="'.$marklab_Y.'" class="marker">'.$marker->{label}.'</text>';
+
+      }
+
+    }
+    $areaX_0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+  }
+  
+  my $maxline   =   (sort { $a <=> $b } keys %markerLineNo)[-1];
+  
+  $plot->{Y}    +=  $maxline * ($markerLineHeight + 1) - 1;
+
+  return $plot;
+
+}
+
+################################################################################
+
+sub svg_add_bottom_text {
 
   use Time::Piece;
 
@@ -117,6 +208,8 @@ Returns:
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
   my $plot      =   shift;
+
+  $plot{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
 
   $plot->{parameters}->{text_bottom_right} ||= '&#x24B8; '.(localtime->strftime('%Y')).' progenetix.org';
   if (
@@ -137,7 +230,7 @@ Returns:
 
 ################################################################################
 
-sub get_cytobands_svg {
+sub svg_add_cytobands {
 
 =pod
 
@@ -232,7 +325,7 @@ Returns:
     $areaX_0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
   }
 
-  $plot->{Y}    =  $chroBandY + $plot->{parameters}->{size_chromosome_w_px} + $plot->{parameters}->{size_chromosome_padding_px};
+  $plot->{Y}    =  $chroBandY + $plot->{parameters}->{size_chromosome_w_px};
 
   return $plot;
 
