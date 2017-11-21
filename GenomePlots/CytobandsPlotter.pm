@@ -157,7 +157,7 @@ Returns:
 
 
       if ($marker->{label} =~ /\w/) {
-      
+
         my $marklablen  =   sprintf "%.0f", length($marker->{label}) * $plot->{parameters}->{size_text_marker_px} * 0.7 + 4;
         my $marklab_Xcen =   sprintf "%.1f", $mark_X0 + $mark_W / 2;
         my $marklab_X0  =   $marklab_Xcen - $marklablen / 2;
@@ -182,9 +182,9 @@ Returns:
     }
     $areaX_0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
   }
-  
+
   my $maxline   =   (sort { $a <=> $b } keys %markerLineNo)[-1];
-  
+
   $plot->{Y}    +=  $maxline * ($markerLineHeight + 1) - 1;
 
   return $plot;

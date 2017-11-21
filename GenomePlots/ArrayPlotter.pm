@@ -222,7 +222,7 @@ Returns:
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
   $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
-  
+
   $plot->{svg}    .=  '
 <style type="text/css"><![CDATA[
   .fb {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: #FF3333; opacity: 0.8  }
