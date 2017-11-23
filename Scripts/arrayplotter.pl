@@ -35,7 +35,7 @@ our %args               =   @ARGV;
 $args{'-genome'}        ||= 'hg18';
 $args{'-do_allchros'}   ||= 'y';
 $args{'-plotregions'}   ||= q{};
-$args{'-plottype'}   =   'array';  # fixed
+$args{'-do_plottype'}   =   'array';  # fixed
 
 # (possibly) derived
 if ($args{'-chr2plot'} =~ /\w/) { $args{'-do_allchros'} = 'n' }
@@ -81,10 +81,10 @@ _printFeedback();
 ########    main    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-$plot->plot_add_probedata($args{'-probefile'});
-$plot->plot_add_segmentdata($args{'-segfile'});
-$plot->plot_add_probedata_fracb($args{'-fracbprobefile'});
-$plot->plot_add_segmentdata_fracb($args{'-fracbsegfile'});
+$plot->plot_add_probes_from_file($args{'-probefile'});
+$plot->plot_add_segments_from_file($args{'-segfile'});
+$plot->plot_add_fracbprobes_from_file($args{'-fracbprobefile'});
+$plot->plot_add_fracbsegments_from_file($args{'-fracbsegfile'});
 $plot->plot_adjust_random_probevalues();
 $plot->return_arrayplot_svg();
 

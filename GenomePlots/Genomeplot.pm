@@ -15,10 +15,11 @@ require Exporter;
 @EXPORT =   qw(
   new
   plot_add_frequencymaps
-  plot_add_probedata
-  plot_add_segmentdata
-  plot_add_probedata_fracb
-  plot_add_segmentdata_fracb
+  plot_add_probes_from_file
+  plot_add_segments_from_file
+  plot_add_segments_from_csvariants
+  plot_add_fracbprobes_from_file
+  plot_add_fracbsegments_from_file
   plot_adjust_random_probevalues
 );
 
@@ -106,7 +107,7 @@ sub plot_add_frequencymaps {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_probedata {
+sub plot_add_probes_from_file {
 
   my $plot      =   shift;
   my $probefile =   shift;
@@ -118,7 +119,7 @@ sub plot_add_probedata {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_segmentdata {
+sub plot_add_segments_from_file {
 
   my $plot      =   shift;
   my $segfile   =   shift;
@@ -130,7 +131,46 @@ sub plot_add_segmentdata {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_probedata_fracb {
+sub plot_add_segments_from_csvariants {
+
+=pod
+
+Any given variant may contain data for several calls. The segment's value has 
+to be retrieved from the correct call.' 
+
+=cut
+
+  my $plot      =   shift;
+  my $vardata   =   shift;
+  my $callsetId =   shift;
+  
+  $plot->{segmentdata}  =   [];
+  
+  foreach my $var (@$vardata) {
+    foreach my $csCall (grep{ $_->{call_set_id} eq $callsetId} @{ $var->{calls}}) {
+      push(
+        @{$plot->{segmentdata}},
+        {
+          callset_id      =>  $callsetId,
+          reference_name  =>  $var->{reference_name},
+          start           =>  1 * $var->{start},
+          end             =>  1 * $var->{end},
+          variant_type    =>  $var->{variant_type},
+          info            =>  {
+            value         =>  1 * $csCall->{info}->{segvalue},
+          },
+        }
+      );
+    }
+  }
+
+  return $plot;
+
+}
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+sub plot_add_fracbprobes_from_file {
 
   my $plot      =   shift;
   my $probefile =   shift;
@@ -142,7 +182,7 @@ sub plot_add_probedata_fracb {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_segmentdata_fracb {
+sub plot_add_fracbsegments_from_file {
 
   my $plot      =   shift;
   my $segfile   =   shift;

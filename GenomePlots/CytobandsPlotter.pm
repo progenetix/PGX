@@ -130,8 +130,9 @@ Returns:
 
   my $areaX_0   =   $plot->{areastartx};
 
+  # stores the marker line index and the last X value there
+  my %markerLineNo      =   (1 => $plot->{areastartx}); 
   my $markerLineHeight  =   $plot->{parameters}->{size_text_marker_px} + 4;
-  my %markerLineNo  =   (0 => $areaX_0);
 
   foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
 
@@ -140,7 +141,6 @@ Returns:
     my $areamarkers     =   [ grep{ $_->{reference_name} eq $refName } @{ $plot->{parameters}->{markers} } ];
     $areamarkers        =   [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areamarkers];
     $areamarkers        =   [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areamarkers ];
-    %markerLineNo       =   (1 => $areaX_0);
 
     foreach my $marker (@$areamarkers) {
       if ($marker->{start} < $plot->{referencebounds}->{$refName}->[0]) {
@@ -148,13 +148,12 @@ Returns:
       if ($marker->{end} > $plot->{referencebounds}->{$refName}->[1]) {
         $marker->{end}      =   $plot->{referencebounds}->{$refName}->[1] }
 
-      my $mark_X0     =   sprintf "%.1f", $areaX_0 + $marker->{start} * $plot->{basepixfrac};
+      my $mark_X0     =   sprintf "%.1f", $areaX_0 + ($marker->{start} - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
       my $mark_W      =   sprintf "%.2f", ($marker->{end} - $marker->{start}) * $plot->{basepixfrac};
       if ($mark_W < 0.5) {$mark_W = 0.5}
       my $mark_H      =   sprintf "%.0f", ($plot->{areaendy} - $plot->{areastarty});
       $plot->{svg}    .=  '
 <rect x="'.$mark_X0.'" y="'.$plot->{areastarty}.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: 0.3; " />';
-
 
       if ($marker->{label} =~ /\w/) {
 
@@ -178,13 +177,11 @@ Returns:
 <text x="'.$marklab_Xcen.'" y="'.$marklab_Y.'" class="marker">'.$marker->{label}.'</text>';
 
       }
-
     }
     $areaX_0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
   }
 
   my $maxline   =   (sort { $a <=> $b } keys %markerLineNo)[-1];
-
   $plot->{Y}    +=  $maxline * ($markerLineHeight + 1) - 1;
 
   return $plot;
@@ -209,7 +206,7 @@ Returns:
 
   my $plot      =   shift;
 
-  $plot{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
+  $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
 
   $plot->{parameters}->{text_bottom_right} ||= '&#x24B8; '.(localtime->strftime('%Y')).' progenetix.org';
   if (

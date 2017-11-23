@@ -99,15 +99,20 @@ Returns:
     
     # special evaluation: markers
     elsif ($par eq 'markers') {
-      foreach my $plotregion (split(',', $args->{'-markers'})) {
-        if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)(?:\:([\w \-]+?))?(?:\:(\#\w\w\w(?:\w\w\w)?))?$/) {
-           my $mark =   {
-            reference_name  =>  $1,
-            start           =>  $2,
-            end             =>  $3,
-            label           =>  $4,
-            color           =>  $5,
-          };
+      foreach (split(',', $args->{'-markers'})) {
+        my @markervals  =   split(':', $_);
+        if (
+          $markervals[0]  =~ /^(chro?)?([\dxy]\d?)$/i
+          && 
+          $markervals[1]  =~ /^\d+?\-\d+?$/
+        ) {
+          my $mark     =   { reference_name  =>  $markervals[0] };
+          $mark->{reference_name} =~  s/[^xy\d]//gi;
+          ($mark->{start}, $mark->{end})  =   split('-', $markervals[1]);        
+          if ($markervals[2] =~ /^\w[\w \-\(\)\[\]]+?$/) {
+            $mark->{label}  =  $markervals[2] }
+          if ($markervals[3] =~ /^\#\w\w\w(\w\w\w)?$/) {
+            $mark->{color}  =  $markervals[3] }
           if ($mark->{color} !~ /^\#\w\w\w(?:\w\w\w)?$/) {
             $mark->{color}  =   random_hexcolor() }
           push(@{ $plotPars->{'markers'} }, $mark);
@@ -117,7 +122,8 @@ Returns:
     elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
       $plotPars->{$par}   =   [ split(',', $args->{'-'.$par}) ] }
     else {
-      $plotPars->{$par}   =   $args->{'-'.$par} }
+      $plotPars->{$par}   =   $args->{'-'.$par};
+    }
 
     # modified parameters stored in the local yaml defaults are collected here
     if (grep{ $_ eq $par } @{ $plotPars->{local_overrides} }) {
