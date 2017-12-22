@@ -37,13 +37,13 @@ Returns:
   );
 
   # avoiding division by 0 errors if improperly called
-	my $fFactor		=   100;
-	if (@{ $cnvmaps } > 1) { $fFactor = 100 / @{ $cnvmaps } }
+  my $fFactor   =   100;
+  if (@{ $cnvmaps } > 1) { $fFactor = 100 / @{ $cnvmaps } }
 
   foreach my $type (keys %intLabs) {
-  	for my $i (0..$#{ $plotPars->{GENOINTVS} }) {
-      $maps->{ $freqLabs{ $type } }->[$i]	  =   sprintf "%.3f", ($fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] eq $type } @{ $cnvmaps } ));
-  	}
+    for my $i (0..$#{ $plotPars->{GENOINTVS} }) {
+      $maps->{ $freqLabs{ $type } }->[$i]   =   sprintf "%.3f", ($fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] eq $type } @{ $cnvmaps } ));
+    }
   }
 
   return $maps;
