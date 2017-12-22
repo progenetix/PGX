@@ -31,9 +31,11 @@ use PGX::GenomeIntervals::CytobandReader;
 use PGX::GenomePlots::Genomeplot;
 
 # command line input
+
 our %args           =   @ARGV;
 $args{'-plottype'}  =   'array';  # fixed
 $args{'-genome'}    ||= 'hg18';
+
 $args{'-do_allchros'}   ||= 'y';
 $args{'-plotregions'}   ||= q{};
 

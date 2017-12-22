@@ -120,7 +120,6 @@ Returns:
   if (@{ $plot->{parameters}->{markers} } < 1) { return $plot }
 
   $plot->{Y}    +=  $plot->{parameters}->{size_chromosome_padding_px};
-
   $plot->{svg}  .=  '
 <style type="text/css">
 <![CDATA[
