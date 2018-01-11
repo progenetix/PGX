@@ -184,6 +184,11 @@ Script parameters:
                 Theshold for calling gain segments.
                 Default: 0.15
                 ... as above ...
+                
+-plot_adjust_baseline
+                Value is added to both probes and segment values, before 
+                applying thresholds to the segments
+                Default: 0
 
 -chr2plot       Chromosomes to be plotted (comma separated)
                 Default: 1 => Y

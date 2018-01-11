@@ -11,8 +11,9 @@ sub read_cytobands {
 =pod
 
 Expects:
-  - as input a genome edition
-  - a UCSC "cytoBandIdeo.txt" file of the given genome edition (hardcoded location):
+  - as input a genome edition (either "hg19" 0r "GRCh37" style)
+  - a UCSC "cytoBandIdeo.txt" file of the UCSC equivalent of the provided 
+    genome edition (file location is hardcoded in the package):
 
 chr1  0 2300000 p36.33  gneg
 chr1  2300000 5300000 p36.32  gpos25
@@ -44,11 +45,11 @@ Returns:
   use File::Basename;
 
   my $path_of_this_module = File::Basename::dirname( eval { ( caller() )[1] } );
-  my $cbF   =   $path_of_this_module.'/../rsrc/genomes/'.genome_names_to_hg($_[0]).'/cytoBandIdeo.txt';
-  my @cb    =   ();
+  my $cbF       =   $path_of_this_module.'/../rsrc/genomes/'.genome_names_to_hg($_[0]).'/cytoBandIdeo.txt';
+  my @cb        =   ();
 
   open  FILE, "$cbF" or die "No file $cbF $!";
-  my $i     =   0;
+  my $i         =   0;
   foreach (grep{/^(chro?)?[\dXYZ]\d?\t/i} <FILE>) {
     $i++;
     chomp;
@@ -76,7 +77,7 @@ Returns:
 
   close FILE;
 
-  return [@cb];
+  return \@cb;
 
 }
 
@@ -85,29 +86,39 @@ Returns:
 ################################################################################
 
 sub genome_names_to_grch {
-  my %genome_names   =   (
-    hg18    =>  'grch36',
-    hg19    =>  'grch37',
-    hg38    =>  'grch38',
+  my $genome    =   $_[0];
+  $genome       =   s/[^hgrch\d]//g;
+  $genome       =   lc($genome);
+  $genome       =~  s/^(grch\d\d).*?$/$1/;
+  $genome       =~  s/^(hg\d\d).*?$/$1/;
+  my %geNames   =   (
+    hg18        =>  'grch36',
+    hg19        =>  'grch37',
+    hg38        =>  'grch38',
   );
-  if ($_[0] =~ /^grch\d\d$/i) {
-    return lc($_[0]) }
+  if ($genome =~ /^grch\d\d$/) {
+    return $genome }
   else {
-    return $genome_names{lc($_[0])} }
+    return $geNames{$genome} }
 }
 
 ################################################################################
 
 sub genome_names_to_hg {
-  my %genome_names   =   (
+  my $genome    =   $_[0];
+  $genome       =   lc($genome);
+  $genome       =   s/[^hgrch\d]//g;
+  $genome       =~  s/^(grch\d\d).*?$/$1/;
+  $genome       =~  s/^(hg\d\d).*?$/$1/;
+  my %geNames   =   (
     grch36  =>  'hg18',
     grch37  =>  'hg19',
     grch38  =>  'hg38',
   );
-  if ($_[0] =~ /^hg\d\d$/i) {
-    return lc($_[0]) }
+  if ($genome =~ /^hg\d\d$/) {
+    return $genome }
   else {
-    return $genome_names{lc($_[0])} }
+    return $geNames{$genome} }
 }
 
 1;

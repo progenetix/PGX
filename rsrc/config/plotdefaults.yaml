@@ -9,6 +9,7 @@ binning: 1000000
 # array
 cna_gain_threshold: 0.15
 cna_loss_threshold: -0.15
+plot_adjust_baseline: 0
 segment_probecount_min: 2
 format_inputfiles: 'progenetix'
 simulated_probes: 'n'

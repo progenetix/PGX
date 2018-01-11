@@ -46,7 +46,6 @@ Returns:
   my $plot      =   shift;
   my $probes    =   [];
   my @randomV;
-
   if (! -f $probeF) { return $probes }
 
   open  FILE, "$probeF" or die "No file $probeF $!";
@@ -97,6 +96,13 @@ Returns:
     my @randomV =   random_normal(scalar @$probes, 0, 0.25);
     foreach my $n (0..$#{ $probes }) {
       $probes->[$n]->{value}  =   $randomV[$n];
+    }
+  }
+
+  # baseline adjustment
+  if ($plot->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+    foreach my $n (0..$#{ $probes }) {
+      $probes->[$n]->{value}  +=   $plot->{parameters}->{plot_adjust_baseline};
     }
   }
 
@@ -216,6 +222,13 @@ Returns:
       }
     );
 
+  }
+
+  # baseline adjustment
+  if ($plot->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+    foreach my $i (0..$#{ $segments }) {
+      $segments->[$i]->{info}->{value}  +=   $plot->{parameters}->{plot_adjust_baseline};
+    }
   }
 
   for my $i (0..$#{ $segments }) {
