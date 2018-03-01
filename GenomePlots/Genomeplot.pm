@@ -180,7 +180,7 @@ sub plot_add_segmentsets_from_samples {
       {
         id              =>  $cs->{$idName},
         name            =>  $cs->{name},
-        variants_cnv    =>  $cs->{variants_cnv},
+        variants    =>  $cs->{variants},
         statusmaps      =>  $cs->{statusmaps},        
       }
     );

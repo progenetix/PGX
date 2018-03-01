@@ -12,11 +12,7 @@ sub read_cytobands {
 
 Expects:
   - as input a genome edition (either "hg19" 0r "GRCh37" style)
-<<<<<<< HEAD
   - a UCSC "cytoBandIdeo.txt" file of the UCSC equivalent of the provided
-=======
-  - a UCSC "cytoBandIdeo.txt" file of the UCSC equivalent of the provided 
->>>>>>> origin/master
     genome edition (file location is hardcoded in the package):
 
 chr1  0 2300000 p36.33  gneg
@@ -91,7 +87,6 @@ Returns:
 
 sub genome_names_to_grch {
   my $genome    =   $_[0];
-<<<<<<< HEAD
   $genome       =  lc($genome);
   $genome       =~  s/[^hgrch\d]//g;
   $genome       =~  s/^(grch\d\d).*?$/$1/;
@@ -100,16 +95,6 @@ sub genome_names_to_grch {
     hg18        =>  'GRCh36',
     hg19        =>  'GRCh37',
     hg38        =>  'GRCh38',
-=======
-  $genome       =   s/[^hgrch\d]//g;
-  $genome       =   lc($genome);
-  $genome       =~  s/^(grch\d\d).*?$/$1/;
-  $genome       =~  s/^(hg\d\d).*?$/$1/;
-  my %geNames   =   (
-    hg18        =>  'grch36',
-    hg19        =>  'grch37',
-    hg38        =>  'grch38',
->>>>>>> origin/master
   );
   if ($genome =~ /^grch\d\d$/) {
     return $genome }
@@ -122,11 +107,7 @@ sub genome_names_to_grch {
 sub genome_names_to_hg {
   my $genome    =   $_[0];
   $genome       =   lc($genome);
-<<<<<<< HEAD
   $genome       =~  s/[^hgrch\d]//g;
-=======
-  $genome       =   s/[^hgrch\d]//g;
->>>>>>> origin/master
   $genome       =~  s/^(grch\d\d).*?$/$1/;
   $genome       =~  s/^(hg\d\d).*?$/$1/;
   my %geNames   =   (

@@ -117,7 +117,7 @@ Returns:
     $gd_yn      =   $gd_y0 + $plot->{parameters}->{size_strip_h_px};
     $area_x0    =   0;
 
-    my $segSet  =   $sample->{variants_cnv};
+    my $segSet  =   $sample->{variants};
  
    if ($sample->{name} =~ /\w\w/) {
       $plot->{parameters}->{title_left} = $sample->{name} }
@@ -216,7 +216,7 @@ Returns:
   foreach my $sample (@{$plot->{samples}}) {
 
     my $area_x0 =   $plot->{areastartx};
-    my $segSet  =   $sample->{variants_cnv};
+    my $segSet  =   $sample->{variants};
  
    if ($sample->{name} =~ /\w\w/) {
       $plot->{parameters}->{title_left} = $sample->{name} }
