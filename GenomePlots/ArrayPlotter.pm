@@ -18,8 +18,8 @@ sub return_arrayplot_svg {
 
   $plot->{Y}            =   $plot->{parameters}->{size_plotmargin_top_px};
   my $plotW             =   $plot->{parameters}->{size_plotimage_w_px};
-  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px};
-  $plot->{areawidth}    =   $plotW - 2 * $plot->{parameters}->{size_plotmargin_px};
+  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px} + $plot->{parameters}->{size_title_left_px};
+  $plot->{areawidth}    =   $plotW - ($plot->{areastartx} + $plot->{parameters}->{size_plotmargin_px});
   if (
     $plot->{parameters}->{do_chromosomes_proportional} =~ /y/i
     &&
@@ -75,6 +75,8 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
+  if ($plot->{parameters}->{size_plotarea_h_px} < 1) { return $plot }
+
   $plot->{svg}    .=  '
 <style type="text/css"><![CDATA[
   .DUP {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_var_dup_hex}.'; opacity: 0.8  }
@@ -82,7 +84,7 @@ Returns:
   .cen {stroke-width: '.$plot->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
 ]]></style>';
 
-  $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
+  $plot->{Y}      +=  $plot->{parameters}->{size_plotarea_padding};
 
   svg_add_labels_y($plot);
 
@@ -92,7 +94,7 @@ Returns:
   my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
   my $lowSegY   =   $area_yn + $plot->{parameters}->{size_segments_stroke_px};
 
-  $plot->{areaendy}     =   $area_yn;
+  $plot->{areaendy} =   $area_yn;
 
   my $probeSize =   $plot->{parameters}->{factor_probedots};
   if (scalar @{ $plot->{probedata} } < 200000) { $probeSize *= 2 }
@@ -108,13 +110,11 @@ Returns:
 <rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
     # probes ###    ####    ####    ####    ####    ####    ####    ####    ####
-
     my $areaProbes      =  [ grep{ $_->{reference_name} eq $refName } @{ $plot->{probedata} } ];
     $areaProbes         =  [ grep{ $_->{position} <= $plot->{referencebounds}->{$refName}->[1] } @$areaProbes];
     $areaProbes         =  [ grep{ $_->{position} >= $plot->{referencebounds}->{$refName}->[0] } @$areaProbes ];
 
     # probes are plotted using GD
-
     my $probeArea       =   GD::Image->new($areaW, $plot->{parameters}->{size_plotarea_h_px}, 1);
     my $gdDotS          =   1 * $probeSize;
     my $gdAreaCol       =   $probeArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotarea_hex}) } );
@@ -219,6 +219,8 @@ Returns:
     @{ $plot->{segmentdata_fracb} } < 1
   ) { return $plot }
 
+  if ($plot->{parameters}->{size_fracbarea_h_px} < 1) { return $plot }
+
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
   $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
@@ -235,7 +237,7 @@ Returns:
   my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_fracbarea_h_px} / 2;
   my $fbPixYfac =   1 / $plot->{parameters}->{size_fracbarea_h_px};
 
-  $plot->{areaendy}     =   $area_yn;
+  $plot->{areaendy} =   $area_yn;
 
   my $probeSize =   $plot->{parameters}->{factor_probedots};
   if (scalar @{ $plot->{probedata_fracb} } < 200000) { $probeSize *= 2 }
@@ -282,7 +284,6 @@ Returns:
     # / probes #    ####    ####    ####    ####    ####    ####    ####    ####
 
     # fracb segments s###    ####    ####    ####    ####    ####    ####    ####
-
     my $areaSegments  =  [ grep{ $_->{reference_name} eq $refName } @{ $plot->{segmentdata_fracb} } ];
     $areaSegments     =  [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areaSegments];
     $areaSegments     =  [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areaSegments ];
@@ -302,16 +303,17 @@ Returns:
       my $seg_xn        =   $seg_x0 + $segPixLen;
 
       my $val     =   $seg->{info}->{value} / $fbPixYfac;
-      my $seg_y   =   sprintf "%.1f", ($area_yn - $val);
+      my $seg_y   =   sprintf "%.2f", ($area_yn - $val);
 
       $plot->{svg}      .=  '
-<line x1="'.$seg_x0.'"  y1="'.$seg_y.'"  x2="'.$seg_xn.'"  y2="'.$seg_y.'"  class="fb"  />';
+<line x1="'.$seg_x0.'" y1="'.$seg_y.'" x2="'.$seg_xn.'" y2="'.$seg_y.'" class="fb" />';
 
     }
 
     # / segments    ####    ####    ####    ####    ####    ####    ####    ####
 
     $area_x0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+ 
   }
 
   # adding a baseline at 0.5

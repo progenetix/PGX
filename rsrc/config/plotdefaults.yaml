@@ -1,17 +1,24 @@
 #
 ---
 chr2plot: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,'X','Y']
-genome: 'hg18'
+genome: 'GRCh38'
 plotregions: []
 markers: []
 binning: 1000000
+title: ''
+subtitle: ''
+title_left: ''
+text_bottom_right: '&copy; 2018 progenetix.org'
+text_bottom_left: ""
 
 # array
 cna_gain_threshold: 0.15
 cna_loss_threshold: -0.15
+plot_adjust_baseline: 0
 segment_probecount_min: 2
 format_inputfiles: 'progenetix'
 simulated_probes: 'n'
+reverse: 'n'
 
 local_overrides:
   - 'cna_gain_threshold'
@@ -28,37 +35,89 @@ plottype_values:
   value_plot_y_max: 3.2
   label_y_m: [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3]
   plot_unit_y: ""
+ samplestrip:
+  label_y_m: []
+  plot_unit_y: ""
+  size_text_px: 7
+  size_plotarea_padding: 1
+  size_plotmargin_px: 0
+  size_plotmargin_top_px: 0
+  size_plotmargin_bottom_px: 0
+  size_chromosome_w_px: 0
+ frequencystrip:
+  label_y_m: []
+  plot_unit_y: ""
+  size_text_px: 7
+  size_plotarea_padding: 1
+  size_plotmargin_px: 0
+  size_plotmargin_top_px: 0
+  size_plotmargin_bottom_px: 0
+  size_chromosome_w_px: 0
+ multifrequencystrip:
+  label_y_m: []
+  plot_unit_y: ""
+  size_text_px: 10
+  size_text_title_left_px: 8
+  size_strip_h_px: 20
+  size_plotarea_h_px: 0
+  title_left_rotation: 0
+  size_title_left_px: 120
+  size_label_right_px: 5
+ multistrip:
+  label_y_m: []
+  plot_unit_y: ""
+  size_text_title_left_px: 8
+  size_strip_h_px: 10
+  size_plotarea_h_px: 0
+  title_left_rotation: 0
+  size_title_left_px: 120
+  size_label_right_px: 5
  histogram:
   value_plot_y_max: 100
   label_y_m: [-75,-50,-25,0,25,50,75]
   plot_unit_y: "%"
+ multihistogram:
+  value_plot_y_max: 100
+  label_y_m: [-75,-50,-25,0,25,50,75]
+  plot_unit_y: "%"
+  size_title_left_px: 100
+  title_left_rotation: 0
+  size_strip_h_px: 20
+  size_plotarea_h_px: 120
+  size_label_right_px: 5
  ideogram:
   value_plot_y_max: 100
   label_y_m: [-75,-50,-25,0,25,50,75]
   plot_unit_y: "%"
-text_bottom_left: ""
-text_bottom_right: ""
-title: ""
 
 # directives
-do_label_y: 'y'
-plottype: 'histogram'
+do_label_y: y
+plottype: histogram
+titlepos: top
+title_left_rotation: none
 do_chromosomes_proportional: y
 
 # sizes
 size_plotmargin_px: 30
 size_plotmargin_top_px: 30
 size_plotmargin_bottom_px: 30
+size_title_left_px: 0
 size_text_px: 12
+size_text_title_px: 18
+size_text_subtitle_px: 14
+size_text_title_left_px: 14
 size_text_lab_px: 8
 size_text_marker_px: 9
 size_plotarea_h_px: 140
+size_strip_h_px: 7
+size_plotarea_padding: 3
 size_plotimage_w_px: 1600
 size_fracbarea_h_px: 100
 size_label_y_w_px: 25
+size_label_right_px: 0
 size_chromosome_w_px: 16
 size_chromosome_padding_px: 3
-size_samplestrip_w_px: 14
+size_samplestrip_w_px: 10
 size_frequencystrip_w_px: 14
 size_matrixline_w_px: 14
 size_segments_stroke_px: 4

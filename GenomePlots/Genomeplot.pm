@@ -7,9 +7,10 @@ use PGX::GenomeIntervals::IntervalStatistics;
 use PGX::GenomePlots::PlotParameters;
 use PGX::GenomePlots::HistoPlotter;
 use PGX::GenomePlots::ArrayPlotter;
+use PGX::GenomePlots::StripPlotter;
 use PGX::GenomePlots::CytobandsPlotter;
-use PGX::FileUtilities::ArrayfileReader;
-
+use PGX::FileUtilities::PlotfileReader;
+use PGX::FileUtilities::PlotfileWriter;
 require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
@@ -18,9 +19,12 @@ require Exporter;
   plot_add_probes_from_file
   plot_add_segments_from_file
   plot_add_segments_from_csvariants
+  plot_add_segments_from_variants_cnv
+  plot_add_segmentsets_from_samples
   plot_add_fracbprobes_from_file
   plot_add_fracbsegments_from_file
   plot_adjust_random_probevalues
+  plot_get_plotregions
 );
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
@@ -34,23 +38,23 @@ sub new {
   my $self      =   {
     parameters  =>  args_modify_plot_parameters(read_plot_defaults(), $args),
     cytobands   =>  read_cytobands($args->{'-genome'}),
-    plotid      =>  ($args->{'-plotid'} !~ /^\w+?/ ? 'genomeplot' : $args->{'-plotid'}),
+    plotid      =>  (! defined($args->{'-plotid'}) ? 'genomeplot' : $args->{'-plotid'}),
     svg         =>  q{},
     Y           =>  0,
   };
 
   bless $self, $class;
-  $self->{genomeintervals}      =   make_genome_intervals(
-                                      $self->{cytobands},
-                                      $args->{'-binning'},
-                                    );
-  $self->{referencebounds}      =   get_reference_base_limits($self->{cytobands});
-  $self->{genomesize}           =   get_genome_basecount(
-                                      $self->{cytobands},
-                                      $self->{parameters}->{chr2plot},
-                                    );
-  _plot_get_plotregions($self);
-
+  $self->{genomeintervals}  =   make_genome_intervals(
+                                  $self->{cytobands},
+                                  $self->{parameters}->{binning},
+                                );
+  $self->{referencebounds}  =   get_reference_base_limits($self->{cytobands});
+  $self->{genomesize}       =   get_genome_basecount(
+                                  $self->{cytobands},
+                                  $self->{parameters}->{chr2plot},
+                                );
+  $self->{matrixindex}      =   [ 0..$#{ $self->{genomeintervals} } ];
+  $self         =   plot_get_plotregions($self);
   return $self;
 
 }
@@ -59,7 +63,7 @@ sub new {
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub _plot_get_plotregions {
+sub plot_get_plotregions {
 
   my $plot      =   shift;
 
@@ -68,6 +72,7 @@ sub _plot_get_plotregions {
   my @refNames  =   ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %chros), (sort grep{ ! /\d/ } keys %chros));
 
   if (! grep{ /^\d\w?$/ } @refNames) { return $plot }
+  if (! grep{ $_->{reference_name} =~ /^\d\w?$/ } @$regions) { return $plot }
 
   my $refLims   =   {};
   my $baseCount =   0;
@@ -80,8 +85,25 @@ sub _plot_get_plotregions {
 
   $plot->{parameters}->{do_chromosomes_proportional} = /n/;
   $plot->{parameters}->{chr2plot}   =   [@refNames];
-  $plot->{referencebounds}      =   $refLims;
-  $plot->{genomesize}           =   $baseCount;
+  $plot->{referencebounds}  =   $refLims;
+  $plot->{genomesize}       =   $baseCount;
+
+  $plot->{matrixindex}      =   [];
+  my @selIntI   =   ();  
+  my $i         =   0;
+  foreach my $int (@{$plot->{genomeintervals}}) {
+    if (
+      $plot->{referencebounds}->{ $int->{reference_name} }
+      &&
+      $int->{start} <= $plot->{referencebounds}->{ $int->{reference_name} }->[1]
+      &&
+      $int->{end} >= $plot->{referencebounds}->{ $int->{reference_name} }->[0]
+    ) { 
+      push(@{ $plot->{matrixindex} }, $i);
+    }
+    $i++;
+
+  }
 
   return $plot;
 
@@ -94,12 +116,19 @@ sub _plot_get_plotregions {
 sub plot_add_frequencymaps {
 
   my $plot      =   shift;
-  my $callsets  =   shift;
+  my $callsetCollections    =   shift;
 
-  $plot->{frequencymaps}    =   interval_cnv_frequencies(
-                                  [ map{$_->{info}->{statusmaps}} @$callsets],
-                                  $plot->{genomeintervals},
-                                );
+  $plot->{frequencymaps}    =   [];
+
+  foreach my $csColl (@$callsetCollections) {
+
+   $plot->interval_cnv_frequencies(
+    [ map{$_->{info}->{statusmaps}} @{ $csColl->{statusmapsets} } ],
+    $csColl->{name},
+    $csColl->{labels},
+  );
+
+  }
 
   return $plot;
 
@@ -112,7 +141,7 @@ sub plot_add_probes_from_file {
   my $plot      =   shift;
   my $probefile =   shift;
 
-  $plot->{probedata}    =   read_probefile($probefile, $plot);
+  $plot->read_probefile($probefile);
   return $plot;
 
 }
@@ -124,7 +153,77 @@ sub plot_add_segments_from_file {
   my $plot      =   shift;
   my $segfile   =   shift;
 
-  $plot->{segmentdata}  =   read_segmentfile($segfile, $plot);
+  $plot->read_segmentfile($segfile);
+  return $plot;
+
+}
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+sub plot_add_segmentsets_from_samples {
+
+  my $plot      =   shift;
+  my $callsets  =   shift;
+  my $idName    =   shift;
+  if ($idName !~ /\w\w/) {
+    $idName     =   'id'}
+  
+  $plot->{segmentsets}  =   [];
+       
+  foreach my $cs (@$callsets) {
+  
+    if (! $cs->{name}) {
+      $cs->{name}   =   $cs->{$idName} }
+      
+    push (
+      @{ $plot->{segmentsets} },
+      {
+        id              =>  $cs->{$idName},
+        name            =>  $cs->{name},
+        variants_cnv    =>  $cs->{variants_cnv},
+        statusmaps      =>  $cs->{statusmaps},        
+      }
+    );
+
+  }
+
+  return $plot;
+
+}
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+sub plot_add_segments_from_variants_cnv {
+
+=pod
+
+Any given variant may contain data for several calls. The segment's value has
+to be retrieved from the correct call.
+
+=cut
+
+  my $plot      =   shift;
+  my $vardata   =   shift;
+  my $callsetId =   shift;
+
+  $plot->{segmentdata}  =   [];
+
+  foreach my $var (@$vardata) {
+    push(
+      @{$plot->{segmentdata}},
+      {
+        callset_id      =>  $callsetId,
+        reference_name  =>  $var->{reference_name},
+        start           =>  1 * $var->{start},
+        end             =>  1 * $var->{end},
+        variant_type    =>  $var->{variant_type},
+        info            =>  {
+          value         =>  1 * $var->{info}->{value},
+        },
+      }
+    );
+  }
+
   return $plot;
 
 }
@@ -135,29 +234,29 @@ sub plot_add_segments_from_csvariants {
 
 =pod
 
-Any given variant may contain data for several calls. The segment's value has 
-to be retrieved from the correct call.' 
+Any given variant may contain data for several calls. The segment's value has
+to be retrieved from the correct call.'
 
 =cut
 
   my $plot      =   shift;
   my $vardata   =   shift;
   my $callsetId =   shift;
-  
+
   $plot->{segmentdata}  =   [];
-  
+
   foreach my $var (@$vardata) {
-    foreach my $csCall (grep{ $_->{call_set_id} eq $callsetId} @{ $var->{calls}}) {
+    foreach my $csCall (grep{ $_->{callset_id} eq $callsetId} @{ $var->{calls}}) {
       push(
         @{$plot->{segmentdata}},
         {
-          callset_id      =>  $callsetId,
-          reference_name  =>  $var->{reference_name},
-          start           =>  1 * $var->{start},
-          end             =>  1 * $var->{end},
-          variant_type    =>  $var->{variant_type},
-          info            =>  {
-            value         =>  1 * $csCall->{info}->{segvalue},
+          callset_id        =>  $callsetId,
+          reference_name    =>  $var->{reference_name},
+          start             =>  1 * $var->{start},
+          end               =>  1 * $var->{end},
+          variant_type      =>  $var->{variant_type},
+          info              =>  {
+            value           =>  1 * $csCall->{info}->{value},
           },
         }
       );
@@ -175,7 +274,7 @@ sub plot_add_fracbprobes_from_file {
   my $plot      =   shift;
   my $probefile =   shift;
 
-  $plot->{probedata_fracb}    =   read_probefile($probefile, $plot);
+  $plot->read_probefile($probefile, 'probedata_fracb');
   return $plot;
 
 }
@@ -187,8 +286,7 @@ sub plot_add_fracbsegments_from_file {
   my $plot      =   shift;
   my $segfile   =   shift;
 
-  $plot->{segmentdata_fracb}  =   read_segmentfile($segfile, $plot);
-
+  $plot->read_segmentfile($segfile, 'segmentdata_fracb');
   return $plot;
 
 }

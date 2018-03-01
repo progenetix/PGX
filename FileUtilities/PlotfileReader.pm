@@ -1,4 +1,4 @@
-package PGX::FileUtilities::ArrayfileReader;
+package PGX::FileUtilities::PlotfileReader;
 
 use Data::Dumper;
 use Math::Random qw(random_normal);
@@ -42,23 +42,31 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $probeF    =   shift;
   my $plot      =   shift;
-  my $probes    =   [];
+  my $probeF    =   shift;
+  my $probeT    =   shift;
+  $probeT       ||= 'probedata';
+
+  $plot->{$probeT}    =   [];
   my @randomV;
 
-  if (! -f $probeF) { return $probes }
+  if (! -f $probeF) { return $plot->{$probeT} }
+
+  my $numfactor =   1;
+  if (
+    $plot->{parameters}->{'reverse'} =~ /y/i
+    &&
+    $probeT !~ /frac/i
+  ) { $numfactor = -1 }
 
   open  FILE, "$probeF" or die "No file $probeF $!";
   local   $/;                             # no input separator
   my $fContent  =   <FILE>;
   close FILE;
-
   my @probeData =   split(/\r\n?|\n/, $fContent);
   shift @probeData;
 
   my $i         =   0;
-
   foreach (@probeData) {
 
     $i++;
@@ -68,7 +76,6 @@ Returns:
       $position,
       $value,
     )           =   split (/\s/, $_, 5);
-
     $probe_id   =~  s/[^\w\-\,]/_/g;
     $reference_name     =~ s/[^\dxXyY]//;
     $reference_name     =~ s/^23$/X/;
@@ -81,26 +88,35 @@ Returns:
     if ($value          !~ /^\-?\d+?(\.\d+?)?$/)  { next }
 
     push(
-      @$probes,
+      @{ $plot->{$probeT} },
       {
         no              =>  $i,
         probe_id        =>  $probe_id,
         reference_name  =>  $reference_name,
         position        =>  $position,
-        value           =>  $value,
+        value           =>  $numfactor * $value,
       }
     );
   }
+  
+  if ($probeT =~ /fracb/i) { return $plot }
 
   # random values
   if ($plot->{parameters}->{simulated_probes} =~ /y/i ) {
-    my @randomV =   random_normal(scalar @$probes, 0, 0.25);
-    foreach my $n (0..$#{ $probes }) {
-      $probes->[$n]->{value}  =   $randomV[$n];
+    my @randomV =   random_normal(scalar @{ $plot->{$probeT} }, 0, 0.25);
+    foreach my $n (0..$#{ $plot->{$probeT} }) {
+      $plot->{$probeT}->[$n]->{value}  =   $randomV[$n];
     }
   }
 
-  return $probes;
+  # baseline adjustment
+  if ($plot->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+    foreach my $n (0..$#{ $plot->{$probeT} }) {
+      $plot->{$probeT}->[$n]->{value}  +=   $plot->{parameters}->{plot_adjust_baseline};
+    }
+  }
+
+  return $plot;
 
 }
 
@@ -150,11 +166,20 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $segmentsF =   shift;
   my $plot      =   shift;
-  my $segments  =   [];
+  my $segmentsF =   shift;
+  my $segmentsT =   shift;
+  $segmentsT    ||= 'segmentdata';
+  $plot->{$segmentsT}  =   [];
 
-  if (! -f $segmentsF) { return $segments }
+  if (! -f $segmentsF) { return $plot->{$segmentsT} }
+
+  my $numfactor =   1;
+  if (
+    $plot->{parameters}->{'reverse'} =~ /y/i
+    &&
+    $segmentsT !~ /frac/i
+  ) { $numfactor = -1 }
 
   my %colOrder  =   (
     callset_id          =>  0,
@@ -178,7 +203,7 @@ Returns:
     my @segment =   split (/\s/, $_, 6);
     my %segVals =   ();
     foreach (keys %colOrder) {
-      $segVals{$_}      =   $segment[$colOrder{$_}];
+      $segVals{$_}  =   $segment[$colOrder{$_}];
     };
 
     $segVals{callset_id}        =~  s/[^\w\-\,]/_/g;
@@ -201,7 +226,7 @@ Returns:
     )                                                     { next }
 
     push(
-      @$segments,
+      @{ $plot->{$segmentsT} },
       {
         no              =>  $i,
         callset_id      =>  $segVals{callset_id},
@@ -209,7 +234,7 @@ Returns:
         start           =>  1 * $segVals{start},
         end             =>  1 * $segVals{end},
         info            =>  {
-          value         =>  1 * $segVals{value},
+          value         =>  $numfactor * $segVals{value},
           svlen         =>  1 * ($segVals{end} - $segVals{start}),
           probes        =>  1 * $segVals{probes},
         },
@@ -218,16 +243,25 @@ Returns:
 
   }
 
-  for my $i (0..$#{ $segments }) {
+  if ($segmentsT =~ /fracb/i) { return $plot }
 
-    if ($segments->[$i]->{info}->{value} >= $plot->{parameters}->{cna_gain_threshold}) {
-      $segments->[$i]->{variant_type}  =   'DUP' }
-    elsif ($segments->[$i]->{info}->{value} <= $plot->{parameters}->{cna_loss_threshold}) {
-      $segments->[$i]->{variant_type}  =   'DEL' }
+  # baseline adjustment
+  if ($plot->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+    foreach my $i (0..$#{ $plot->{$segmentsT} }) {
+      $plot->{$segmentsT}->[$i]->{info}->{value}  +=   $plot->{parameters}->{plot_adjust_baseline};
+    }
+  }
+
+  for my $i (0..$#{ $plot->{$segmentsT} }) {
+
+    if ($plot->{$segmentsT}->[$i]->{info}->{value} >= $plot->{parameters}->{cna_gain_threshold}) {
+      $plot->{$segmentsT}->[$i]->{variant_type}  =   'DUP' }
+    elsif ($plot->{$segmentsT}->[$i]->{info}->{value} <= $plot->{parameters}->{cna_loss_threshold}) {
+      $plot->{$segmentsT}->[$i]->{variant_type}  =   'DEL' }
 
   }
 
-  return $segments;
+  return $plot;
 
 }
 

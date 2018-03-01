@@ -34,7 +34,7 @@ use PGX::GenomePlots::Genomeplot;
 
 our %args           =   @ARGV;
 $args{'-plottype'}  =   'array';  # fixed
-$args{'-genome'}    ||= 'hg18';
+$args{'-genome'}    ||= 'GRCh38';
 
 $args{'-do_allchros'}   ||= 'y';
 $args{'-plotregions'}   ||= q{};
@@ -45,11 +45,11 @@ if ($args{'-chr2plot'} =~ /\w/) { $args{'-do_allchros'} = 'n' }
 $args{'-chr2plot'}      ||= join(',', 1..22, 'X');
 
 # file names and paths
-$args{'-probefilename'}     ||= $args{'-pfn'}   ||= '/probes,cn.tsv';
-$args{'-segfilename'}       ||= $args{'-sfn'}   ||= '/segments,cn.tsv';
-$args{'-fracbprobefilename'}||= $args{'-fbpfn'} ||= '/probes,fracb.tsv';
-$args{'-fracbsegfilename'}  ||= $args{'-fbsfn'} ||= '/segments,fracb.tsv';
-$args{'-defaultsfilename'}  ||= $args{'-dfn'}   ||= '/plotdefaults.yaml';
+$args{'-probefilename'}     ||= $args{'-pfn'}   ||= 'probes,cn.tsv';
+$args{'-segfilename'}       ||= $args{'-sfn'}   ||= 'segments,cn.tsv';
+$args{'-fracbprobefilename'}||= $args{'-fbpfn'} ||= 'probes,fracb.tsv';
+$args{'-fracbsegfilename'}  ||= $args{'-fbsfn'} ||= 'segments,fracb.tsv';
+$args{'-defaultsfilename'}  ||= $args{'-dfn'}   ||= 'plotdefaults.yaml';
 
 $args{'-arraypath'} ||= $args{'-in'}  ||= q{};
 $args{'-arraypath'} =~  s/\/$//;
@@ -83,10 +83,10 @@ _printFeedback();
 ########    main    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-$plot->plot_add_probes_from_file($args{'-probefile'});
-$plot->plot_add_segments_from_file($args{'-segfile'});
 $plot->plot_add_fracbprobes_from_file($args{'-fracbprobefile'});
 $plot->plot_add_fracbsegments_from_file($args{'-fracbsegfile'});
+$plot->plot_add_probes_from_file($args{'-probefile'});
+$plot->plot_add_segments_from_file($args{'-segfile'});
 $plot->plot_adjust_random_probevalues();
 $plot->return_arrayplot_svg();
 
@@ -100,7 +100,7 @@ elsif (scalar(@{$plot->{parameters}->{chr2plot}}) < 22) {
   $plotfile     =   'arrayplot,chr'.$args{'-chr2plot'}.'.svg' }
 else {
   $plotfile     =   'arrayplot.svg' }
-  
+
 if ($args{'-svgfilename'} =~ /^[\w\,\-]+?\.svg/i) {
   $plotfile     =   $args{'-svgfilename'};
   $args{'-do_allchros'} =   'n';
@@ -145,6 +145,7 @@ $progBar->update(scalar @$chr2plot);
 ################################################################################
 # subs #########################################################################
 ################################################################################
+
 sub _checkArgs {
 
   # terminating if arraypath doesn't exist
@@ -161,7 +162,7 @@ Script parameters:
 -arraypath      Path to the directory containging probe nad segment files.
 (or -in)        Required
 
--out            Path to the output directory containging for the SVG files.
+-out            Path to the output directory for the SVG files.
                 Defaults to -arraypath value if not specified
 
 -format_inputfiles
@@ -171,7 +172,7 @@ Script parameters:
                 of probe number and segment value.
 
 -genome         Genome edition, for setting the correct coordinate space.
-                Default: hg18
+                Default: GRCh38
                 Both "hg" and "GRCh" styles can be used.
 
 -cna_loss_threshold
@@ -184,6 +185,11 @@ Script parameters:
                 Theshold for calling gain segments.
                 Default: 0.15
                 ... as above ...
+
+-plot_adjust_baseline
+                Value is added to both probes and segment values, before
+                applying thresholds to the segments
+                Default: 0
 
 -chr2plot       Chromosomes to be plotted (comma separated)
                 Default: 1 => Y

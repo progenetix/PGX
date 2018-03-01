@@ -2,6 +2,7 @@ package PGX::GenomePlots::HistoPlotter;
 
 use Data::Dumper;
 use PGX::GenomePlots::CytobandsPlotter;
+use PGX::GenomePlots::StripPlotter;
 
 require Exporter;
 @ISA        =   qw(Exporter);
@@ -11,12 +12,12 @@ require Exporter;
 
 sub return_histoplot_svg {
 
-  our $plot     =   shift;
+  my $plot      =   shift;
 
   $plot->{Y}    =   $plot->{parameters}->{size_plotmargin_top_px};
   my $plotW             =   $plot->{parameters}->{size_plotimage_w_px};
-  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px};
-  $plot->{areawidth}    =   $plotW - 2 * $plot->{parameters}->{size_plotmargin_px};
+  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px} + $plot->{parameters}->{size_title_left_px};
+  $plot->{areawidth}    =   $plotW - ($plot->{areastartx} + $plot->{parameters}->{size_plotmargin_px});
   if (
     $plot->{parameters}->{do_chromosomes_proportional} =~ /y/i
     &&
@@ -26,12 +27,27 @@ sub return_histoplot_svg {
     $plotW      =   $plot->{areawidth} + 2 * $plot->{parameters}->{size_plotmargin_px};
   }
   $plot->{basepixfrac}  =   ( $plot->{areawidth} - ($#{ $plot->{parameters}->{chr2plot} } * $plot->{parameters}->{size_chromosome_padding_px}) ) / $plot->{genomesize};
-  $plot         =   svg_add_title($plot);
-  $plot         =   svg_add_cytobands($plot);
-  $plot->{areastarty}   =   $plot->{Y};
-  $plot         =   get_histoplot_area($plot);
-  $plot         =   svg_add_markers($plot);
-  $plot         =   svg_add_bottom_text($plot);
+  $plotW        +=  $plot->{parameters}->{size_clustertree_w_px};
+  $plotW        +=  $plot->{parameters}->{size_label_right_px};
+  $plot->{areaendx}     =   $plot->{areastartx} + $plot->{areawidth};
+  $plot->{areatreex}    =   $plot->{areaendx};
+  if ($plot->{parameters}->{size_label_right_px} > 0) {
+    $plot->{areatreex}  +=  $plot->{parameters}->{size_chromosome_padding_px} + $plot->{parameters}->{size_label_right_px} }
+  $plot->svg_add_title();
+  $plot->svg_add_cytobands();
+  $plot->get_histoplot_area();
+  $plot->svg_add_cluster_tree();
+  if (
+    @{ $plot->{frequencymaps} } > 1
+    &&
+    $plot->{parameters}->{size_strip_h_px} > 0
+  ) {
+    $plot->svg_add_cytobands();
+    $plot->get_frequencystripplot_area();
+    $plot->svg_add_cluster_tree();
+  }
+  $plot->svg_add_markers();
+  $plot->svg_add_bottom_text();
   $plot->{Y}    +=   $plot->{parameters}->{size_plotmargin_bottom_px};
   my $plotH     =   sprintf "%.0f", $plot->{Y};
   $plotW        =   sprintf "%.0f", $plotW;
@@ -69,59 +85,85 @@ Returns:
 
   ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
+  my $plot      =   shift;
 
-  svg_add_labels_y($plot);
+  if ($plot->{parameters}->{size_plotarea_h_px} < 1) { return $plot }
 
-  my $area_x0   =   $plot->{parameters}->{size_plotmargin_px};
-  my $area_y0   =   $plot->{Y};
-  my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
-  my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px} / 2;
+  # preview of the first histogram area Y start (for use in cluster tree etc.)
+  $plot->{areastarty}   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_padding};
 
-  $plot->{areaendy}     =   $area_yn;
+  my $defLabCol =   '#dddddd';
+  my $altLabCol =   '#fefefe';
+  my $labCol    =   '#dddddd';
+  
+  foreach my $frequencymapsSet (@{ $plot->{frequencymaps} }) {
+    $plot->{Y}  +=  $plot->{parameters}->{size_plotarea_padding};
 
-  foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
+    if ($frequencymapsSet->{name} =~ /\w\w/) {
+      $plot->{parameters}->{title_left} = $frequencymapsSet->{name} }
 
-    my $areaW   =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
+    my $area_x0     =   $plot->{areastartx};
+    my $area_ycen   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px} / 2;
 
-      $plot->{svg}      .=  '
-<rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
+    $plot->svg_add_title_left($area_ycen);
+    $plot->svg_add_labels_y();
 
-     # intervals through index #    ####    ####    ####    ####    ####    ####
-    my @ind     =  grep{ $refName eq $plot->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $plot->{genomeintervals} };
-    @ind        =  grep{ $plot->{genomeintervals}->[$_]->{start} <=  $plot->{referencebounds}->{$refName}->[1]  } @ind;
-    @ind        =  grep{ $plot->{genomeintervals}->[$_]->{end} >=  $plot->{referencebounds}->{$refName}->[0]  } @ind;
+    foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
 
-    foreach my $GL (qw(dupfrequencies delfrequencies)) {
-      $plot->{svg}      .=    '
-<polygon points="'.$area_x0.' '.$area_ycen;
+      my $areaW =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
 
-      foreach my $i (@ind) {
+      $plot->{svg}  .=  '
+  <rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
-        my $start       =   $plot->{genomeintervals}->[$i]->{start};
-        my $end         =   $plot->{genomeintervals}->[$i]->{end};
-        if ($start < $plot->{referencebounds}->{$refName}->[0]) {
-          $start  = $plot->{referencebounds}->{$refName}->[0] }
-        if ($end > $plot->{referencebounds}->{$refName}->[1]) {
-          $end   = $plot->{referencebounds}->{$refName}->[1] }
+       # intervals through index #    ####    ####    ####    ####    ####    ####
+      my @ind   =  grep{ $refName eq $plot->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $plot->{genomeintervals} };
+      @ind      =  grep{ $plot->{genomeintervals}->[$_]->{start} <=  $plot->{referencebounds}->{$refName}->[1]  } @ind;
+      @ind      =  grep{ $plot->{genomeintervals}->[$_]->{end} >=  $plot->{referencebounds}->{$refName}->[0]  } @ind;
 
-        my $X   =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($end - ($end - $start) / 2);
-        my $H   =   sprintf "%.1f", $plot->{frequencymaps}->{$GL}->[$i] * $plot->{parameters}->{pixyfactor};
-        $plot->{svg}    .=  ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
+      foreach my $GL (qw(dupfrequencies delfrequencies)) {
+        $plot->{svg}      .=    '
+  <polygon points="'.$area_x0.' '.$area_ycen;
+
+        foreach my $i (@ind) {
+
+          my $start =   $plot->{genomeintervals}->[$i]->{start};
+          my $end   =   $plot->{genomeintervals}->[$i]->{end};
+          if ($start < $plot->{referencebounds}->{$refName}->[0]) {
+            $start  =   $plot->{referencebounds}->{$refName}->[0] }
+          if ($end > $plot->{referencebounds}->{$refName}->[1]) {
+            $end    =   $plot->{referencebounds}->{$refName}->[1] }
+
+          my $X =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($end - ($end - $start) / 2);
+          my $H =   sprintf "%.1f", $frequencymapsSet->{$GL}->[$i] * $plot->{parameters}->{pixyfactor};
+          $plot->{svg}  .=  ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
+
+        }
+
+        $plot->{svg}    .=  ' '.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'" fill="'.($GL =~ /del/i ? $plot->{parameters}->{color_var_del_hex} : $plot->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
+
       }
-      $plot->{svg}      .=  ' '.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'" fill="'.($GL =~ /del/i ? $plot->{parameters}->{color_var_del_hex} : $plot->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
+
+      $area_x0  +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
 
     }
-    $area_x0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+
+    # adding a baseline at 0
+    $plot->{svg}    .=  '
+  <line x1="'.$plot->{areastartx}.'"  y1="'.$area_ycen.'"  x2="'.($plot->{areastartx} + $plot->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
+
+
+    my $labels_R    =   [];
+    if ($frequencymapsSet->{labels}) { $labels_R = $frequencymapsSet->{labels} }
+    # fallback color; defined here for alternation...
+    if ($labCol eq $altLabCol) { 
+      $labCol =   $defLabCol }
+    else { 
+      $labCol =   $altLabCol }
+    $plot->svg_add_labels_right($labels_R, $plot->{parameters}->{size_plotarea_h_px}, $labCol);
+
+    $plot->{Y}  +=  $plot->{parameters}->{size_plotarea_h_px};
+
   }
-
-  # adding a baseline at 0
-  $plot->{svg}  .=  '
-<line x1="'.$plot->{parameters}->{size_plotmargin_px}.'"  y1="'.$area_ycen.'"  x2="'.($plot->{parameters}->{size_plotmargin_px} + $plot->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
-
-  # TODO: grid, Y-labels
-
-  $plot->{Y}    +=  $plot->{parameters}->{size_plotarea_h_px};
 
   return $plot;
 

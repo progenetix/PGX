@@ -9,6 +9,8 @@ require Exporter;
   read_plot_defaults
   args_modify_plot_parameters
   hex2rgb
+  random_hexcolor
+  frequencies2rgb
 );
 
 ################################################################################
@@ -44,25 +46,24 @@ Returns:
   # local defaults overwrite general values; but command line parameters
   # take precedence later on
   my $locDefaults       =   {};
-  my $defaultsDir;
+  my $defaultsDir       =   '';
 
-  if ($args->{'-defaultsfile'} =~ /\w+?\.\w+?$/) {
+  if (defined($args->{'-defaultsfile'})) {
     $defaultsDir        = $args->{'-defaultsfile'};
     $defaultsDir        =~  s/\/[\w\.\,]+?$//;
-  }
-
-  if (-f $args->{'-defaultsfile'}) {
-    $locDefaults        =   LoadFile($args->{'-defaultsfile'});
-    foreach my $par (keys %$plotPars) {
-      if ($locDefaults->{$par}) {
-        $plotPars->{$par}   =   $locDefaults->{$par};
+    if (-f $args->{'-defaultsfile'}) {
+      $locDefaults        =   LoadFile($args->{'-defaultsfile'});
+      foreach my $par (keys %$plotPars) {
+        if ($locDefaults->{$par}) {
+          $plotPars->{$par}   =   $locDefaults->{$par};
+        }
       }
     }
   }
 
   # the -plottype | -colorschema specific mappings are processed first & removed
   # thereafter (there are still fallbacks if no parameters given)
-  if (grep{ $args->{'-colorschema'} eq $_ } keys %{ $plotPars->{colorschemas} }) {
+  if (defined($args->{'-colorschema'}) && grep{ $args->{'-colorschema'} eq $_ } keys %{ $plotPars->{colorschemas} }) {
     my $colorschema     =   $args->{'-colorschema'};
     foreach (keys %{ $plotPars->{colorschemas}->{ $colorschema } }) {
       if ($plotPars->{colorschemas}->{ $colorschema }->{$_} =~ /^(\#\w{6})$/) {
@@ -75,15 +76,16 @@ Returns:
   # adjusting arguments for the selected plot type
   if (grep{ $args->{'-plottype'} eq $_ } keys %{ $plotPars->{plottype_values} }) {
     foreach (keys %{ $plotPars->{plottype_values}->{ $args->{'-plottype'} } }) {
+# print Dumper([$args->{'-plottype'}, $_, $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_}]).'<hr/>';
       $plotPars->{$_} =   $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_} }
     delete $plotPars->{plottype_values};
     delete $args->{'-plottype'};
   }
 
-  # arguments to parameters 
+  # arguments to parameters
   foreach my $par (keys %$plotPars) {
 
-    if ($args->{'-'.$par} !~ /\w/) { next }
+    if (! defined($args->{'-'.$par}) || $args->{'-'.$par} !~ /\w/) { next }
 
     # special evaluation: regions
     if ($par eq 'plotregions') {
@@ -96,19 +98,19 @@ Returns:
           };
           push(@{ $plotPars->{'plotregions'} }, $plotR);
     }}}
-    
+
     # special evaluation: markers
     elsif ($par eq 'markers') {
       foreach (split(',', $args->{'-markers'})) {
         my @markervals  =   split(':', $_);
         if (
           $markervals[0]  =~ /^(chro?)?([\dxy]\d?)$/i
-          && 
+          &&
           $markervals[1]  =~ /^\d+?\-\d+?$/
         ) {
           my $mark     =   { reference_name  =>  $markervals[0] };
           $mark->{reference_name} =~  s/[^xy\d]//gi;
-          ($mark->{start}, $mark->{end})  =   split('-', $markervals[1]);        
+          ($mark->{start}, $mark->{end})  =   split('-', $markervals[1]);
           if ($markervals[2] =~ /^\w[\w \-\(\)\[\]]+?$/) {
             $mark->{label}  =  $markervals[2] }
           if ($markervals[3] =~ /^\#\w\w\w(\w\w\w)?$/) {
@@ -117,7 +119,7 @@ Returns:
             $mark->{color}  =   random_hexcolor() }
           push(@{ $plotPars->{'markers'} }, $mark);
     }}}
-    
+
     # list style parameters are provided comma concatenated => deparsed
     elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
       $plotPars->{$par}   =   [ split(',', $args->{'-'.$par}) ] }
@@ -160,7 +162,7 @@ sub hex2rgb {
 
 sub random_hexcolor {
 
-  use List::Util qw( shuffle);
+  use List::Util qw(shuffle);
 
 =pod
 
@@ -176,6 +178,34 @@ random_hexcolor()
   return('#'.sprintf("%x%x%x", shuffle(@randRGB)));
 
 }
+
+################################################################################
+
+sub frequencies2rgb {
+
+	my (
+    $plotPars,
+    $dupF,
+    $delF,
+    $maxF
+  )             =   @_;
+	if ($maxF < 0.001) {$maxF = 100}
+
+	my $dupRGB		=		hex2rgb($plotPars->{color_var_dup_hex});
+	my $delRGB		=		hex2rgb($plotPars->{color_var_del_hex});
+  my @RGB;
+
+  for my $i (0..2) {
+    $dupRGB->[$i]	=		int($dupRGB->[$i] * $dupF / $maxF);
+	  $delRGB->[$i]	=		int($delRGB->[$i] * $delF / $maxF);
+    if (($dupRGB->[$i] + $delRGB->[$i]) < 255) { $RGB[$i] = $dupRGB->[$i] + $delRGB->[$i] }
+    else { $RGB[$i] = 255 }
+  }
+
+	return	join(',', @RGB);
+
+}
+
 
 
 1;

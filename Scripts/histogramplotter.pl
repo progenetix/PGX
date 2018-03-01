@@ -29,21 +29,22 @@ use PGX::GenomePlots::PlotParameters;
 # command line input
 my %args        =   @ARGV;
 
-$args{'-dataset'}       ||= 'dipg_ga4gh';
+$args{'-dataset'}       ||= 'arraymap_ga4gh';
 $args{'-genome'}        ||= 'grch36';
 $args{'-randno'}        ||= -1;
 $args{'-binning'}       ||= 1000000;
-$args{'-query'}         ||= {};
-$args{'-plottype'}   ||= 'histogram';
+$args{'-varquery'}      ||= {};
+$args{'-csquery'}       ||= { biosample_id => { '$regex' => qr/GSM23/ } };
+$args{'-biosquery'}     ||= { id => { '$regex' => qr/GSM23/ } };
+$args{'-plottype'}      ||= 'histogram';
 $args{'-plotregions'}   ||= q{};
-$args{'-chr2plot'}      ||= join(',', 1..22, 'X');
 $args{'-svg'}           ||= './histoplot.svg';       
 
 _checkArgs();
 
 # conventions
 my $csColl      =   'callsets_cnv_'.genome_names_to_grch($args{'-genome'});
-my $csQuery     =   $args{'-query'};
+my $csQuery     =   $args{'-csquery'};
 
 # predefined, for recycling
 my $distincts;
@@ -61,7 +62,7 @@ my $dbconn  =   MongoDB::MongoClient->new()->get_database($args{'-dataset'});
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-$cursor     =   $dbconn->get_collection($csColl)->find( $csQuery )->fields( { info => 1 } );
+$cursor     =   $dbconn->get_collection($csColl)->find( $csQuery )->fields( { biosample_id => 1, info => 1 } );
 $callsets   =   [ $cursor->all ];
 
 if ($args{'-randno'} > 0) {
@@ -84,10 +85,30 @@ Start:      $timeLab
 
 END
 
+# biosamples query
+
+$cursor     =   $dbconn->get_collection('biosamples')->find( $args{'-biosquery'} )->fields( { id => 1, 'bio_characteristics.ontology_terms' => 1, info => 1 } );
+my $biosamples =   [ $cursor->all ];
+if ($args{'-randno'} > 0) {
+  $biosamples =   [ (shuffle(@$biosamples))[0..($args{'-randno'}-1)] ] }
+
+for my $i (0..$#{ $biosamples }) {
+  my @icdm      =  grep{ $_->{term_id} =~ /icdom/ } @{ $biosamples->[$i]->{bio_characteristics}->[0]->{ontology_terms} };
+  $biosamples->[$i]->{term_id}     =   $icdm[0]->{term_id};
+  $biosamples->[$i]->{term_label}  =   $icdm[0]->{term_label};
+  delete $biosamples->[$i]->{bio_characteristics};
+  print Dumper($biosamples->[$i]->{id}, $biosamples->[$i]->{term_id}, $biosamples->[$i]->{term_label})."\n";
+}
+
+#my $samleMap    =   { map{ $_}}
+
+#exit;
+
 $args{'-text_bottom_left'}      =   $csNo.' samples';
 
 my $plot        =   new PGX::GenomePlots::Genomeplot(\%args);
-$plot->plot_add_frequencymaps($callsets);
+$plot->plot_add_frequencymaps( [ {
+  statusmapsets =>  $callsets } ] );
 $plot->return_histoplot_svg();
 
 open  (FILE, ">", $args{'-svg'}) || warn 'output file '.$args{'-svg'}.' could not be created.';
@@ -121,7 +142,7 @@ Script parameters:
                 Required
 
 -genome         Genome edition, for setting the correct coordinate space.
-                Default: hg18
+                Default: GRCh38
                 Both "hg" and "GRCh" styles can be used.
 
 -chr2plot       Chromosomes to be plotted (comma separated)
