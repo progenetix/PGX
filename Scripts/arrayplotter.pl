@@ -185,6 +185,11 @@ Script parameters:
                 Theshold for calling gain segments.
                 Default: 0.15
                 ... as above ...
+                
+-plot_adjust_baseline
+                Value is added to both probes and segment values, before 
+                applying thresholds to the segments
+                Default: 0
 
 -plot_adjust_baseline
                 Value is added to both probes and segment values, before
