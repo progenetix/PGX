@@ -76,10 +76,8 @@ Returns:
   # adjusting arguments for the selected plot type
   if (grep{ $args->{'-plottype'} eq $_ } keys %{ $plotPars->{plottype_values} }) {
     foreach (keys %{ $plotPars->{plottype_values}->{ $args->{'-plottype'} } }) {
-# print Dumper([$args->{'-plottype'}, $_, $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_}]).'<hr/>';
       $plotPars->{$_} =   $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_} }
     delete $plotPars->{plottype_values};
-    delete $args->{'-plottype'};
   }
 
   # arguments to parameters
@@ -89,7 +87,12 @@ Returns:
 
     # special evaluation: regions
     if ($par eq 'plotregions') {
+
+      if (ref $args->{'-plotregions'} eq 'ARRAY') {      
+        $args->{'-plotregions'} =   join(',', @{ $args->{'-plotregions'} }) }
+
       foreach my $plotregion (split(',', $args->{'-plotregions'})) {
+
         if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
           my $plotR =   {
             reference_name  =>  $1,
@@ -101,8 +104,13 @@ Returns:
 
     # special evaluation: markers
     elsif ($par eq 'markers') {
+
+      if (ref $args->{'-markers'} eq 'ARRAY') {      
+        $args->{'-markers'} =   join(',', @{ $args->{'-markers'} }) }
       foreach (split(',', $args->{'-markers'})) {
+
         my @markervals  =   split(':', $_);
+
         if (
           $markervals[0]  =~ /^(chro?)?([\dxy]\d?)$/i
           &&
@@ -119,17 +127,18 @@ Returns:
             $mark->{color}  =   random_hexcolor() }
           push(@{ $plotPars->{'markers'} }, $mark);
     }}}
-
     # list style parameters are provided comma concatenated => deparsed
     elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
       $plotPars->{$par}   =   [ split(',', $args->{'-'.$par}) ] }
+    elsif (
+			($par =~/^color/ || $par =~/color$/)
+			&&
+			$args->{'-'.$par}	=~	/^\w{6}$/
+		) {
+      $plotPars->{$par}   =   '#'.$args->{'-'.$par} }
     else {
       $plotPars->{$par}   =   $args->{'-'.$par};
     }
-
-    # modified parameters stored in the local yaml defaults are collected here
-    if (grep{ $_ eq $par } @{ $plotPars->{local_overrides} }) {
-      $locDefaults->{$par}  =   $plotPars->{$par} }
 
   }
 

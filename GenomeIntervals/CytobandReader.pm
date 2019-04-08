@@ -4,7 +4,12 @@ use Data::Dumper;
 
 require Exporter;
 @ISA    =   qw(Exporter);
-@EXPORT =   qw(read_cytobands genome_names_to_hg genome_names_to_grch);
+@EXPORT =   qw(
+  read_cytobands
+  cytoband_to_coordinates
+  genome_names_to_hg
+  genome_names_to_grch
+);
 
 sub read_cytobands {
 
@@ -85,7 +90,41 @@ Returns:
 ########    utility subs    ####    ####    ####    ####    ####    ####    ####
 ################################################################################
 
+sub cytoband_to_coordinates {
+
+  my $pgx       =   shift;
+  my $cytoband  =   shift;
+
+  my $coords    =   {};
+  $cytoband     =~  s/^(:?c(:?h(:?r(:?o(:?m(:?o(:?s(:?o(:?m(:?e)?)?)?)?)?)?)?)?)?)?//i;
+  $cytoband     =~  s/[^XY\d\.\p\q]//ig;
+  
+  if ($cytoband =~  /^
+                      ([XY\d]\d?)
+                      (:?(:?p|q)(:?\d(:?\d(:?\.\d(:?\d(:?\d?)?)?)?)?)?)?
+                    $/xi) {
+  
+    my $chro    =   $1;
+    my $bands   =   [ grep{ $_->{label} =~ /^$cytoband/ } @{ $pgx->{cytobands} } ];
+    my @edges   =   sort { $a <=> $b } (map{ $_->{start}, $_->{end} } @$bands);
+    
+    $coords     =   {
+      reference_name  =>  $chro,
+      start     =>  1 * $edges[0],
+      end       =>  1 * $edges[-1],
+      label     =>  $cytoband,
+    };
+  
+  }
+  
+  return $coords;
+
+}
+
+################################################################################
+
 sub genome_names_to_grch {
+
   my $genome    =   $_[0];
   $genome       =  lc($genome);
   $genome       =~  s/[^hgrch\d]//g;
@@ -96,29 +135,34 @@ sub genome_names_to_grch {
     hg19        =>  'GRCh37',
     hg38        =>  'GRCh38',
   );
+
   if ($genome =~ /^grch\d\d$/) {
     return $genome }
   else {
     return $geNames{$genome} }
+
 }
 
 ################################################################################
 
 sub genome_names_to_hg {
+
   my $genome    =   $_[0];
   $genome       =   lc($genome);
   $genome       =~  s/[^hgrch\d]//g;
   $genome       =~  s/^(grch\d\d).*?$/$1/;
   $genome       =~  s/^(hg\d\d).*?$/$1/;
   my %geNames   =   (
-    grch36  =>  'hg18',
-    grch37  =>  'hg19',
-    grch38  =>  'grch38',
+    grch36      =>  'hg18',
+    grch37      =>  'hg19',
+    grch38      =>  'grch38',
   );
+
   if ($genome =~ /^hg\d\d$/) {
     return $genome }
   else {
     return $geNames{$genome} }
+
 }
 
 1;

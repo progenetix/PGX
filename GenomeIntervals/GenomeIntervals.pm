@@ -54,7 +54,10 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my ($cytobands, $intSize)     =   @_;
+  my (
+    $cytobands,
+    $intSize
+  )             =   @_;
 
   if ($intSize !~ /^\d{3,9}$/) { $intSize = 1000000 }
 
@@ -71,11 +74,11 @@ Returns:
     my $start   =   $refLims->{ $refName }->[0];
     my $end     =   $intSize - 1;
 
-    while ($start <= $refLims->{ $refName }->[1]) {
+    while ($start < $refLims->{ $refName }->[1]) {
 
       # adjusting the end of the last interval
       if ($end > $refLims->{ $refName }->[1]) { $end = $refLims->{ $refName }->[1] };
-
+      my $thisSize  =   $end - $start +1;
       push(
         @$gi,
         {
@@ -83,12 +86,13 @@ Returns:
           reference_name  =>  $refName,
           start =>  $start,
           end   =>  $end,
+          length  =>  $thisSize,
           label =>  $refName.':'.$start.'-'.$end,
         }
       );
 
-      $start    +=  $intSize;
-      $end      +=  $intSize;
+      $start    +=  $thisSize;
+      $end      +=  $thisSize;
       $intI++;
 
   }}
@@ -147,14 +151,14 @@ Returns:
 sub get_genome_basecount {
 
   my $genBases;
-  my ($allRefs, $chr2plot)   =   @_;
+  my ($allRefs, $chr2plot)  =   @_;
 
   my %refNames  =   map { $_ => 1 } @$chr2plot;
 
   foreach my $ref (keys %refNames) {
     my @refRefs =   grep{ $_->{reference_name} =~ /^$ref$/i } @$allRefs;
     my @bases   =   sort { $a <=> $b } ((map{ $_->{start} } @refRefs), (map{ $_->{end} } @refRefs));
-    $genBases   +=   ($bases[-1] - $bases[0]);
+    $genBases   +=  ($bases[-1] - $bases[0]);
   }
 
   return $genBases;

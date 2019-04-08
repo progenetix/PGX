@@ -1,5 +1,6 @@
 package PGX::GenomePlots::StripPlotter;
 
+use GD::Simple;
 use Data::Dumper;
 use PGX::GenomePlots::CytobandsPlotter;
 use PGX::GenomePlots::PlotParameters;
@@ -8,62 +9,68 @@ require Exporter;
 @ISA            =   qw(Exporter);
 @EXPORT         =   qw(
   return_stripplot_svg
-  get_stripplot_area
   get_stripplot_area_gd
-  get_frequencystripplot_area
+  get_frequencystripplot_area_gd
 );
 
 ################################################################################
 
 sub return_stripplot_svg {
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
 
-  $plot->{Y}    =   $plot->{parameters}->{size_plotmargin_top_px};
-  my $plotW             =   $plot->{parameters}->{size_plotimage_w_px};
-  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px} + $plot->{parameters}->{size_title_left_px};
-  $plot->{areawidth}    =   $plotW - ($plot->{areastartx} + $plot->{parameters}->{size_plotmargin_px});
+  $pgx->{svg}   =   q{};
+
+  $pgx->{Y}     =   $pgx->{parameters}->{size_plotmargin_top_px};
+  my $plotW     =   $pgx->{parameters}->{size_plotimage_w_px};
+  $pgx->{areastartx}   =   $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_px};
   if (
-    $plot->{parameters}->{do_chromosomes_proportional} =~ /y/i
+    $pgx->{parameters}->{size_clustertree_w_px} < 1
+     ||
+     (scalar @{ $pgx->{clustertree} } < 2)
+  ) { $pgx->{parameters}->{size_clustertree_w_px} = 0 }
+  $pgx->{areawidth}    =   $plotW - ($pgx->{areastartx} + $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_label_right_px} + $pgx->{parameters}->{size_clustertree_w_px});
+;
+  if (
+    $pgx->{parameters}->{do_chromosomes_proportional} =~ /y/i
     &&
-    @{ $plot->{parameters}->{chr2plot} } == 1
+    @{ $pgx->{parameters}->{chr2plot} } == 1
   ) {
-    $plot->{areawidth}  *=  ($plot->{referencebounds}->{ $plot->{parameters}->{chr2plot}->[0] }->[1] / $plot->{referencebounds}->{ '1' }->[1]);
-    $plotW      =   $plot->{areawidth} + 2 * $plot->{parameters}->{size_plotmargin_px};
+    $pgx->{areawidth}  *=  ($pgx->{referencebounds}->{ $pgx->{parameters}->{chr2plot}->[0] }->[1] / $pgx->{referencebounds}->{ '1' }->[1]);
+    $plotW      =   $pgx->{areawidth} + 2 * $pgx->{parameters}->{size_plotmargin_px};
   }
-  $plotW        +=  $plot->{parameters}->{size_clustertree_w_px};
-  $plotW        +=  $plot->{parameters}->{size_label_right_px};
-  $plot->{areaendx}   =   $plot->{areastartx} + $plot->{areawidth};
-  $plot->{areatreex}  =   $plot->{areaendx};
-  if ($plot->{parameters}->{size_label_right_px} > 0) {
-    $plot->{areatreex}  +=  $plot->{parameters}->{size_chromosome_padding_px} + $plot->{parameters}->{size_label_right_px} }
-  $plot->{basepixfrac}  =   ( $plot->{areawidth} - ($#{ $plot->{parameters}->{chr2plot} } * $plot->{parameters}->{size_chromosome_padding_px}) ) / $plot->{genomesize};
-  $plot->svg_add_title();
-  $plot->svg_add_cytobands();
-  if (! $plot->{samples}) { $plot->{samples} = [ $plot->{segmentdata} ] }
-  $plot->get_stripplot_area_gd();
-  $plot->get_frequencystripplot_area();
-  $plot->svg_add_cluster_tree();
-  $plot->svg_add_markers();
-  $plot->svg_add_bottom_text();
-  $plot->{Y}    +=   $plot->{parameters}->{size_plotmargin_bottom_px};
-  my $plotH     =   sprintf "%.0f", $plot->{Y};
+  $pgx->{areaendx}   =   $pgx->{areastartx} + $pgx->{areawidth};
+  $pgx->{areatreex}  =   $pgx->{areaendx};
+  if ($pgx->{parameters}->{size_label_right_px} > 0) {
+    $pgx->{areatreex}  +=  $pgx->{parameters}->{size_chromosome_padding_px} + $pgx->{parameters}->{size_label_right_px} }
+  $pgx->{basepixfrac}  =   ( $pgx->{areawidth} - ($#{ $pgx->{parameters}->{chr2plot} } * $pgx->{parameters}->{size_chromosome_padding_px}) ) / $pgx->{genomesize};
+  $pgx->svg_add_title();
+  $pgx->svg_add_cytobands();
+  if (! $pgx->{samples}) { $pgx->{samples} = [ $pgx->{segmentdata} ] }
+  $pgx->get_stripplot_area_gd();
+  $pgx->get_frequencystripplot_area_gd();
+  $pgx->{markerstarty}  =   $pgx->{areastarty}; # so that markers span the histograms
+  $pgx->svg_add_cluster_tree();
+  $pgx->svg_add_markers();
+  $pgx->svg_add_bottom_text();
+  $pgx->{Y}     +=  $pgx->{parameters}->{size_plotmargin_bottom_px};
+  my $plotH     =   sprintf "%.0f", $pgx->{Y};
   $plotW        =   sprintf "%.0f", $plotW;
-  $plot->{svg}  =   '<svg
+  $pgx->{svg}   =   '<svg
 xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 version="1.1"
-id="'.$plot->{plotid}.'"
+id="'.$pgx->{plotid}.'"
 width="'.$plotW.'px"
 height="'.$plotH.'px"
 style="margin: auto; font-family: Helvetica, sans-serif;">
 
-<rect x="0" y="0" width="'.$plotW.'" height="'.$plotH.'" style="fill: '.$plot->{parameters}->{color_plotbackground_hex}.'; " />
+<rect x="0" y="0" width="'.$plotW.'" height="'.$plotH.'" style="fill: '.$pgx->{parameters}->{color_plotbackground_hex}.'; " />
 
-'.$plot->{svg}.'
+'.$pgx->{svg}.'
 </svg>';
 
-  return $plot;
+  return $pgx;
 
 }
 
@@ -79,6 +86,19 @@ sub get_stripplot_area_gd {
 
 Expects:
   - the current Y parameter for placing the plot elements on the SVG
+  - a "sample" object, which has a "name" and "variants":
+  
+    name : "this-sample"
+    variants :
+      - start :
+          - 50601893
+            51088076
+        end :
+          - 61109900
+        reference_name : 2,
+        variant_type : "DUP",
+      - start : 
+      (...)
 
 Returns:
   - the increased end Y value as start for the next elements
@@ -87,61 +107,60 @@ Returns:
 
   ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
 
-  if ($plot->{parameters}->{size_strip_h_px} < 1) { return $plot }
-  if (! $plot->{samples}) { return $plot }
+  if ($pgx->{parameters}->{size_strip_h_px} < 1) { return $pgx }
+  if (! $pgx->{samples}) { return $pgx }
 
-  $plot->{Y}    +=  $plot->{parameters}->{size_plotarea_padding};
-  $plot->{areastarty}   =   $plot->{Y};
+  $pgx->{Y}     +=  $pgx->{parameters}->{size_plotarea_padding};
+  $pgx->{areastarty}   =   $pgx->{Y};
 
   my $defLabCol =   '#dddddd';
   my $altLabCol =   '#fefefe';
   my $labCol    =   '#dddddd';
   
-  my $areaH     =   $plot->{parameters}->{size_strip_h_px} * @{$plot->{samples}};
-  my $stripArea =   GD::Image->new($plot->{areawidth}, $areaH, 1);
-  my $gdBgCol   =   $stripArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotbackground_hex}) } );
-  $stripArea->filledRectangle(0, 0, $plot->{areawidth}, $areaH, $gdBgCol);
-  my $gdAreaCol =   $stripArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotarea_hex}) } );
+  my $areaH     =   $pgx->{parameters}->{size_strip_h_px} * @{ $pgx->{samples} };
+
+  my $stripArea =   GD::Image->new($pgx->{areawidth}, $areaH, 1);
+  my $gdBgCol   =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotbackground_hex}) } );
+  $stripArea->filledRectangle(0, 0, $pgx->{areawidth}, $areaH, $gdBgCol);
+  my $gdAreaCol =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
   $stripArea->transparent($gdBgCol);
-  my $gdDupCol  = $stripArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_var_dup_hex}) } );
-  my $gdDelCol  = $stripArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_var_del_hex}) } );
+  my $gdDupCol  = $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_var_dup_hex}) } );
+  my $gdDelCol  = $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_var_del_hex}) } );
 
   my $gd_y0     =   0;
   my $gd_yn;
   my $area_x0;
   
-  foreach my $sample (@{$plot->{samples}}) {
+  foreach my $sample (@{ $pgx->{samples} }) {
 
-    $gd_yn      =   $gd_y0 + $plot->{parameters}->{size_strip_h_px};
+    $gd_yn      =   $gd_y0 + $pgx->{parameters}->{size_strip_h_px};
     $area_x0    =   0;
 
     my $segSet  =   $sample->{variants};
- 
-   if ($sample->{name} =~ /\w\w/) {
-      $plot->{parameters}->{title_left} = $sample->{name} }
-    $plot->svg_add_title_left(($plot->{Y} + $plot->{parameters}->{size_strip_h_px} / 2));
 
-    foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
-      my $areaW =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
+   if ($sample->{name} =~ /\w\w/) {
+      $pgx->{parameters}->{title_left} = $sample->{name} }
+    $pgx->svg_add_title_left(($pgx->{Y} + $pgx->{parameters}->{size_strip_h_px} / 2));
+
+    foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
+
+      my $areaW =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
       $stripArea->filledRectangle($area_x0, $gd_y0, ($area_x0 + $areaW), $gd_yn, $gdAreaCol);
-#print Dumper(join(' :: ', $sample->{name}, $refName, $area_x0, $gd_y0, $gd_yn));
 
       my $areaSegs  =   [ grep{ $_->{reference_name} eq $refName } @{ $segSet } ];
       $areaSegs     =   [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegs];
-      $areaSegs     =   [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areaSegs];
-      $areaSegs     =   [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areaSegs ];
-
+      $areaSegs     =   [ grep{ $_->{start}->[0] <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegs];
+      $areaSegs     =   [ grep{ $_->{end}->[-1] >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegs ];
       foreach my $seg (@$areaSegs) {
+        if ($seg->{start}->[0] < $pgx->{referencebounds}->{$refName}->[0]) {
+          $seg->{start}->[0] = $pgx->{referencebounds}->{$refName}->[0] }
+        if ($seg->{end}->[-1] > $pgx->{referencebounds}->{$refName}->[1]) {
+          $seg->{end}->[-1]   = $pgx->{referencebounds}->{$refName}->[1] }
 
-        if ($seg->{start} < $plot->{referencebounds}->{$refName}->[0]) {
-          $seg->{start} = $plot->{referencebounds}->{$refName}->[0] }
-        if ($seg->{end} > $plot->{referencebounds}->{$refName}->[1]) {
-          $seg->{end}   = $plot->{referencebounds}->{$refName}->[1] }
-
-        my $seg_x0  =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($seg->{start} - $plot->{referencebounds}->{$refName}->[0]);
-        my $segPixEnd   =   sprintf "%.2f", ($seg_x0 + $plot->{basepixfrac} * ($seg->{end} - $seg->{start}));
+        my $seg_x0  =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start}->[0] - $pgx->{referencebounds}->{$refName}->[0]);
+        my $segPixEnd   =   sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($seg->{end}->[-1] - $seg->{start}->[0]));
         # providing a minimum sub-pixel segment plot length
         if ($segPixEnd < 0.02) { $segPixLen = 0.02 }
 
@@ -152,7 +171,7 @@ Returns:
 
       }
 
-      $area_x0  +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+      $area_x0  +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
     }
 
@@ -160,34 +179,35 @@ Returns:
     if ($sample->{labels}) { $labels_R = $sample->{labels} }
     # fallback color; defined here for alternation...
     if ($labCol eq $altLabCol) { 
-      $labCol =   $defLabCol }
+      $labCol   =   $defLabCol }
     else { 
-      $labCol =   $altLabCol }
-    $plot->svg_add_labels_right($labels_R, $plot->{parameters}->{size_strip_h_px}, $labCol);
+      $labCol   =   $altLabCol }
+    $pgx->svg_add_labels_right($labels_R, $pgx->{parameters}->{size_strip_h_px}, $labCol);
 
-    $plot->{Y}  +=  $plot->{parameters}->{size_strip_h_px};
-    $gd_y0      +=  $plot->{parameters}->{size_strip_h_px};
+    $pgx->{Y}   +=  $pgx->{parameters}->{size_strip_h_px};
+    $gd_y0      +=  $pgx->{parameters}->{size_strip_h_px};
 
   }
   
-  $plot->{svg}    .=  '
+  $pgx->{svg}   .=  '
 <image
-  x="'.$plot->{areastartx}.'"
-  y="'.$plot->{areastarty}.'"
-  width="'.$plot->{areawidth}.'"
+  x="'.$pgx->{areastartx}.'"
+  y="'.$pgx->{areastarty}.'"
+  width="'.$pgx->{areawidth}.'"
   height="'.$areaH.'"
   xlink:href="data:image/png;base64,'.encode_base64($stripArea->png).'"
 />';
 
 
-  return $plot;
+  return $pgx;
 
 }
 ################################################################################
 
-sub get_stripplot_area {
+sub get_frequencystripplot_area_gd {
 
-  no warnings 'uninitialized';
+  use GD::Simple;
+  use MIME::Base64 qw(encode_base64);
 
 =pod
 
@@ -201,187 +221,110 @@ Returns:
 
   ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
 
-  if ($plot->{parameters}->{size_strip_h_px} < 1) { return $plot }
-  if (! $plot->{samples}) { return $plot }
+  if ($pgx->{parameters}->{size_strip_h_px} < 1) { return $pgx }
+  if (! $pgx->{frequencymaps}->[0]) { return $pgx }
 
-  $plot->{Y}    +=  $plot->{parameters}->{size_plotarea_padding};
-  $plot->{areastarty}   =   $plot->{Y};
+  $pgx->{Y}    +=  $pgx->{parameters}->{size_plotarea_padding};
+  $pgx->{areastarty}   =   $pgx->{Y};
 
   my $defLabCol =   '#dddddd';
   my $altLabCol =   '#fefefe';
   my $labCol    =   '#dddddd';
-  
-  foreach my $sample (@{$plot->{samples}}) {
 
-    my $area_x0 =   $plot->{areastartx};
-    my $segSet  =   $sample->{variants};
- 
-   if ($sample->{name} =~ /\w\w/) {
-      $plot->{parameters}->{title_left} = $sample->{name} }
-    $plot->svg_add_title_left(($plot->{Y} + $plot->{parameters}->{size_strip_h_px} / 2));
-    foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
+  my $areaH     =   $pgx->{parameters}->{size_strip_h_px} * @{ $pgx->{frequencymaps} };
+  my $stripArea =   GD::Image->new($pgx->{areawidth}, $areaH, 1);
+  my $gdBgCol   =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotbackground_hex}) } );
+  $stripArea->filledRectangle(0, 0, $pgx->{areawidth}, $areaH, $gdBgCol);
+  my $gdAreaCol =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
+  $stripArea->transparent($gdBgCol);
 
-      my $areaW =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
-
-      $plot->{svg}  .=  '
-  <rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_strip_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
-
-      my $areaSegs  =   [ grep{ $_->{reference_name} eq $refName } @{ $segSet } ];
-      $areaSegs     =   [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegs];
-      $areaSegs     =   [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areaSegs];
-      $areaSegs     =   [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areaSegs ];
-
-      foreach my $seg (@$areaSegs) {
-
-        if ($seg->{start} < $plot->{referencebounds}->{$refName}->[0]) {
-          $seg->{start} = $plot->{referencebounds}->{$refName}->[0] }
-        if ($seg->{end} > $plot->{referencebounds}->{$refName}->[1]) {
-          $seg->{end}   = $plot->{referencebounds}->{$refName}->[1] }
-
-        # providing a minimum sub-pixel segment plot length
-        my $segPixLen   =   sprintf "%.1f", ($plot->{basepixfrac} * ($seg->{end} - $seg->{start}));
-        if ($segPixLen < 0.2) { $segPixLen = 0.2 }
-
-        my $seg_x0  =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($seg->{start} - $plot->{referencebounds}->{$refName}->[0]);
-
-          $plot->{svg}  .=  '
-<a xlink:href="http://genome.ucsc.edu/cgi-bin/hgTracks?db='.$plot->{parameters}->{genome}.'&amp;position=chr'.$refName.'%3A'.$seg->{start}.'-'.$seg->{end}.'" xlink:show="new" xlink:title="'.$seg->{info}->{value}.' at  '.$refName.':'.$seg->{start}.'-'.$seg->{end}.'">';
-
-        $plot->{svg}    .=  '
-  <rect x="'.$seg_x0.'" y="'.$plot->{Y}.'" width="'.$segPixLen.'" height="'.$plot->{parameters}->{size_strip_h_px}.'" fill="'.($seg->{variant_type} =~ /DEL/i ? $plot->{parameters}->{color_var_del_hex} : $plot->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
-          $plot->{svg}  .=  '</a>';
-
-      }
-
-      $area_x0  +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
-
-    }
-
-    my $labels_R    =   [];
-    if ($sample->{labels}) { $labels_R = $sample->{labels} }
-    # fallback color; defined here for alternation...
-    if ($labCol eq $altLabCol) { 
-      $labCol =   $defLabCol }
-    else { 
-      $labCol =   $altLabCol }
-    $plot->svg_add_labels_right($labels_R, $plot->{parameters}->{size_strip_h_px}, $labCol);
-
-    $plot->{Y}  +=  $plot->{parameters}->{size_strip_h_px};
-
-  }
-
-  return $plot;
-
-}
-
-################################################################################
-
-sub get_frequencystripplot_area {
-
-=pod
-
-Expects:
-  - the current Y parameter for placing the plot elements on the SVG
-
-Returns:
-  - the increased end Y value as start for the next elements
-
-=cut
-
-  ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
-
-  my $plot      =   shift;
-
-  if ($plot->{parameters}->{size_strip_h_px} < 1) { return $plot }
-  if (! $plot->{frequencymaps}->[0]) { return $plot }
-
-  $plot->{Y}    +=  $plot->{parameters}->{size_plotarea_padding};
-  $plot->{areastarty}   =   $plot->{Y};
-
-  my $fMapIndex =  0;
-  my $defLabCol =   '#dddddd';
-  my $altLabCol =   '#fefefe';
-  my $labCol    =   '#dddddd';
-  
-  foreach my $frequencymapsSet (@{ $plot->{frequencymaps} }) {
+  my $gd_y0     =   0;
+  my $gd_yn;
+  my $area_x0;
+    
+  foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
 
     $fMapIndex++;
 
     if ($frequencymapsSet->{name} =~ /\w\w/) {
-      $plot->{parameters}->{title_left}   =   $frequencymapsSet->{name} }
+      $pgx->{parameters}->{title_left}   =   $frequencymapsSet->{name} }
 
-    my $area_x0 =   $plot->{areastartx};
+    $gd_yn      =   $gd_y0 + $pgx->{parameters}->{size_strip_h_px};
+    $area_x0    =   0;
 
-    $plot->svg_add_title_left(($plot->{Y} + $plot->{parameters}->{size_strip_h_px} / 2));
-
-    my $gradientDefs;
+    $pgx->svg_add_title_left(($pgx->{Y} + $pgx->{parameters}->{size_strip_h_px} / 2));
 
     my $maxF		=		(sort {$a <=> $b} (@{ $frequencymapsSet->{dupfrequencies} }, @{ $frequencymapsSet->{delfrequencies} }) )[-1];
 
-    foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
+    foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-      $gradientDefs .=   '
-<linearGradient id="frequencygradient_'.$fMapIndex.'_'.$refName.'"  x1="0" x2="1" y1="0" y2="0">';
-
-      my $areaBases =   $plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0];
-      my $areaW     =   sprintf "%.1f", $areaBases * $plot->{basepixfrac};
-
-      $plot->{svg}  .=  '
-<rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_strip_h_px}.'" style="fill: url(#frequencygradient_'.$fMapIndex.'_'.$refName.');" />';
+      my $areaBases =   $pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0];
+      my $areaW     =   sprintf "%.1f", $areaBases * $pgx->{basepixfrac};
 
       # intervals through index #    ####    ####    ####    ####    ####    ####
-      my @ind   =  grep{ $refName eq $plot->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $plot->{genomeintervals} };
-      @ind      =  grep{ $plot->{genomeintervals}->[$_]->{start} <=  $plot->{referencebounds}->{$refName}->[1]  } @ind;
-      @ind      =  grep{ $plot->{genomeintervals}->[$_]->{end} >=  $plot->{referencebounds}->{$refName}->[0]  } @ind;
+      my @ind   =  grep{ $refName eq $pgx->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $pgx->{genomeintervals} };
+      @ind      =  grep{ $pgx->{genomeintervals}->[$_]->{start} <=  $pgx->{referencebounds}->{$refName}->[1]  } @ind;
+      @ind      =  grep{ $pgx->{genomeintervals}->[$_]->{end} >=  $pgx->{referencebounds}->{$refName}->[0]  } @ind;
 
       foreach my $i (@ind) {
 
-        my $start =   $plot->{genomeintervals}->[$i]->{start};
-        my $end   =   $plot->{genomeintervals}->[$i]->{end};
-        if ($start < $plot->{referencebounds}->{$refName}->[0]) {
-          $start  = $plot->{referencebounds}->{$refName}->[0] }
-        if ($end > $plot->{referencebounds}->{$refName}->[1]) {
-          $end    = $plot->{referencebounds}->{$refName}->[1] }
+        my $start =   $pgx->{genomeintervals}->[$i]->{start};
+        my $end   =   $pgx->{genomeintervals}->[$i]->{end};
+        if ($start < $pgx->{referencebounds}->{$refName}->[0]) {
+          $start  = $pgx->{referencebounds}->{$refName}->[0] }
+        if ($end > $pgx->{referencebounds}->{$refName}->[1]) {
+          $end    = $pgx->{referencebounds}->{$refName}->[1] }
 
-        my $currentFraction		=	  sprintf "%.3f", 1 - ($plot->{referencebounds}->{$refName}->[1] - ($start + $end) / 2 ) / $areaBases;
+        my $seg_x0  =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($start - $pgx->{referencebounds}->{$refName}->[0]);
+        my $segPixEnd   =   sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($end - $start));
+        # providing a minimum sub-pixel segment plot length
 
         my $fill  =   frequencies2rgb(
-                        $plot->{parameters},
+                        $pgx->{parameters},
                         $frequencymapsSet->{dupfrequencies}->[$i],
                         $frequencymapsSet->{delfrequencies}->[$i],
                         $maxF,
                       );
+        my $gdCol =   $stripArea->colorAllocate( split(',', $fill) );
 
-        $gradientDefs .=  '
-<stop offset="'.$currentFraction.'" stop-color="rgb('.$fill.')"/>';
+        $stripArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdCol);
 
       }
-
-      $gradientDefs   .=   '
-</linearGradient>';
-      $area_x0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+      
+      $area_x0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
     }
     
-    my $labels_R    =   [];
+    my $labels_R  =   [];
     if ($frequencymapsSet->{labels}) { $labels_R = $frequencymapsSet->{labels} }
     # fallback color; defined here for alternation...
     if ($labCol eq $altLabCol) { 
-      $labCol =   $defLabCol }
+      $labCol   =   $defLabCol }
     else { 
-      $labCol =   $altLabCol }
-    $plot->svg_add_labels_right($labels_R, $plot->{parameters}->{size_strip_h_px}, $labCol);
+      $labCol   =   $altLabCol }
+    $pgx->svg_add_labels_right($labels_R, $pgx->{parameters}->{size_strip_h_px}, $labCol);
 
-    $plot->{svg}  .=  $gradientDefs;
-    $plot->{Y}    +=  $plot->{parameters}->{size_strip_h_px};
+    $pgx->{Y}   +=  $pgx->{parameters}->{size_strip_h_px};
+    $gd_y0      +=   $pgx->{parameters}->{size_strip_h_px};
 
   }
 
-  return $plot;
+  $pgx->{svg}   .=  '
+<image
+  x="'.$pgx->{areastartx}.'"
+  y="'.$pgx->{areastarty}.'"
+  width="'.$pgx->{areawidth}.'"
+  height="'.$areaH.'"
+  xlink:href="data:image/png;base64,'.encode_base64($stripArea->png).'"
+/>';
+
+  return $pgx;
 
 }
+
+################################################################################
 
 
 1;

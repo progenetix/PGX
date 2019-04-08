@@ -14,46 +14,46 @@ require Exporter;
 
 sub return_arrayplot_svg {
 
-  our $plot     =   shift;
+  our $pgx     =   shift;
 
-  $plot->{Y}            =   $plot->{parameters}->{size_plotmargin_top_px};
-  my $plotW             =   $plot->{parameters}->{size_plotimage_w_px};
-  $plot->{areastartx}   =   $plot->{parameters}->{size_plotmargin_px} + $plot->{parameters}->{size_title_left_px};
-  $plot->{areawidth}    =   $plotW - ($plot->{areastartx} + $plot->{parameters}->{size_plotmargin_px});
+  $pgx->{Y}            =   $pgx->{parameters}->{size_plotmargin_top_px};
+  my $plotW             =   $pgx->{parameters}->{size_plotimage_w_px};
+  $pgx->{areastartx}   =   $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_px};
+  $pgx->{areawidth}    =   $plotW - ($pgx->{areastartx} + $pgx->{parameters}->{size_plotmargin_px});
   if (
-    $plot->{parameters}->{do_chromosomes_proportional} =~ /y/i
+    $pgx->{parameters}->{do_chromosomes_proportional} =~ /y/i
     &&
-    @{ $plot->{parameters}->{chr2plot} } == 1
+    @{ $pgx->{parameters}->{chr2plot} } == 1
   ) {
-    $plot->{areawidth}  *=  ($plot->{referencebounds}->{ $plot->{parameters}->{chr2plot}->[0] }->[1] / $plot->{referencebounds}->{ '1' }->[1]);
-    $plotW      =   $plot->{areawidth} + 2 * $plot->{parameters}->{size_plotmargin_px};
+    $pgx->{areawidth}  *=  ($pgx->{referencebounds}->{ $pgx->{parameters}->{chr2plot}->[0] }->[1] / $pgx->{referencebounds}->{ '1' }->[1]);
+    $plotW      =   $pgx->{areawidth} + 2 * $pgx->{parameters}->{size_plotmargin_px};
   }
-  $plot->{basepixfrac}  =   ( $plot->{areawidth} - ($#{ $plot->{parameters}->{chr2plot} } * $plot->{parameters}->{size_chromosome_padding_px}) ) / $plot->{genomesize};
-  $plot         =   svg_add_title($plot);
-  $plot         =   svg_add_cytobands($plot);
-  $plot->{areastarty}   =   $plot->{Y};
-  $plot         =   get_arrayplot_area($plot);
-  $plot         =   get_fracb_area($plot);
-  $plot         =   svg_add_markers($plot);
-  $plot         =   svg_add_bottom_text($plot);
-  $plot->{Y}    +=   $plot->{parameters}->{size_plotmargin_bottom_px};
-  my $plotH     =   sprintf "%.0f", $plot->{Y};
+  $pgx->{basepixfrac}  =   ( $pgx->{areawidth} - ($#{ $pgx->{parameters}->{chr2plot} } * $pgx->{parameters}->{size_chromosome_padding_px}) ) / $pgx->{genomesize};
+  $pgx         =   svg_add_title($pgx);
+  $pgx         =   svg_add_cytobands($pgx);
+  $pgx->{areastarty}   =   $pgx->{Y};
+  $pgx         =   get_arrayplot_area($pgx);
+  $pgx         =   get_fracb_area($pgx);
+  $pgx         =   svg_add_markers($pgx);
+  $pgx         =   svg_add_bottom_text($pgx);
+  $pgx->{Y}    +=   $pgx->{parameters}->{size_plotmargin_bottom_px};
+  my $plotH     =   sprintf "%.0f", $pgx->{Y};
   $plotW        =   sprintf "%.0f", $plotW;
-  $plot->{svg}  =   '<svg
+  $pgx->{svg}  =   '<svg
 xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 version="1.1"
-id="'.$plot->{plotid}.'"
+id="'.$pgx->{plotid}.'"
 width="'.$plotW.'px"
 height="'.$plotH.'px"
 style="margin: auto; font-family: Helvetica, sans-serif;">
 
-<rect x="0" y="0" width="'.$plotW.'" height="'.$plotH.'" style="fill: '.$plot->{parameters}->{color_plotbackground_hex}.'; " />
+<rect x="0" y="0" width="'.$plotW.'" height="'.$plotH.'" style="fill: '.$pgx->{parameters}->{color_plotbackground_hex}.'; " />
 
-'.$plot->{svg}.'
+'.$pgx->{svg}.'
 </svg>';
 
-  return $plot;
+  return $pgx;
 
 }
 
@@ -75,66 +75,66 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  if ($plot->{parameters}->{size_plotarea_h_px} < 1) { return $plot }
+  if ($pgx->{parameters}->{size_plotarea_h_px} < 1) { return $pgx }
 
-  $plot->{svg}    .=  '
+  $pgx->{svg}    .=  '
 <style type="text/css"><![CDATA[
-  .DUP {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_var_dup_hex}.'; opacity: 0.8  }
-  .DEL {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_var_del_hex}.'; opacity: 0.8  }
-  .cen {stroke-width: '.$plot->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$plot->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
+  .DUP {stroke-width: '.$pgx->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$pgx->{parameters}->{color_var_dup_hex}.'; opacity: 0.8  }
+  .DEL {stroke-width: '.$pgx->{parameters}->{size_segments_stroke_px}.'px; stroke: '.$pgx->{parameters}->{color_var_del_hex}.'; opacity: 0.8  }
+  .cen {stroke-width: '.$pgx->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$pgx->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
 ]]></style>';
 
-  $plot->{Y}      +=  $plot->{parameters}->{size_plotarea_padding};
+  $pgx->{Y}      +=  $pgx->{parameters}->{size_plotarea_padding};
 
-  svg_add_labels_y($plot);
+  svg_add_labels_y($pgx);
 
-  my $area_x0   =   $plot->{areastartx};
-  my $area_y0   =   $plot->{Y};
-  my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px} / 2;
-  my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_plotarea_h_px};
-  my $lowSegY   =   $area_yn + $plot->{parameters}->{size_segments_stroke_px};
+  my $area_x0   =   $pgx->{areastartx};
+  my $area_y0   =   $pgx->{Y};
+  my $area_ycen =   $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
+  my $area_yn   =   $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px};
+  my $lowSegY   =   $area_yn + $pgx->{parameters}->{size_segments_stroke_px};
 
-  $plot->{areaendy} =   $area_yn;
+  $pgx->{areaendy} =   $area_yn;
 
-  my $probeSize =   $plot->{parameters}->{factor_probedots};
-  if (scalar @{ $plot->{probedata} } < 200000) { $probeSize *= 2 }
-  if (scalar @{ $plot->{probedata} } < 8000)  { $probeSize *= 2 }
+  my $probeSize =   $pgx->{parameters}->{factor_probedots};
+  if (scalar @{ $pgx->{probedata} } < 200000) { $probeSize *= 2 }
+  if (scalar @{ $pgx->{probedata} } < 8000)  { $probeSize *= 2 }
 
   # probe area, probes & segments   ####    ####    ####    ####    ####    ####
 
-  foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
+  foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-    my $areaW   =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
+    my $areaW   =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
-    $plot->{svg}        .=  '
-<rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
+    $pgx->{svg}        .=  '
+<rect x="'.$area_x0.'" y="'.$pgx->{Y}.'" width="'.$areaW.'" height="'.$pgx->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$pgx->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
     # probes ###    ####    ####    ####    ####    ####    ####    ####    ####
-    my $areaProbes      =  [ grep{ $_->{reference_name} eq $refName } @{ $plot->{probedata} } ];
-    $areaProbes         =  [ grep{ $_->{position} <= $plot->{referencebounds}->{$refName}->[1] } @$areaProbes];
-    $areaProbes         =  [ grep{ $_->{position} >= $plot->{referencebounds}->{$refName}->[0] } @$areaProbes ];
+    my $areaProbes      =  [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{probedata} } ];
+    $areaProbes         =  [ grep{ $_->{position} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaProbes];
+    $areaProbes         =  [ grep{ $_->{position} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaProbes ];
 
     # probes are plotted using GD
-    my $probeArea       =   GD::Image->new($areaW, $plot->{parameters}->{size_plotarea_h_px}, 1);
+    my $probeArea       =   GD::Image->new($areaW, $pgx->{parameters}->{size_plotarea_h_px}, 1);
     my $gdDotS          =   1 * $probeSize;
-    my $gdAreaCol       =   $probeArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotarea_hex}) } );
+    my $gdAreaCol       =   $probeArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
     $probeArea->transparent($gdAreaCol);
     my $gdDotcol        = $probeArea->colorAllocateAlpha(32,32,32,63);
-    $probeArea->filledRectangle(0, 0, $areaW, $plot->{parameters}->{size_plotarea_h_px}, $gdAreaCol);
+    $probeArea->filledRectangle(0, 0, $areaW, $pgx->{parameters}->{size_plotarea_h_px}, $gdAreaCol);
 
     foreach (@$areaProbes) {
-      my $dotX  =   sprintf "%.2f", $plot->{basepixfrac} * ($_->{position} - $plot->{referencebounds}->{$refName}->[0]);
-      my $dotY  =   sprintf "%.2f", ($plot->{parameters}->{size_plotarea_h_px} / 2 - $_->{value} * $plot->{parameters}->{pixyfactor});
+      my $dotX  =   sprintf "%.2f", $pgx->{basepixfrac} * ($_->{position} - $pgx->{referencebounds}->{$refName}->[0]);
+      my $dotY  =   sprintf "%.2f", ($pgx->{parameters}->{size_plotarea_h_px} / 2 - $_->{value} * $pgx->{parameters}->{pixyfactor});
       $probeArea->filledEllipse($dotX, $dotY, $gdDotS, $gdDotS, $gdDotcol);
     }
 
     # the GD object is encoded as base64 and embedded into the svg
-    $plot->{svg}        .=  '
+    $pgx->{svg}        .=  '
 <image
   x="'.$area_x0.'"
-  y="'.$plot->{Y}.'"
+  y="'.$pgx->{Y}.'"
   width="'.$areaW.'"
-  height="'.$plot->{parameters}->{size_plotarea_h_px}.'"
+  height="'.$pgx->{parameters}->{size_plotarea_h_px}.'"
   xlink:href="data:image/png;base64,'.encode_base64($probeArea->png).'"
 />';
 
@@ -142,56 +142,56 @@ Returns:
 
     # segments #    ####    ####    ####    ####    ####    ####    ####    ####
 
-    my $areaSegments    =   [ grep{ $_->{reference_name} eq $refName } @{ $plot->{segmentdata} } ];
+    my $areaSegments    =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{segmentdata} } ];
     $areaSegments       =   [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegments];
-    $areaSegments       =   [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areaSegments];
-    $areaSegments       =   [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areaSegments ];
+    $areaSegments       =   [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegments];
+    $areaSegments       =   [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegments ];
 
     foreach my $seg (@$areaSegments) {
 
-      if ($seg->{start} < $plot->{referencebounds}->{$refName}->[0]) {
-        $seg->{start}   = $plot->{referencebounds}->{$refName}->[0] }
-      if ($seg->{end} > $plot->{referencebounds}->{$refName}->[1]) {
-        $seg->{end}     = $plot->{referencebounds}->{$refName}->[1] }
+      if ($seg->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
+        $seg->{start}   = $pgx->{referencebounds}->{$refName}->[0] }
+      if ($seg->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
+        $seg->{end}     = $pgx->{referencebounds}->{$refName}->[1] }
 
       # providing a minimum sub-pixel segment plot length
-      my $segPixLen     =   sprintf "%.1f", ($plot->{basepixfrac} * ($seg->{end} - $seg->{start}));
+      my $segPixLen     =   sprintf "%.1f", ($pgx->{basepixfrac} * ($seg->{end} - $seg->{start}));
       if ($segPixLen < 0.2) { $segPixLen = 0.2 }
 
-      my $seg_x0        =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($seg->{start} - $plot->{referencebounds}->{$refName}->[0]);
+      my $seg_x0        =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start} - $pgx->{referencebounds}->{$refName}->[0]);
       my $seg_xn        =   $seg_x0 + $segPixLen;
-      my $seg_y         =   sprintf "%.1f", $area_ycen - $seg->{info}->{value} * $plot->{parameters}->{pixyfactor};
+      my $seg_y         =   sprintf "%.1f", $area_ycen - $seg->{info}->{value} * $pgx->{parameters}->{pixyfactor};
 
-      $plot->{svg}      .=  '
+      $pgx->{svg}      .=  '
 <line x1="'.$seg_x0.'"  y1="'.$seg_y.'"  x2="'.$seg_xn.'"  y2="'.$seg_y.'"  class="'.$seg->{variant_type}.'"  />';
-      if (scalar @{$plot->{parameters}->{chr2plot}} == 1) {
-        $plot->{svg}    .=  '
+      if (scalar @{$pgx->{parameters}->{chr2plot}} == 1) {
+        $pgx->{svg}    .=  '
 <a
-xlink:href="http://genome.ucsc.edu/cgi-bin/hgTracks?db='.$plot->{parameters}->{genome}.'&amp;position=chr'.$refName.'%3A'.$seg->{start}.'-'.$seg->{end}.'"
+xlink:href="http://genome.ucsc.edu/cgi-bin/hgTracks?db='.$pgx->{parameters}->{genome}.'&amp;position=chr'.$refName.'%3A'.$seg->{start}.'-'.$seg->{end}.'"
 xlink:show="new"
 xlink:title="'.$seg->{info}->{value}.' at '.$refName.':'.$seg->{start}.'-'.$seg->{end}.'">';
       }
-      $plot->{svg}      .=  '
+      $pgx->{svg}      .=  '
 <line x1="'.$seg_x0.'"  y1="'.$lowSegY.'"  x2="'.$seg_xn.'"  y2="'.$lowSegY.'"  class="'.$seg->{variant_type}.'"  />';
-      if (scalar @{$plot->{parameters}->{chr2plot}} == 1) {
-        $plot->{svg}    .=  '</a>' }
+      if (scalar @{$pgx->{parameters}->{chr2plot}} == 1) {
+        $pgx->{svg}    .=  '</a>' }
 
     }
 
     # / segments    ####    ####    ####    ####    ####    ####    ####    ####
 
     # moving x to the next chromosome area
-    $area_x0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+    $area_x0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
  }
 
   # adding a baseline at 0
-  $plot->{svg}  .=  '
-<line x1="'.$plot->{parameters}->{size_plotmargin_px}.'"  y1="'.$area_ycen.'"  x2="'.($plot->{parameters}->{size_plotmargin_px} + $plot->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
+  $pgx->{svg}  .=  '
+<line x1="'.$pgx->{parameters}->{size_plotmargin_px}.'"  y1="'.$area_ycen.'"  x2="'.($pgx->{parameters}->{size_plotmargin_px} + $pgx->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
 
-  $plot->{Y}    =  $lowSegY + $plot->{parameters}->{size_segments_stroke_px} / 2;
+  $pgx->{Y}    =  $lowSegY + $pgx->{parameters}->{size_segments_stroke_px} / 2;
 
-  return $plot;
+  return $pgx;
 
 }
 
@@ -214,115 +214,115 @@ Returns:
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
   if (
-    @{ $plot->{probedata_fracb} } < 1
+    @{ $pgx->{probedata_fracb} } < 1
     &&
-    @{ $plot->{segmentdata_fracb} } < 1
-  ) { return $plot }
+    @{ $pgx->{segmentdata_fracb} } < 1
+  ) { return $pgx }
 
-  if ($plot->{parameters}->{size_fracbarea_h_px} < 1) { return $plot }
+  if ($pgx->{parameters}->{size_fracbarea_h_px} < 1) { return $pgx }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  $plot->{Y}      +=  $plot->{parameters}->{size_chromosome_padding_px};
+  $pgx->{Y}      +=  $pgx->{parameters}->{size_chromosome_padding_px};
 
-  $plot->{svg}    .=  '
+  $pgx->{svg}    .=  '
 <style type="text/css"><![CDATA[
-  .fb {stroke-width: '.$plot->{parameters}->{size_segments_stroke_px}.'px; stroke: #FF3333; opacity: 0.8  }
+  .fb {stroke-width: '.$pgx->{parameters}->{size_segments_stroke_px}.'px; stroke: #FF3333; opacity: 0.8  }
 ]]></style>';
 
   # area init; here, $area_y0 is the lower margin, corresponding then to
   # a 0-value
-  my $area_x0   =   $plot->{areastartx};
-  my $area_yn   =   $plot->{Y} + $plot->{parameters}->{size_fracbarea_h_px};
-  my $area_ycen =   $plot->{Y} + $plot->{parameters}->{size_fracbarea_h_px} / 2;
-  my $fbPixYfac =   1 / $plot->{parameters}->{size_fracbarea_h_px};
+  my $area_x0   =   $pgx->{areastartx};
+  my $area_yn   =   $pgx->{Y} + $pgx->{parameters}->{size_fracbarea_h_px};
+  my $area_ycen =   $pgx->{Y} + $pgx->{parameters}->{size_fracbarea_h_px} / 2;
+  my $fbPixYfac =   1 / $pgx->{parameters}->{size_fracbarea_h_px};
 
-  $plot->{areaendy} =   $area_yn;
+  $pgx->{areaendy} =   $area_yn;
 
-  my $probeSize =   $plot->{parameters}->{factor_probedots};
-  if (scalar @{ $plot->{probedata_fracb} } < 200000) { $probeSize *= 2 }
-  if (scalar @{ $plot->{probedata_fracb} } < 8000)  { $probeSize *= 2 }
+  my $probeSize =   $pgx->{parameters}->{factor_probedots};
+  if (scalar @{ $pgx->{probedata_fracb} } < 200000) { $probeSize *= 2 }
+  if (scalar @{ $pgx->{probedata_fracb} } < 8000)  { $probeSize *= 2 }
 
-  foreach my $refName (@{ $plot->{parameters}->{chr2plot} }) {
+  foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-    my $areaW   =  sprintf "%.1f", ($plot->{referencebounds}->{$refName}->[1] - $plot->{referencebounds}->{$refName}->[0]) * $plot->{basepixfrac};
+    my $areaW   =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
-    $plot->{svg}    .=  '
-<rect x="'.$area_x0.'" y="'.$plot->{Y}.'" width="'.$areaW.'" height="'.$plot->{parameters}->{size_fracbarea_h_px}.'" style="fill: '.$plot->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
+    $pgx->{svg}    .=  '
+<rect x="'.$area_x0.'" y="'.$pgx->{Y}.'" width="'.$areaW.'" height="'.$pgx->{parameters}->{size_fracbarea_h_px}.'" style="fill: '.$pgx->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
     # probes ###    ####    ####    ####    ####    ####    ####    ####    ####
 
-    my $areaProbes  =  [ grep{ $_->{reference_name} eq $refName } @{ $plot->{probedata_fracb} } ];
-    $areaProbes     =  [ grep{ $_->{position} <= $plot->{referencebounds}->{$refName}->[1] } @$areaProbes];
-    $areaProbes     =  [ grep{ $_->{position} >= $plot->{referencebounds}->{$refName}->[0] } @$areaProbes ];
+    my $areaProbes  =  [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{probedata_fracb} } ];
+    $areaProbes     =  [ grep{ $_->{position} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaProbes];
+    $areaProbes     =  [ grep{ $_->{position} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaProbes ];
 
     # probes are plotted using GD
 
-    my $probeArea   =   GD::Image->new($areaW, $plot->{parameters}->{size_fracbarea_h_px}, 1);
+    my $probeArea   =   GD::Image->new($areaW, $pgx->{parameters}->{size_fracbarea_h_px}, 1);
     my $gdDotS      =   1 * $probeSize;
-    my $gdAreaCol   =   $probeArea->colorAllocate( @{ hex2rgb($plot->{parameters}->{color_plotarea_hex}) } );
+    my $gdAreaCol   =   $probeArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
     $probeArea->transparent($gdAreaCol);
     my $gdDotcol    = $probeArea->colorAllocateAlpha(0,0,0,111);
-    $probeArea->filledRectangle(0, 0, $areaW, $plot->{parameters}->{size_fracbarea_h_px}, $gdAreaCol);
+    $probeArea->filledRectangle(0, 0, $areaW, $pgx->{parameters}->{size_fracbarea_h_px}, $gdAreaCol);
 
     foreach (@$areaProbes) {
-      my $dotX  =   sprintf "%.2f", $plot->{basepixfrac} * ($_->{position} - $plot->{referencebounds}->{$refName}->[0]);
-      my $dotY  =   sprintf "%.2f", ($plot->{parameters}->{size_fracbarea_h_px} - $_->{value} / $fbPixYfac);
+      my $dotX  =   sprintf "%.2f", $pgx->{basepixfrac} * ($_->{position} - $pgx->{referencebounds}->{$refName}->[0]);
+      my $dotY  =   sprintf "%.2f", ($pgx->{parameters}->{size_fracbarea_h_px} - $_->{value} / $fbPixYfac);
       $probeArea->filledEllipse($dotX, $dotY, $gdDotS, $gdDotS, $gdDotcol);
     }
 
     # the GD object is encoded as base64 and embedded into the svg
-    $plot->{svg}    .=  '
+    $pgx->{svg}    .=  '
 <image
   x="'.$area_x0.'"
-  y="'.$plot->{Y}.'"
+  y="'.$pgx->{Y}.'"
   width="'.$areaW.'"
-  height="'.$plot->{parameters}->{size_fracbarea_h_px}.'"
+  height="'.$pgx->{parameters}->{size_fracbarea_h_px}.'"
   xlink:href="data:image/png;base64,'.encode_base64($probeArea->png).'"
 />';
 
     # / probes #    ####    ####    ####    ####    ####    ####    ####    ####
 
     # fracb segments s###    ####    ####    ####    ####    ####    ####    ####
-    my $areaSegments  =  [ grep{ $_->{reference_name} eq $refName } @{ $plot->{segmentdata_fracb} } ];
-    $areaSegments     =  [ grep{ $_->{start} <= $plot->{referencebounds}->{$refName}->[1] } @$areaSegments];
-    $areaSegments     =  [ grep{ $_->{end} >= $plot->{referencebounds}->{$refName}->[0] } @$areaSegments ];
+    my $areaSegments  =  [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{segmentdata_fracb} } ];
+    $areaSegments     =  [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegments];
+    $areaSegments     =  [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegments ];
 
     foreach my $seg (@$areaSegments) {
 
-      if ($seg->{start} < $plot->{referencebounds}->{$refName}->[0]) {
-        $seg->{start} = $plot->{referencebounds}->{$refName}->[0] }
-      if ($seg->{end} > $plot->{referencebounds}->{$refName}->[1]) {
-        $seg->{end} = $plot->{referencebounds}->{$refName}->[1] }
+      if ($seg->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
+        $seg->{start} = $pgx->{referencebounds}->{$refName}->[0] }
+      if ($seg->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
+        $seg->{end} = $pgx->{referencebounds}->{$refName}->[1] }
 
       # providing a minimum sub-pixel segment plot length
-      my $segPixLen     =   sprintf "%.1f", ($plot->{basepixfrac} * ($seg->{end} - $seg->{start}));
+      my $segPixLen     =   sprintf "%.1f", ($pgx->{basepixfrac} * ($seg->{end} - $seg->{start}));
       if ($segPixLen < 0.2) { $segPixLen = 0.2 }
 
-      my $seg_x0        =   sprintf "%.1f", $area_x0 + $plot->{basepixfrac} * ($seg->{start} - $plot->{referencebounds}->{$refName}->[0]);
+      my $seg_x0        =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start} - $pgx->{referencebounds}->{$refName}->[0]);
       my $seg_xn        =   $seg_x0 + $segPixLen;
 
       my $val     =   $seg->{info}->{value} / $fbPixYfac;
       my $seg_y   =   sprintf "%.2f", ($area_yn - $val);
 
-      $plot->{svg}      .=  '
+      $pgx->{svg}      .=  '
 <line x1="'.$seg_x0.'" y1="'.$seg_y.'" x2="'.$seg_xn.'" y2="'.$seg_y.'" class="fb" />';
 
     }
 
     # / segments    ####    ####    ####    ####    ####    ####    ####    ####
 
-    $area_x0    +=  $areaW + $plot->{parameters}->{size_chromosome_padding_px};
+    $area_x0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
  
   }
 
   # adding a baseline at 0.5
-  $plot->{svg}  .=  '
-<line x1="'.$plot->{parameters}->{size_plotmargin_px}.'"  y1="'.$area_ycen.'"  x2="'.($plot->{parameters}->{size_plotmargin_px} + $plot->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
+  $pgx->{svg}  .=  '
+<line x1="'.$pgx->{parameters}->{size_plotmargin_px}.'"  y1="'.$area_ycen.'"  x2="'.($pgx->{parameters}->{size_plotmargin_px} + $pgx->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
 
-  $plot->{Y}    +=  $plot->{parameters}->{size_fracbarea_h_px};
+  $pgx->{Y}    +=  $pgx->{parameters}->{size_fracbarea_h_px};
 
-  return $plot;
+  return $pgx;
 
 }
 

@@ -66,7 +66,7 @@ sub cluster_tree {
 		my $nodeID	=   1 * (-1-$i);
 
 		$tree->{ $nodeID }->{ID}		=	1 * $nodeID;
-		$tree->{ $nodeID }->{LEFT}	= 1 * 	$node->left;
+		$tree->{ $nodeID }->{LEFT}	= 1 * $node->left;
 		$tree->{ $nodeID }->{RIGHT}	=	1 * $node->right;
 		$tree->{ $nodeID }->{DIST}	=	1 * $node->distance;
 
@@ -94,10 +94,10 @@ sub cluster_tree {
     									$sortNodes
     								);
 
-	return	_drawNodes(
-    				$tree,
-    				$sortNodes,
-    			);
+	return	      _drawNodes(
+    				      $tree,
+    				      $sortNodes,
+    			      );
 
 }
 

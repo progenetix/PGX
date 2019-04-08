@@ -8,6 +8,11 @@ This is a utility script for plotting positional genome data:
 - segments (segmented log value and b-allele fractions)
 - labels
 
+Examples:
+
+* perl arrayplotter.pl -in ../../in/GSM325151/ -chr2plot 2 -plotregions 2:0-180000000 -markers 2:29332467-29575397:ALK:#ff3300 -factor_probedots 2 -marker_text_px 14
+
+
 =cut
 
 # CPAN packages
@@ -16,6 +21,7 @@ use File::Basename;
 use POSIX 'strftime';
 use strict;
 use Term::ProgressBar;
+use JSON::XS;
 
 # local packages
 
@@ -50,6 +56,7 @@ $args{'-segfilename'}       ||= $args{'-sfn'}   ||= 'segments,cn.tsv';
 $args{'-fracbprobefilename'}||= $args{'-fbpfn'} ||= 'probes,fracb.tsv';
 $args{'-fracbsegfilename'}  ||= $args{'-fbsfn'} ||= 'segments,fracb.tsv';
 $args{'-defaultsfilename'}  ||= $args{'-dfn'}   ||= 'plotdefaults.yaml';
+$args{'-callsetfilename'}   ||= $args{'-csfn'}   ||= 'callset.json';
 
 $args{'-arraypath'} ||= $args{'-in'}  ||= q{};
 $args{'-arraypath'} =~  s/\/$//;
@@ -75,7 +82,7 @@ _checkArgs();
 
 
 # preconfigured objects
-our $plot       =   new PGX::GenomePlots::Genomeplot(\%args);
+our $pgx       =   new PGX::GenomePlots::Genomeplot(\%args);
 
 _printFeedback();
 
@@ -83,12 +90,12 @@ _printFeedback();
 ########    main    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-$plot->plot_add_fracbprobes_from_file($args{'-fracbprobefile'});
-$plot->plot_add_fracbsegments_from_file($args{'-fracbsegfile'});
-$plot->plot_add_probes_from_file($args{'-probefile'});
-$plot->plot_add_segments_from_file($args{'-segfile'});
-$plot->plot_adjust_random_probevalues();
-$plot->return_arrayplot_svg();
+$pgx->pgx_add_fracbprobes_from_file($args{'-fracbprobefile'});
+$pgx->pgx_add_fracbsegments_from_file($args{'-fracbsegfile'});
+$pgx->pgx_add_probes_from_file($args{'-probefile'});
+$pgx->pgx_add_segments_from_file($args{'-segfile'});
+$pgx->plot_adjust_random_probevalues();
+$pgx->return_arrayplot_svg();
 
 my $plotfile;
 if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
@@ -96,7 +103,7 @@ if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
   $plotfile     =~  s/[\:]/_/g;
   $args{'-do_allchros'} =   'n';
 }
-elsif (scalar(@{$plot->{parameters}->{chr2plot}}) < 22) {
+elsif (scalar(@{$pgx->{parameters}->{chr2plot}}) < 22) {
   $plotfile     =   'arrayplot,chr'.$args{'-chr2plot'}.'.svg' }
 else {
   $plotfile     =   'arrayplot.svg' }
@@ -108,32 +115,48 @@ if ($args{'-svgfilename'} =~ /^[\w\,\-]+?\.svg/i) {
 
 open  (FILE, ">", $args{'-out'}.'/'.$plotfile);
 binmode(FILE, ":utf8");
-print FILE  $plot->{svg};
+print FILE  $pgx->{svg};
 close FILE;
 
 if ($args{'-do_allchros'} !~ /y/i) { exit }
 
 my $i           =   0;
-my $progBar     =   Term::ProgressBar->new(scalar @{$plot->{parameters}->{chr2plot}});
-my $chr2plot    =   $plot->{parameters}->{chr2plot};
+my $progBar     =   Term::ProgressBar->new(scalar @{$pgx->{parameters}->{chr2plot}});
+my $chr2plot    =   $pgx->{parameters}->{chr2plot};
 
 foreach my $chro (@$chr2plot) {
 
   # re-initializing some values for multiple plots ...
-  $plot->{parameters}->{chr2plot} =   [$chro];
-  $plot->{svg}                    =   q{};
-  $plot->{genomesize}             =   get_genome_basecount(
-                                        $plot->{cytobands},
-                                        $plot->{parameters}->{chr2plot},
+  $pgx->{parameters}->{chr2plot} =   [$chro];
+  $pgx->{svg}                    =   q{};
+  $pgx->{genomesize}             =   get_genome_basecount(
+                                        $pgx->{cytobands},
+                                        $pgx->{parameters}->{chr2plot},
                                       );
-  $plot         =   return_arrayplot_svg($plot);
+  $pgx         =   return_arrayplot_svg($pgx);
   $plotfile     =   'arrayplot,chr'.$chro.'.svg';
   open  (FILE, ">", $args{'-out'}.'/'.$plotfile);
   binmode(FILE, ":utf8");
-  print FILE  $plot->{svg};
+  print FILE  $pgx->{svg};
+  close FILE;
+
+  $pgx->plot_segments_add_statusmap();
+
+  # TODO: This just assumes that the last part of the file pathe is the array ID
+  my $arrayName =   $args{'-out'};
+  $arrayName    =~  s/^.*\/?//;
+  my $callset   =   {
+    id          =>  $arrayName,
+    variants    =>  [ grep{ $_->{variant_type} =~ /^D(?:UP)|(?:EL)$/ } @{ $pgx->{segmentdata} }],
+    statusmaps  =>  $pgx->{statusmaps},
+  };
+
+  open  (FILE, ">", $args{'-out'}.'/'.$args{'-callsetfilename'});
+  print  FILE  JSON::XS->new->encode($callset);
   close FILE;
 
   $progBar->update($i++);
+  
 }
 
 $progBar->update(scalar @$chr2plot);
@@ -305,7 +328,7 @@ END
   foreach (@showArgs) {
     my $name    = '    -'.$_.(" " x 40);
     $name       =~  s/^(.{40}).*?$/$1/;
-    print $name.$plot->{parameters}->{$_}."\n";
+    print $name.$pgx->{parameters}->{$_}."\n";
   }
   print <<END;
 

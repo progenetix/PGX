@@ -9,22 +9,21 @@ use PGX::GenomePlots::HistoPlotter;
 use PGX::GenomePlots::ArrayPlotter;
 use PGX::GenomePlots::StripPlotter;
 use PGX::GenomePlots::CytobandsPlotter;
-use PGX::FileUtilities::PlotfileReader;
-use PGX::FileUtilities::PlotfileWriter;
+use PGX::IOUtilities::PGXfileReader;
+use PGX::IOUtilities::PGXfileWriter;
+use PGX::IOUtilities::PGXdataAggregation;
 require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
   new
-  plot_add_frequencymaps
-  plot_add_probes_from_file
-  plot_add_segments_from_file
-  plot_add_segments_from_csvariants
-  plot_add_segments_from_variants_cnv
-  plot_add_segmentsets_from_samples
-  plot_add_fracbprobes_from_file
-  plot_add_fracbsegments_from_file
+  pgx_add_frequencymaps
+  pgx_add_probes_from_file
+  pgx_add_segments_from_file
+  pgx_add_segmentsets_from_samples
+  pgx_add_fracbprobes_from_file
+  pgx_add_fracbsegments_from_file
   plot_adjust_random_probevalues
-  plot_get_plotregions
+  pgx_get_genome_regions
 );
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
@@ -35,10 +34,11 @@ sub new {
 
   my $class     =   shift;
   my $args      =   shift;
+  $args         =   args_modify_plot_parameters(read_plot_defaults(), $args);
   my $self      =   {
-    parameters  =>  args_modify_plot_parameters(read_plot_defaults(), $args),
-    cytobands   =>  read_cytobands($args->{'-genome'}),
-    plotid      =>  (! defined($args->{'-plotid'}) ? 'genomeplot' : $args->{'-plotid'}),
+    parameters  =>  $args,
+    cytobands   =>  read_cytobands($args->{genome}),
+    plotid      =>  $args->{plotid},
     svg         =>  q{},
     Y           =>  0,
   };
@@ -54,7 +54,7 @@ sub new {
                                   $self->{parameters}->{chr2plot},
                                 );
   $self->{matrixindex}      =   [ 0..$#{ $self->{genomeintervals} } ];
-  $self         =   plot_get_plotregions($self);
+  $self         =   pgx_get_genome_regions($self);
   return $self;
 
 }
@@ -63,19 +63,19 @@ sub new {
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_get_plotregions {
+sub pgx_get_genome_regions {
 
-  my $plot      =   shift;
-
-  my $regions   =   $plot->{parameters}->{plotregions};
+  my $pgx       =   shift;
+  my $regions   =   $pgx->{parameters}->{plotregions};
   my %chros     =   map{ $_->{reference_name} => 1 } @$regions;
   my @refNames  =   ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %chros), (sort grep{ ! /\d/ } keys %chros));
 
-  if (! grep{ /^\d\w?$/ } @refNames) { return $plot }
-  if (! grep{ $_->{reference_name} =~ /^\d\w?$/ } @$regions) { return $plot }
+  if (! grep{ /^\d\w?$/ } @refNames) { return $pgx }
+  if (! grep{ $_->{reference_name} =~ /^\d\w?$/ } @$regions) { return $pgx }
 
   my $refLims   =   {};
   my $baseCount =   0;
+
   foreach my $ref (@refNames) {
     my @allBounds       =   map{ $_->{start}, $_->{end} } (grep{ $_->{reference_name} eq $ref } @$regions);
     @allBounds          =   sort {$a <=> $b } @allBounds;
@@ -83,29 +83,29 @@ sub plot_get_plotregions {
     $baseCount          +=  ($allBounds[-1] - $allBounds[0]);
   }
 
-  $plot->{parameters}->{do_chromosomes_proportional} = /n/;
-  $plot->{parameters}->{chr2plot}   =   [@refNames];
-  $plot->{referencebounds}  =   $refLims;
-  $plot->{genomesize}       =   $baseCount;
+  $pgx->{parameters}->{do_chromosomes_proportional} = /n/;
+  $pgx->{parameters}->{chr2plot}   =   [@refNames];
+  $pgx->{referencebounds}  =   $refLims;
+  $pgx->{genomesize}       =   $baseCount;
 
-  $plot->{matrixindex}      =   [];
+  $pgx->{matrixindex}  =   [];
   my @selIntI   =   ();  
   my $i         =   0;
-  foreach my $int (@{$plot->{genomeintervals}}) {
+  foreach my $int (@{$pgx->{genomeintervals}}) {
     if (
-      $plot->{referencebounds}->{ $int->{reference_name} }
+      $pgx->{referencebounds}->{ $int->{reference_name} }
       &&
-      $int->{start} <= $plot->{referencebounds}->{ $int->{reference_name} }->[1]
+      $int->{start} <= $pgx->{referencebounds}->{ $int->{reference_name} }->[1]
       &&
-      $int->{end} >= $plot->{referencebounds}->{ $int->{reference_name} }->[0]
+      $int->{end} >= $pgx->{referencebounds}->{ $int->{reference_name} }->[0]
     ) { 
-      push(@{ $plot->{matrixindex} }, $i);
+      push(@{ $pgx->{matrixindex} }, $i);
     }
     $i++;
 
   }
 
-  return $plot;
+  return $pgx;
 
 }
 
@@ -113,62 +113,72 @@ sub plot_get_plotregions {
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_frequencymaps {
+sub pgx_add_frequencymaps {
 
-  my $plot      =   shift;
-  my $callsetCollections    =   shift;
+=pod
+## pgx_add_frequencymaps
 
-  $plot->{frequencymaps}    =   [];
+#### Expects:
 
-  foreach my $csColl (@$callsetCollections) {
 
-   $plot->interval_cnv_frequencies(
-    [ map{$_->{info}->{statusmaps}} @{ $csColl->{statusmapsets} } ],
-    $csColl->{name},
-    $csColl->{labels},
-  );
+#### Returns:
+
+
+=cut
+
+  my $pgx       =   shift;
+  my $csColls   =   shift;
+
+  $pgx->{frequencymaps}    =   [];
+
+  foreach my $csColl (@$csColls) {
+    $pgx->interval_cnv_frequencies(
+      [ map{$_->{statusmaps}} @{ $csColl->{statusmapsets} } ],
+      $csColl->{name},
+      $csColl->{labels},
+    );
 
   }
 
-  return $plot;
+  return $pgx;
 
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_probes_from_file {
+sub pgx_add_probes_from_file {
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
   my $probefile =   shift;
 
-  $plot->read_probefile($probefile);
-  return $plot;
+  $pgx->read_probefile($probefile);
+  return $pgx;
 
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_segments_from_file {
+sub pgx_add_segments_from_file {
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
   my $segfile   =   shift;
 
-  $plot->read_segmentfile($segfile);
-  return $plot;
+  $pgx->read_segmentfile($segfile);
+  return $pgx;
 
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_segmentsets_from_samples {
+sub pgx_add_segmentsets_from_samples {
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
   my $callsets  =   shift;
   my $idName    =   shift;
   if ($idName !~ /\w\w/) {
     $idName     =   'id'}
   
-  $plot->{segmentsets}  =   [];
+  $pgx->{segmentsets}  =   [];
        
   foreach my $cs (@$callsets) {
   
@@ -176,118 +186,42 @@ sub plot_add_segmentsets_from_samples {
       $cs->{name}   =   $cs->{$idName} }
       
     push (
-      @{ $plot->{segmentsets} },
+      @{ $pgx->{segmentsets} },
       {
-        id              =>  $cs->{$idName},
-        name            =>  $cs->{name},
+        id          =>  $cs->{$idName},
+        name        =>  $cs->{name},
         variants    =>  $cs->{variants},
-        statusmaps      =>  $cs->{statusmaps},        
+        statusmaps  =>  $cs->{statusmaps},        
       }
     );
 
   }
 
-  return $plot;
+  return $pgx;
 
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_segments_from_variants_cnv {
+sub pgx_add_fracbprobes_from_file {
 
-=pod
-
-Any given variant may contain data for several calls. The segment's value has
-to be retrieved from the correct call.
-
-=cut
-
-  my $plot      =   shift;
-  my $vardata   =   shift;
-  my $callsetId =   shift;
-
-  $plot->{segmentdata}  =   [];
-
-  foreach my $var (@$vardata) {
-    push(
-      @{$plot->{segmentdata}},
-      {
-        callset_id      =>  $callsetId,
-        reference_name  =>  $var->{reference_name},
-        start           =>  1 * $var->{start},
-        end             =>  1 * $var->{end},
-        variant_type    =>  $var->{variant_type},
-        info            =>  {
-          value         =>  1 * $var->{info}->{value},
-        },
-      }
-    );
-  }
-
-  return $plot;
-
-}
-
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-
-sub plot_add_segments_from_csvariants {
-
-=pod
-
-Any given variant may contain data for several calls. The segment's value has
-to be retrieved from the correct call.'
-
-=cut
-
-  my $plot      =   shift;
-  my $vardata   =   shift;
-  my $callsetId =   shift;
-
-  $plot->{segmentdata}  =   [];
-
-  foreach my $var (@$vardata) {
-    foreach my $csCall (grep{ $_->{callset_id} eq $callsetId} @{ $var->{calls}}) {
-      push(
-        @{$plot->{segmentdata}},
-        {
-          callset_id        =>  $callsetId,
-          reference_name    =>  $var->{reference_name},
-          start             =>  1 * $var->{start},
-          end               =>  1 * $var->{end},
-          variant_type      =>  $var->{variant_type},
-          info              =>  {
-            value           =>  1 * $csCall->{info}->{value},
-          },
-        }
-      );
-    }
-  }
-
-  return $plot;
-
-}
-
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-
-sub plot_add_fracbprobes_from_file {
-
-  my $plot      =   shift;
+  my $pgx       =   shift;
   my $probefile =   shift;
 
-  $plot->read_probefile($probefile, 'probedata_fracb');
-  return $plot;
+  $pgx->read_probefile($probefile, 'probedata_fracb');
+  return $pgx;
 
 }
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-sub plot_add_fracbsegments_from_file {
+sub pgx_add_fracbsegments_from_file {
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
   my $segfile   =   shift;
 
-  $plot->read_segmentfile($segfile, 'segmentdata_fracb');
-  return $plot;
+  $pgx->read_segmentfile($segfile, 'segmentdata_fracb');
+  return $pgx;
 
 }
 
@@ -301,43 +235,54 @@ This method adjusts array probe values for the value of the segment they are
 mapped to. The method is used for adjusting random probe values such as we are
 using to simulate array data, in cases where only segments data is available.
 
+The use of Term::ProgressBar here assumes that this function is only called in 
+a local context (i.e. run in the terminal, not in web instances). 
+
 =cut
 
   use Term::ProgressBar;
 
-  my $plot      =   shift;
+  my $pgx       =   shift;
 
-  if ($plot->{parameters}->{simulated_probes} =~ /y/i ) {
+  my $parent    = `ps -o ppid= -p $$ | xargs ps -o command= -p`;
+  my $progBar;
+
+  if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
 
     my $i       =   0;
-    my $progBar =   Term::ProgressBar->new(
+    
+    if ($parent !~ /httpd/) {
+      $progBar  =   Term::ProgressBar->new(
                       {
                         name  => 'Adjusting Simulated Values',
-                        count => scalar @{ $plot->{segmentdata} }
+                        count => scalar @{ $pgx->{segmentdata} }
                       }
                     );
+    }
 
-    foreach my $seg (@{ $plot->{segmentdata} }) {
+    foreach my $seg (@{ $pgx->{segmentdata} }) {
 
       my @prI   =   map{ $_ } grep{
-                      $plot->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
+                      $pgx->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
                       &&
-                      $plot->{probedata}->[$_]->{position} >=  $seg->{start}
+                      $pgx->{probedata}->[$_]->{position} >=  $seg->{start}
                       &&
-                      $plot->{probedata}->[$_]->{position} <=  $seg->{end}
-                    } (0..$#{ $plot->{probedata} });
+                      $pgx->{probedata}->[$_]->{position} <=  $seg->{end}
+                    } (0..$#{ $pgx->{probedata} });
 
-      $progBar->update($i++);
+      if ($parent !~ /httpd/) {
+        $progBar->update($i++) }
 
       foreach (@prI) {
-        $plot->{probedata}->[$_]->{value}   +=  $seg->{info}->{value};
+        $pgx->{probedata}->[$_]->{value}   +=  $seg->{info}->{value};
     }}
 
-    $progBar->update(scalar @{$plot->{segmentdata}});
+    if ($parent !~ /httpd/) {
+      $progBar->update(scalar @{$pgx->{segmentdata}}) }
 
   }
 
-  return $plot;
+  return $pgx;
 
 }
 
