@@ -82,7 +82,7 @@ _checkArgs();
 
 
 # preconfigured objects
-our $pgx       =   new PGX::GenomePlots::Genomeplot(\%args);
+our $pgx       =   new PGX(\%args);
 
 _printFeedback();
 

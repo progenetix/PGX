@@ -106,7 +106,7 @@ for my $i (0..$#{ $biosamples }) {
 
 $args{'-text_bottom_left'}      =   $csNo.' samples';
 
-my $pgx        =   new PGX::GenomePlots::Genomeplot(\%args);
+my $pgx        =   new PGX(\%args);
 $pgx->pgx_add_frequencymaps( [ {
   statusmapsets =>  $callsets } ] );
 $pgx->return_histoplot_svg();

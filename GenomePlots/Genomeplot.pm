@@ -12,10 +12,10 @@ use PGX::GenomePlots::CytobandsPlotter;
 use PGX::IOUtilities::PGXfileReader;
 use PGX::IOUtilities::PGXfileWriter;
 use PGX::IOUtilities::PGXdataAggregation;
+
 require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
-  new
   pgx_add_frequencymaps
   pgx_add_probes_from_file
   pgx_add_segments_from_file
@@ -25,39 +25,6 @@ require Exporter;
   plot_adjust_random_probevalues
   pgx_get_genome_regions
 );
-
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-
-sub new {
-
-  my $class     =   shift;
-  my $args      =   shift;
-  $args         =   args_modify_plot_parameters(read_plot_defaults(), $args);
-  my $self      =   {
-    parameters  =>  $args,
-    cytobands   =>  read_cytobands($args->{genome}),
-    plotid      =>  $args->{plotid},
-    svg         =>  q{},
-    Y           =>  0,
-  };
-
-  bless $self, $class;
-  $self->{genomeintervals}  =   make_genome_intervals(
-                                  $self->{cytobands},
-                                  $self->{parameters}->{binning},
-                                );
-  $self->{referencebounds}  =   get_reference_base_limits($self->{cytobands});
-  $self->{genomesize}       =   get_genome_basecount(
-                                  $self->{cytobands},
-                                  $self->{parameters}->{chr2plot},
-                                );
-  $self->{matrixindex}      =   [ 0..$#{ $self->{genomeintervals} } ];
-  $self         =   pgx_get_genome_regions($self);
-  return $self;
-
-}
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
