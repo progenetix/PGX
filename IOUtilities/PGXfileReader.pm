@@ -131,6 +131,8 @@ Returns:
 
 sub read_segmentfile {
 
+  no warnings 'uninitialized';
+
 =pod
 
 Expects:
@@ -205,32 +207,55 @@ Returns:
   my $table     =   read_file_to_split_array($segmentsF);
 
   my $i         =   0;
+
   foreach my $segment (@$table) {
-    $i++;
-    if ($segment->[2] !~ /^\d+?$/) { next }
+
     my %segVals =   ();
     foreach (keys %colOrder) {
       $segVals{$_}  =   $segment->[$colOrder{$_}];
+      $segVals{$_}	=~	s/\s//g;
     };
 
-    $segVals{callset_id}        =~  s/[^\w\-\,]/_/g;
+    $segVals{callset_id}        =~  s/[^\w\-\:]/_/g;
+
     $segVals{reference_name}    =~ s/[^\dxXyY]//;
     $segVals{reference_name}    =~ s/^23$/X/;
     $segVals{reference_name}    =~ s/^24$/Y/;
-    $segVals{start}     =   sprintf "%.0f", $segVals{start};
+    if ($segVals{reference_name}!~ /^\w\d?$/)             { next }
+
+    $segVals{start}     =   sprintf "%.0f", $segVals{start};	# sometimes "intermediate" positions
     $segVals{end}       =   sprintf "%.0f", $segVals{end};
     $segVals{probes}    =~  s/[^\d]//g;
+
+    if ($segVals{start} !~ /^\d{1,9}$/)           { next }
+    if ($segVals{end}   !~ /^\d{1,9}$/)           { next }
+    if ($segVals{value} !~ /^\-?\d+?(\.\d+?)?$/)  { next }
+
     $segVals{value}     =   sprintf "%.4f", $segVals{value};
 
-    if ($segVals{reference_name}!~ /^\w\d?$/)             { next }
-    if ($segVals{start}         !~ /^\d{1,9}$/)           { next }
-    if ($segVals{end}           !~ /^\d{1,9}$/)           { next }
-    if ($segVals{value}         !~ /^\-?\d+?(\.\d+?)?$/)  { next }
+		my $varStatus				=		'_NS_';
+		
+		if ($segmentsT !~ /fracb/i) {
+
+			# baseline adjustment
+  		if ($pgx->{parameters}->{plot_adjust_baseline} =~ /^\-?(?:\d+?\.)?\d+?$/) {
+      	$segVals{value}	+=   $pgx->{parameters}->{plot_adjust_baseline} }
+
+			if ($segVals{value} >= $pgx->{parameters}->{cna_gain_threshold}) {
+				$varStatus	=		'DUP' }
+			elsif ($segVals{value} <= $pgx->{parameters}->{cna_loss_threshold}) {
+				$varStatus	=		'DEL' }
+			else {
+					next	
+		}}
+
     if (
-      $segVals{probes} =~ /^\d\d?$/
+      $segVals{probes} =~ /\d/
       &&
       $segVals{probes} < $pgx->{parameters}->{segment_probecount_min}
     )                                                     { next }
+
+    $i++;
 
     push(
       @{ $pgx->{$segmentsT} },
@@ -238,33 +263,21 @@ Returns:
         no              =>  $i,
         callset_id      =>  $segVals{callset_id},
         reference_name  =>  $segVals{reference_name},
+        variant_type		=>	$varStatus,
         start           =>  [ 1 * $segVals{start} ],
         end             =>  [ 1 * $segVals{end} ],
         info            =>  {
           value         =>  $numfactor * $segVals{value},
           svlen         =>  1 * ($segVals{end} - $segVals{start}),
-          probes        =>  1 * $segVals{probes},
+          probes        =>  $segVals{probes},
         },
+        digest					=>	join(':',
+					$segVals{reference_name},
+					join(',', $segVals{start}.'-'.$segVals{end} ),
+					$varStatus
+				),
       }
     );
-
-  }
-
-  if ($segmentsT =~ /fracb/i) { return $pgx }
-
-  # baseline adjustment
-  if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
-    foreach my $i (0..$#{ $pgx->{$segmentsT} }) {
-      $pgx->{$segmentsT}->[$i]->{info}->{value} +=   $pgx->{parameters}->{plot_adjust_baseline};
-    }
-  }
-
-  for my $i (0..$#{ $pgx->{$segmentsT} }) {
-
-    if ($pgx->{$segmentsT}->[$i]->{info}->{value} >= $pgx->{parameters}->{cna_gain_threshold}) {
-      $pgx->{$segmentsT}->[$i]->{variant_type}  =   'DUP' }
-    elsif ($pgx->{$segmentsT}->[$i]->{info}->{value} <= $pgx->{parameters}->{cna_loss_threshold}) {
-      $pgx->{$segmentsT}->[$i]->{variant_type}  =   'DEL' }
 
   }
 

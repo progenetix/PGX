@@ -9,8 +9,8 @@ require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
   pgx_open_handover
-  pgx_samples_from_accessid
-  pgx_add_segments_from_variants
+  pgx_samples_from_handover
+  pgx_add_variants_from_db
   pgx_create_samples_from_segments
   pgx_callset_labels_from_biosamples
   pgx_callset_labels_from_file
@@ -24,11 +24,11 @@ sub pgx_open_handover {
 
   my $pgx       =   shift;
   my $config    =   shift;
-  my $query     =   shift;
+  my $accessid  =   shift;
   
-  if ($query->{param}->{accessid}->[0] !~ /..../) { return $pgx }
+  if ($accessid !~ /..../) { return $pgx }
 
-  $pgx->{handover}  =    MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { _id	=>  $query->{param}->{accessid}->[0] } );
+  $pgx->{handover}  =   MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { _id	=>  $accessid } );
   $pgx->{dataconn}  =   MongoDB::MongoClient->new()->get_database( $pgx->{handover}->{source_db} );
 
  return $pgx;
@@ -37,31 +37,53 @@ sub pgx_open_handover {
 
 ################################################################################
 
-sub pgx_samples_from_accessid {
+sub pgx_samples_from_handover {
 
   my $pgx       =   shift;
-  my $query     =   shift;
+
   if (! $pgx->{handover}) { return $pgx }
   if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
 
-  my $cscoll      =   $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
-  my $dataQuery   =   { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
-  my $cursor	    =		$cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, 'info.statusmaps.dupmap' => 1, 'info.statusmaps.delmap' => 1 } );
-  my $callsets	  =		[ $cursor->all ];
-  $callsets       =   [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
-  if ($query->{param}->{'-randno'}->[0] > 0) {
-    $callsets     =   RandArr($callsets, $query->{param}->{'-randno'}->[0]) }
+  my $cscoll    =   $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
+  my $dataQuery =   { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
+  my $cursor	  =		$cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, 'info.statusmaps.dupmap' => 1, 'info.statusmaps.delmap' => 1 } );
+  my $callsets	=		[ $cursor->all ];
+  $callsets     =   [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
  
-  $pgx->{samples} =   [ 
+  $pgx->{samples} 	=   [ 
     map{
       { 
-        id            => $_->{id}, 
-        biosample_id  => $_->{biosample_id}, 
-        statusmaps    => $_->{info}->{statusmaps}, 
+        id      => 	$_->{id},
+        biosample_id  => $_->{biosample_id},
+        statusmaps    => $_->{info}->{statusmaps},
+        paths		=>	$_->{paths},
       }
     } @$callsets
   ];
  
+  return $pgx;
+
+}
+
+################################################################################
+
+sub pgx_add_variants_from_db {
+
+  my $pgx       =   shift;
+  my $query     =   shift;
+  if (! $pgx->{handover}) { return $pgx }
+
+  my $vcoll     =   $pgx->{dataconn}->get_collection('variants');
+
+  for my $i (0..$#{ $pgx->{samples} }) {
+  
+  	my $dataQuery =   { 'callset_id' => $pgx->{samples}->[$i]->{id} };
+  	my $cursor	  =		$vcoll->find( $dataQuery )->fields( { _id => 0, updated => 0, created => 0 } );
+
+		$pgx->{samples}->[$i]->{variants}	=		[ $cursor->all ];
+
+	}
+	 
   return $pgx;
 
 }
@@ -97,28 +119,6 @@ sub pgx_create_samples_from_segments {
 
   return $pgx;
   
-}
-
-################################################################################
-
-sub pgx_add_segments_from_variants {
-
-  my $pgx       =   shift;
-
-  if (! $pgx->{dataconn}) { return $pgx }
-
-  my %csIds     =   map{ $_->{id} => 1 } @{ $pgx->{samples} };
-  my $cursor    =   $pgx->{dataconn}->get_collection( 'variants' )->find( { callset_id => { '$in' => [ keys %csIds ] } } )->fields( { _id => 0, updated => 0, created => 0, digest => 0, reference_bases => 0, mate_name => 0} );
-  my $vars      =   [ $cursor->all ];
-
-  for my $i (0..$#{ $pgx->{samples} }) {
- 
-    $pgx->{samples}->[$i]->{variants} =   [ grep{ $_->{callset_id} eq $pgx->{samples}->[$i]->{id} } @$vars ];
-
-  }
-  
-  return $pgx;
-
 }
 
 ################################################################################
@@ -366,7 +366,7 @@ input format (other attributes optional):
 				 $infoText .=
 						'<li><a href="/publications/?pmid_m='
 					. $pmid
-					. '" target="_blank">PMID '
+					. '" target="_blank">pubmedid '
 					. $pmid
 					. '</a></li>';
 			}		

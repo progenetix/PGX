@@ -24,7 +24,7 @@ sub write_svg {
   my $fileName  =   shift;
  
   if (! -d $pgx->{parameters}->{path_loc}) {
-    warn "No specification for output path $pgx->{parameters}->{path_loc} $!";
+    warn "No correct specification for output path $pgx->{parameters}->{path_loc} $!";
     return $pgx;
   }
 

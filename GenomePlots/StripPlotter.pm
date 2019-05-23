@@ -37,7 +37,7 @@ sub return_stripplot_svg {
     @{ $pgx->{parameters}->{chr2plot} } == 1
   ) {
     $pgx->{areawidth}  *=  ($pgx->{referencebounds}->{ $pgx->{parameters}->{chr2plot}->[0] }->[1] / $pgx->{referencebounds}->{ '1' }->[1]);
-    $plotW      =   $pgx->{areawidth} + 2 * $pgx->{parameters}->{size_plotmargin_px};
+    $plotW      =   $pgx->{areawidth} + $pgx->{areastartx} + $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_label_right_px} + $pgx->{parameters}->{size_clustertree_w_px};
   }
   $pgx->{areaendx}   =   $pgx->{areastartx} + $pgx->{areawidth};
   $pgx->{areatreex}  =   $pgx->{areaendx};

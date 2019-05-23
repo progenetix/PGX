@@ -41,13 +41,13 @@ notes:
     $pub->{DOI} =   $1 }
 
   if ($epmcxml =~ /<pmcid>(PMC\d+?)<\/pmcid/) {
-    $pub->{PMCID}   =   $1 }
+    $pub->{pmcid}   =   $1 }
 
   if ($epmcxml =~ /<pmid>(\d+?)<\/pmid/) {
-    $pub->{PMID}    =   $1 }
+    $pub->{pubmedid}    =   $1 }
 
   if ($epmcxml =~ /<affiliation>(.+?)<\/affiliation/) {
-    $pub->{AFFILIATION} =   $1 }
+    $pub->{affiliation} =   $1 }
 
   if ($epmcxml =~ /<title>(.+?)<\/title/) {
     $pub->{TITLE}       =   $1 }
@@ -59,35 +59,35 @@ notes:
     if ($journalData =~ /<title>(.+?)<\/title>/) {
       $pub->{JOURNALTITLE}      =   $1 }
     if ($journalData =~ /<ISOAbbreviation>([^>]+?)<\/ISOAbbreviation>/) {
-      $pub->{JOURNAL}   = $1 }
+      $pub->{journal}   = $1 }
     if ($journalData =~ /<volume>([^>]+?)<\/volume>/) {
-      $pub->{JOURNAL}   .=  ' '.$1 }
+      $pub->{journal}   .=  ' '.$1 }
     if ($journalData =~ /<issue>([^>]+?)<\/issue>/) {
-      $pub->{JOURNAL}   .=  '('.$1.')' }
+      $pub->{journal}   .=  '('.$1.')' }
     if ($journalData =~ /<yearOfPublication>(\d\d\d\d)<\/yearOfPublication>/) {
-      $pub->{JOURNAL}   .=  ', '.$1;
-      $pub->{YEAR}      =   $1;
+      $pub->{journal}   .=  ', '.$1;
+      $pub->{year}      =   $1;
 
   }}
 
   if ($epmcxml =~ /<abstractText>(.+?)<\/abstractText>/) {
-    $pub->{ABSTRACT}    = $1;
-    $pub->{ABSTRACT}    =~  s/<[^<]*?>/######/g;
-    $pub->{ABSTRACT}    =~  s/^######//g;
-    $pub->{ABSTRACT}    =~  s/######$//g;
-    $pub->{ABSTRACT}    =~  s/######/ /g;
-    $pub->{ABSTRACT}    =~  s/######/ /g;
+    $pub->{abstract}    = $1;
+    $pub->{abstract}    =~  s/<[^<]*?>/######/g;
+    $pub->{abstract}    =~  s/^######//g;
+    $pub->{abstract}    =~  s/######$//g;
+    $pub->{abstract}    =~  s/######/ /g;
+    $pub->{abstract}    =~  s/######/ /g;
   }
 
   if ($epmcxml =~ /<authorString>(.+?)<\/authorString>/) {
-    $pub->{AUTHORS} =   $1 }
+    $pub->{authors} =   $1 }
 
-  $pub->{CITETAG}   =   $pub->{AUTHORS};
-  $pub->{CITETAG}   =~  s/^(.+?\w\w\w) .*?$/$1 et al./;
+  $pub->{citelabel}   =   $pub->{authors};
+  $pub->{citelabel}   =~  s/^(.+?\w\w\w) .*?$/$1 et al./;
   my $shortT    =   $pub->{TITLE};
   $shortT       =~    s/^(.{50,100} ).*?$/$1.../;;
 
-  $pub->{CITETAG}   .=  ' ('.$pub->{YEAR}.'): '.$shortT;
+  $pub->{citelabel}   .=  ' ('.$pub->{year}.'): '.$shortT;
 
   return $pub;
 

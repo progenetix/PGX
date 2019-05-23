@@ -53,7 +53,7 @@ maps:
 
   my $maps      =   {
     intervals   =>  scalar(@{ $pgx->{genomeintervals} }),
-    binning     =>  $pgx->{genomeintervals}->[0]->{end} - $pgx->{genomeintervals}->[0]->{start},
+    binning     =>  $pgx->{genomeintervals}->[0]->{end} - $pgx->{genomeintervals}->[0]->{start} + 1,
   };
 
   my %intStatLabs   =   (
@@ -98,7 +98,7 @@ maps:
       my $overlap   =   $ovEnd - $ovStart + 1;
     
       $maps->{ $intStatLabs{ $csVar->{variant_type } } }->[$ind] = $csVar->{variant_type};
-      $maps->{ $intCoverageLabs{ $csVar->{variant_type } } }->[$ind]  += $overlap;
+      $maps->{ $intCoverageLabs{ $csVar->{variant_type } } }->[$ind]  +=  $overlap;
       push(
         @{ $valueMap->[$ind] },
         $csVar->{info}->{value},
@@ -108,7 +108,7 @@ maps:
   
   foreach my $cLab (values %intCoverageLabs) {
     foreach my $ind (grep{ $maps->{$cLab}->[$_] > 0 } 0..$#{ $pgx->{genomeintervals} }) {
-      $maps->{$cLab}->[$ind]  =  sprintf "%.3f", $maps->{$cLab}->[$ind] / ($pgx->{genomeintervals}->[$ind]->{end} - $pgx->{genomeintervals}->[$ind]->{start} + 1);
+      $maps->{$cLab}->[$ind]  =  	1 * ( sprintf "%.3f", $maps->{$cLab}->[$ind] / ($pgx->{genomeintervals}->[$ind]->{end} - $pgx->{genomeintervals}->[$ind]->{start} + 1) );
   }}
 
   # the values for each interval are sorted, to allow extracting the min/max 
@@ -175,10 +175,7 @@ Returns:
     }
   }
 
-  push(
-    @{ $pgx->{frequencymaps} },
-    $maps,
-  );
+  push(@{ $pgx->{frequencymaps} }, $maps);
     
   return $pgx;
 
@@ -226,7 +223,7 @@ sub cluster_frequencymaps {
     $order
   )             =   cluster_tree($EisenTree);
 
-  $pgx->{frequencymaps}  =   [ map{ $pgx->{frequencymaps}->[$_] } reverse(@{ $order }) ];
+  $pgx->{frequencymaps} =   [ map{ $pgx->{frequencymaps}->[$_] } reverse(@{ $order }) ];
 
   return $pgx;
 

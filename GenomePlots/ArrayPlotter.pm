@@ -14,10 +14,10 @@ require Exporter;
 
 sub return_arrayplot_svg {
 
-  our $pgx     =   shift;
+  our $pgx     	=   shift;
 
-  $pgx->{Y}            =   $pgx->{parameters}->{size_plotmargin_top_px};
-  my $plotW             =   $pgx->{parameters}->{size_plotimage_w_px};
+  $pgx->{Y}     =   $pgx->{parameters}->{size_plotmargin_top_px};
+  my $plotW     =   $pgx->{parameters}->{size_plotimage_w_px};
   $pgx->{areastartx}   =   $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_px};
   $pgx->{areawidth}    =   $plotW - ($pgx->{areastartx} + $pgx->{parameters}->{size_plotmargin_px});
   if (
@@ -29,17 +29,17 @@ sub return_arrayplot_svg {
     $plotW      =   $pgx->{areawidth} + 2 * $pgx->{parameters}->{size_plotmargin_px};
   }
   $pgx->{basepixfrac}  =   ( $pgx->{areawidth} - ($#{ $pgx->{parameters}->{chr2plot} } * $pgx->{parameters}->{size_chromosome_padding_px}) ) / $pgx->{genomesize};
-  $pgx         =   svg_add_title($pgx);
-  $pgx         =   svg_add_cytobands($pgx);
+  $pgx         	=   svg_add_title($pgx);
+  $pgx         	=   svg_add_cytobands($pgx);
   $pgx->{areastarty}   =   $pgx->{Y};
-  $pgx         =   get_arrayplot_area($pgx);
-  $pgx         =   get_fracb_area($pgx);
-  $pgx         =   svg_add_markers($pgx);
-  $pgx         =   svg_add_bottom_text($pgx);
-  $pgx->{Y}    +=   $pgx->{parameters}->{size_plotmargin_bottom_px};
+  $pgx         	=   get_arrayplot_area($pgx);
+  $pgx         	=   get_fracb_area($pgx);
+  $pgx         	=   svg_add_markers($pgx);
+  $pgx         	=   svg_add_bottom_text($pgx);
+  $pgx->{Y}   	+=   $pgx->{parameters}->{size_plotmargin_bottom_px};
   my $plotH     =   sprintf "%.0f", $pgx->{Y};
   $plotW        =   sprintf "%.0f", $plotW;
-  $pgx->{svg}  =   '<svg
+  $pgx->{svg}  	=   '<svg
 xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 version="1.1"
@@ -141,35 +141,36 @@ Returns:
     # / probes #    ####    ####    ####    ####    ####    ####    ####    ####
 
     # segments #    ####    ####    ####    ####    ####    ####    ####    ####
-
-    my $areaSegments    =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{segmentdata} } ];
+    my $areaSegments    =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{samples}->[0]->{variants} } ];
     $areaSegments       =   [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegments];
-    $areaSegments       =   [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegments];
-    $areaSegments       =   [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegments ];
+    $areaSegments       =   [ grep{ $_->{start}->[0] <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegments];
+    $areaSegments       =   [ grep{ $_->{end}->[-1] >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegments ];
 
     foreach my $seg (@$areaSegments) {
-
-      if ($seg->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
-        $seg->{start}   = $pgx->{referencebounds}->{$refName}->[0] }
-      if ($seg->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
-        $seg->{end}     = $pgx->{referencebounds}->{$refName}->[1] }
+			
+			my $start	=		$seg->{start}->[0];
+			my $end		=		$seg->{end}->[-1];
+      if ($start < $pgx->{referencebounds}->{$refName}->[0]) {
+        $start   = $pgx->{referencebounds}->{$refName}->[0] }
+      if ($end > $pgx->{referencebounds}->{$refName}->[1]) {
+        $end     = $pgx->{referencebounds}->{$refName}->[1] }
 
       # providing a minimum sub-pixel segment plot length
-      my $segPixLen     =   sprintf "%.1f", ($pgx->{basepixfrac} * ($seg->{end} - $seg->{start}));
+      my $segPixLen     =   sprintf "%.1f", ($pgx->{basepixfrac} * ($end - $start));
       if ($segPixLen < 0.2) { $segPixLen = 0.2 }
-
-      my $seg_x0        =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start} - $pgx->{referencebounds}->{$refName}->[0]);
+#print Dumper($seg);
+      my $seg_x0        =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($start - $pgx->{referencebounds}->{$refName}->[0]);
       my $seg_xn        =   $seg_x0 + $segPixLen;
-      my $seg_y         =   sprintf "%.1f", $area_ycen - $seg->{info}->{value} * $pgx->{parameters}->{pixyfactor};
+      my $seg_y         =   sprintf "%.1f", $area_ycen - $seg->{info}->{cnv_value} * $pgx->{parameters}->{pixyfactor};
 
       $pgx->{svg}      .=  '
 <line x1="'.$seg_x0.'"  y1="'.$seg_y.'"  x2="'.$seg_xn.'"  y2="'.$seg_y.'"  class="'.$seg->{variant_type}.'"  />';
       if (scalar @{$pgx->{parameters}->{chr2plot}} == 1) {
         $pgx->{svg}    .=  '
 <a
-xlink:href="http://genome.ucsc.edu/cgi-bin/hgTracks?db='.$pgx->{parameters}->{genome}.'&amp;position=chr'.$refName.'%3A'.$seg->{start}.'-'.$seg->{end}.'"
+xlink:href="http://genome.ucsc.edu/cgi-bin/hgTracks?db='.$pgx->{parameters}->{genome}.'&amp;position=chr'.$refName.'%3A'.$start.'-'.$end.'"
 xlink:show="new"
-xlink:title="'.$seg->{info}->{value}.' at '.$refName.':'.$seg->{start}.'-'.$seg->{end}.'">';
+xlink:title="'.$seg->{info}->{cnv_value}.' at '.$refName.':'.$start.'-'.$end.'">';
       }
       $pgx->{svg}      .=  '
 <line x1="'.$seg_x0.'"  y1="'.$lowSegY.'"  x2="'.$seg_xn.'"  y2="'.$lowSegY.'"  class="'.$seg->{variant_type}.'"  />';
@@ -183,7 +184,7 @@ xlink:title="'.$seg->{info}->{value}.' at '.$refName.':'.$seg->{start}.'-'.$seg-
     # moving x to the next chromosome area
     $area_x0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
- }
+ 	}
 
   # adding a baseline at 0
   $pgx->{svg}  .=  '
@@ -290,16 +291,18 @@ Returns:
 
     foreach my $seg (@$areaSegments) {
 
-      if ($seg->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
-        $seg->{start} = $pgx->{referencebounds}->{$refName}->[0] }
-      if ($seg->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
-        $seg->{end} = $pgx->{referencebounds}->{$refName}->[1] }
+			my $start	=		$seg->{start}->[0];
+			my $end		=		$seg->{end}->[-1];
+      if ($start < $pgx->{referencebounds}->{$refName}->[0]) {
+        $start = $pgx->{referencebounds}->{$refName}->[0] }
+      if ($end > $pgx->{referencebounds}->{$refName}->[1]) {
+        $end = $pgx->{referencebounds}->{$refName}->[1] }
 
       # providing a minimum sub-pixel segment plot length
-      my $segPixLen     =   sprintf "%.1f", ($pgx->{basepixfrac} * ($seg->{end} - $seg->{start}));
+      my $segPixLen     =   sprintf "%.1f", ($pgx->{basepixfrac} * ($end - $start));
       if ($segPixLen < 0.2) { $segPixLen = 0.2 }
 
-      my $seg_x0        =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start} - $pgx->{referencebounds}->{$refName}->[0]);
+      my $seg_x0        =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($start - $pgx->{referencebounds}->{$refName}->[0]);
       my $seg_xn        =   $seg_x0 + $segPixLen;
 
       my $val     =   $seg->{info}->{value} / $fbPixYfac;

@@ -1,6 +1,7 @@
 package PGX::MapPlots::Mapplot;
 
 use Data::Dumper;
+use PGX;
 use PGX::GenomePlots::PlotParameters;
 use PGX::IOUtilities::PGXfileReader;
 use PGX::IOUtilities::PGXfileWriter;

@@ -117,7 +117,19 @@ sub pgx_add_probes_from_file {
 
   my $pgx       =   shift;
   my $probefile =   shift;
-
+  
+  if ($probefile !~ /\w/) {
+  	if ($pgx->{samples}->[0]->{paths}->{probefile} =~ /\w\.\w/) {
+  		$probefile	=		$pgx->{samples}->[0]->{paths}->{probefile} }
+  	else {
+  		my $seriesId		=		(split('::', $pgx->{samples}->[0]->{id}))[1];
+			my $arrayId			=		(split('::', $pgx->{samples}->[0]->{id}))[2];
+			$probefile	=		$pgx->{parameters}->{genome}.'/'.$seriesId.'/'.$arrayId.'/probes,cn.tsv'
+  	}
+  	$probefile	=~ s/^\///;
+  	$probefile	=			$pgx->{config}->{paths}->{dir_array_base_path}.'/'.$probefile;
+  }
+  
   $pgx->read_probefile($probefile);
   return $pgx;
 

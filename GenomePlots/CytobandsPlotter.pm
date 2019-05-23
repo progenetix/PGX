@@ -301,7 +301,6 @@ Returns:
       my $mark_X0   =   sprintf "%.1f", $areaX_0 + ($marker->{start} - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
       my $mark_W    =   sprintf "%.2f", ($marker->{end} - $marker->{start}) * $pgx->{basepixfrac};
       if ($mark_W < 0.5) {$mark_W = 0.5}
-      my $mark_H    =   sprintf "%.0f", ($pgx->{Y} - $pgx->{markerstarty});
       $pgx->{svg}  .=  '
 <rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
 
@@ -317,18 +316,26 @@ Returns:
         my $mLab_Y      =   $markbox_Y + $markerLineHeight - 3;
         foreach my $i (1..100) {
           if ($markerLineNo{$i} > $mLab_X0) {
-            $mLab_Y  +=  $markerLineHeight + 1;
+            $mLab_Y  		+=  $markerLineHeight + 1;
             $markbox_Y  +=  $markerLineHeight + 1;
           } else {
             $markerLineNo{$i} =   $mLab_Xn;
             last;
           }
         }
+      	my $mark_H  =   sprintf "%.0f", ($markbox_Y - $markerY_0);
+      	$pgx->{svg} .=  '
+<rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
         $pgx->{svg}    .=  '
 <rect x="'.$mLab_X0.'" y="'.$markbox_Y.'" width="'.$mLablen.'" height="'.$markerLineHeight.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_label_opacity}.'; " />
 <text x="'.$mLab_Xcen.'" y="'.$mLab_Y.'" class="marker">'.$marker->{label}.'</text>';
 
-      }
+      } else {
+      	# if no label
+      	my $mark_H    =   sprintf "%.0f", ($pgx->{Y} - $pgx->{markerstarty});
+				$pgx->{svg} .=  '
+<rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
+			}
 
       # / text label ###########################################################
       

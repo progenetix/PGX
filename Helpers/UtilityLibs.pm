@@ -2,7 +2,10 @@ package PGX::Helpers::UtilityLibs;
 
 require Exporter;
 @ISA    =   qw(Exporter);
-@EXPORT =   qw(RandArr);
+@EXPORT =   qw(
+	RandArr
+	MaxTextWidthPix
+);
 
 ################################################################################
 
@@ -57,6 +60,17 @@ index elements.
   }
 
   return [ @$arr[ (keys %randNo)[0..($iL-1)] ] ];
+
+}
+
+################################################################################
+
+sub MaxTextWidthPix {
+
+	my $texts			=		shift;
+	my $fontSize	=		shift;
+	
+	return	( sort {$a <=> $b} (map{ length($_) } @$texts) )[-1] * $fontSize * 0.5;
 
 }
 
