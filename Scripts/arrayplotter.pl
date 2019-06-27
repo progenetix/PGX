@@ -140,7 +140,7 @@ foreach my $chro (@$chr2plot) {
   print FILE  $pgx->{svg};
   close FILE;
 
-  $pgx->plot_segments_add_statusmap();
+  $pgx->segments_add_statusmaps();
 
   # TODO: This just assumes that the last part of the file pathe is the array ID
   my $arrayName =   $args{'-out'};

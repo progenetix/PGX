@@ -5,3 +5,4 @@ paths:
 # the array base path is for the local system, with an implied structure of
 # dir_array_base_path/__genome__/__series_dir__/array__dir__/(files)
   dir_array_base_path: '/Library/WebServer/Documents/Sites/arraymap'
+  web_progenetix_publication_query: '/cgi-bin/publications.cgi?id='

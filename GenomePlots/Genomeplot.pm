@@ -115,8 +115,27 @@ sub pgx_add_frequencymaps {
 
 sub pgx_add_probes_from_file {
 
+=pod
+
+This method adds probe values $pgx->{probedata}->[0] -> $pgx->{probedata}->[n]
+to the $pgx object.
+Probe data is handled as a single instance, assuming that the method won't be 
+called for more than 1 array. However, it uses the standard "samples" construct
+as input, which is an array of possibly multiple samples - the method should 
+only be called when populated with one.
+
+
+=cut
+
   my $pgx       =   shift;
   my $probefile =   shift;
+  
+  if (@{ $pgx->{samples} } != 1 ) {
+  	push(
+  		@{ $pgx->{errors} },
+  		scalar(@{ $pgx->{samples} }).' samples in array probe reading attempt',
+  	);
+  }
   
   if ($probefile !~ /\w/) {
   	if ($pgx->{samples}->[0]->{paths}->{probefile} =~ /\w\.\w/) {

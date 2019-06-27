@@ -7,7 +7,7 @@ use Data::Dumper;
 require Exporter;
 @ISA        =   qw(Exporter);
 @EXPORT     =   qw(
-  plot_segments_add_statusmap
+	segments_add_statusmaps
   interval_cnv_frequencies
   cluster_frequencymaps
   cluster_samples
@@ -15,7 +15,7 @@ require Exporter;
 
 ################################################################################
 
-sub plot_segments_add_statusmap {
+sub segments_add_statusmaps {
 
   no warnings 'uninitialized';
   
@@ -28,7 +28,7 @@ sub plot_segments_add_statusmap {
   
 =pod
 
-sub "plot_segments_add_statusmap"
+sub "segments_add_statusmaps"
 
 The subroutine returns an object containing statusvalues (DUP, DEL) and the (min, max)
 values of the overlapping variants, foreach of the provided $pgx->{genomeintervals} genome intervals.
@@ -69,6 +69,8 @@ maps:
     DEL         =>  'delmin',
   );
 
+  my $cnvcoverage		=		{};
+
   foreach (values %intStatLabs) {
     $maps->{$_} =   [ map{''} 0..$#{ $pgx->{genomeintervals} } ] }
   foreach (values %intCoverageLabs) {
@@ -108,6 +110,8 @@ maps:
   
   foreach my $cLab (values %intCoverageLabs) {
     foreach my $ind (grep{ $maps->{$cLab}->[$_] > 0 } 0..$#{ $pgx->{genomeintervals} }) {
+      $cnvcoverage->{$cLab}		+=	$maps->{$cLab}->[$ind];
+      $cnvcoverage->{cnvcoverage}	+=	$maps->{$cLab}->[$ind];
       $maps->{$cLab}->[$ind]  =  	1 * ( sprintf "%.3f", $maps->{$cLab}->[$ind] / ($pgx->{genomeintervals}->[$ind]->{end} - $pgx->{genomeintervals}->[$ind]->{start} + 1) );
   }}
 
@@ -124,6 +128,15 @@ maps:
     $maps->{delmin}->[$ind] =   1 * (sprintf "%.4f", $valueMap->[$ind]->[0]) }
 
   $pgx->{statusmaps}    =   $maps;
+  $pgx->{cnvstatistics}	=		$cnvcoverage;
+  
+  if ($pgx->{genomesize} > 1) {
+  	foreach my $covK (keys %$cnvcoverage) {
+  		my $fracK	=		$covK;
+  		$fracK		=~	s/coverage/fraction/;
+  		$pgx->{cnvstatistics}->{$fracK}	=		1 * (sprintf "%.3f", $pgx->{cnvstatistics}->{$covK} / $pgx->{genomesize});
+ 		} 
+  }
 
   return $pgx;
 

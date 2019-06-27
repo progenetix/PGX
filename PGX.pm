@@ -37,6 +37,7 @@ sub new {
     plotid      =>  $args->{plotid},
     svg         =>  q{},
     Y           =>  0,
+    errors			=>	[],
   };
 
   bless $self, $class;
