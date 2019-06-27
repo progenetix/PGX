@@ -322,7 +322,7 @@ input format (other attributes optional):
 	# compute marker data
 	my $maxsamples = 1;
 
-	foreach my $locKey ( @{ RandArr([keys %locData]) } ) {
+	foreach my $locKey ( keys %locData ) {
 
 		if (
 			$locData{$locKey}->{latitude} !~ /\d/
