@@ -6,7 +6,7 @@ require Exporter;
 @ISA        =   qw(Exporter);
 @EXPORT     =   qw(cluster_tree);
 
-=pod
+=podmd
 
 cluster_tree implements a way to retrieve an ordered tree structure including branch lengths
 from a tree structure produced by Algorithm::Cluster::treecluster
@@ -211,7 +211,7 @@ sub _checkNode {
 sub _drawNodes {
 
   $DB::deep = 1000;
-  
+
 	my (
 		$tree,
 		$sortNodes,
