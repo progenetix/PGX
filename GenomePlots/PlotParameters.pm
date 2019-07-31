@@ -129,8 +129,12 @@ Returns:
 		) {
       $plotPars->{$par}   =   '#'.$args->{'-'.$par} }
     else {
-      $plotPars->{$par}   =   $args->{'-'.$par};
-    }
+      $plotPars->{$par}   =   $args->{'-'.$par} }
+      
+    if ($par eq 'title') {
+			$plotPars->{$par} =~  s/arraymap/arrayMap/i;
+			$plotPars->{$par} =~  s/progenetix/Progenetix/i;
+		}
 
   }
 
