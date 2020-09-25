@@ -97,7 +97,7 @@ sub cytoband_to_coordinates {
 
   my $coords    =   {};
   $cytoband     =~  s/^(:?c(:?h(:?r(:?o(:?m(:?o(:?s(:?o(:?m(:?e)?)?)?)?)?)?)?)?)?)?//i;
-  $cytoband     =~  s/[^XY\d\.\p\q]//ig;
+  $cytoband     =~  s/[^XY\d\.pq]//ig;
   
   if ($cytoband =~  /^
                       ([XY\d]\d?)

@@ -17,11 +17,12 @@ require Exporter;
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
+
 sub new {
 
   my $class     =   shift;
   my $args      =   shift;
-  $args         =   args_modify_plot_parameters(read_plot_defaults(), $args);
+  $args         =   args_modify_plot_parameters(PGX::read_plot_defaults(), $args);
   my $self      =   {
     parameters  =>  $args,
     plotid      =>  $args->{plotid},

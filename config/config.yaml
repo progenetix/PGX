@@ -1,0 +1,83 @@
+#
+---
+paths:
+# the array base path is for the local system, with an implied structure of
+# dir_array_base_path/__genome__/__series_dir__/array__dir__/(files)
+  dir_array_base_path: '/Library/WebServer/Documents/Sites/arraymap'
+  dir_tmp_base_path: '/Library/WebServer/Documents/tmp'
+  web_tmp_base_path: '/tmp'
+  dir_ontology_maps: 'ICDOntologies/current'
+dataset_names:
+  - arraymap
+  - progenetix
+#  - tcga
+  - dipg
+collection_names:
+  - variants
+  - callsets
+  - biosamples
+  - individuals
+  - biosubsets
+  - datacollections
+
+biosubsets:
+  NCIT:
+    label: 'NCIt Neoplasm Code'
+    prefix: NCIT
+    pattern: '^(NCIT\:)?C\d+?$'
+    greedymatch: '^(NCIT\:)?C\d+?$'
+    samplefield: biocharacteristics
+  icdom:
+    label: 'ICD-O 3 Morphology Code'
+    prefix: icdom
+    pattern: '^icdom\-\d{5}$'
+    greedymatch: '^icdom\-\d{1,5}$'
+    samplefield: biocharacteristics
+  icdot:
+    label: 'ICD-O 3 Organ Site Code'
+    prefix: icdot
+    pattern: '^icdot\-C\d{1,2}\.\d$'
+    greedymatch: '^icdot\-?C\d\d?(\.\d)?$'
+    samplefield: biocharacteristics
+  seer:
+    label: 'SEER Code'
+    prefix: seer
+    pattern: '^seer\:\d{5}$'
+    greedymatch: '^seer\:\d{1,5}$'
+    samplefield: biocharacteristics
+
+datacollections:
+  PMID:
+    label: 'Pubmed Publication'
+    prefix: PMID
+    pattern: '^PMID\:\d{6,8}$'
+    greedymatch: '^pubmed\:\d{1,8}$'
+    samplefield: external_references
+  cellosaurus:
+    label: 'Cellline ID'
+    prefix: cellosaurus
+    pattern: '^(cellosaurus\:)?CVCL_[A-Z0-9]{4}$'
+    greedymatch: '^(cellosaurus\:)?CVCL(_([A-Z0-9]{1,4})?)?$'
+    samplefield: external_references
+  geogse:
+    label: 'NCBI Gene Expression Omnibus series'
+    prefix: geogse
+    pattern: '^geogse\-GSE\d+?$'
+    greedymatch: '^geogse\-GSE\d*?$'
+    samplefield: external_references
+  geogpl:
+    label: 'NCBI Gene Expression Omnibus platform'
+    prefix: geogse
+    pattern: '^geogpl\-GPL\d+?$'
+    greedymatch: '^geogpl-GPL\d*?$'
+    samplefield: external_references
+  egastudy:
+    label: 'EGA Study'
+    prefix: 'ega.study'
+    pattern: '^(ega.study\:)?EGAS\d{11}$'
+    greedymatch: '^(ega.study\:)?EGAS\d{1,11}$'
+    samplefield: external_references
+
+genome_assemblies:
+  - 'GRCh38'
+  

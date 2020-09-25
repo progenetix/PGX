@@ -6,8 +6,8 @@ use PGX::GenomePlots::CytobandsPlotter;
 use PGX::GenomePlots::PlotParameters;
 
 require Exporter;
-@ISA            =   qw(Exporter);
-@EXPORT         =   qw(
+@ISA =   qw(Exporter);
+@EXPORT =   qw(
   return_stripplot_svg
   get_stripplot_area_gd
   get_frequencystripplot_area_gd
@@ -17,13 +17,13 @@ require Exporter;
 
 sub return_stripplot_svg {
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
-  $pgx->{svg}   =   q{};
+  $pgx->{svg} = q{};
 
-  $pgx->{Y}     =   $pgx->{parameters}->{size_plotmargin_top_px};
-  my $plotW     =   $pgx->{parameters}->{size_plotimage_w_px};
-  $pgx->{areastartx}   =   $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_px};
+  $pgx->{Y} = $pgx->{parameters}->{size_plotmargin_top_px};
+  my $plotW = $pgx->{parameters}->{size_plotimage_w_px};
+  $pgx->{areastartx} = $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_px};
   if (
     $pgx->{parameters}->{size_clustertree_w_px} < 1
      ||
@@ -64,6 +64,9 @@ id="'.$pgx->{plotid}.'"
 width="'.$plotW.'px"
 height="'.$plotH.'px"
 style="margin: auto; font-family: Helvetica, sans-serif;">
+<style type="text/css"><![CDATA[
+  .title-left {text-anchor: middle; fill: '.$pgx->{parameters}->{color_text_hex}.'; font-size: '.$pgx->{parameters}->{size_text_title_left_px}.'px;}
+]]></style>
 
 <rect x="0" y="0" width="'.$plotW.'" height="'.$plotH.'" style="fill: '.$pgx->{parameters}->{color_plotbackground_hex}.'; " />
 
@@ -140,9 +143,16 @@ Returns:
 
     my $segSet  =   $sample->{variants};
 
-   if ($sample->{name} =~ /\w\w/) {
-      $pgx->{parameters}->{title_left} = $sample->{name} }
-    $pgx->svg_add_title_left(($pgx->{Y} + $pgx->{parameters}->{size_strip_h_px} / 2));
+    if ($sample->{name} =~ /\w\w/) {
+      my $titeL =   {
+        text    =>  $sample->{name},
+        pos_y   =>  $pgx->{Y} + $pgx->{parameters}->{size_strip_h_px} * 0.5,
+        linkout =>  q{},
+      };
+      if ($pgx->{datasetid} =~ /.../ && $sample->{id} =~ /.../) {
+        $titeL->{linkout}   =   '/cgi-bin/pgx_biosamples.cgi?datasetIds='.$pgx->{datasetid}.'&amp;callsets-id='.$sample->{id}.'$' }
+      $pgx->svg_add_title_left($titeL);
+    }
 
     foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
@@ -151,16 +161,16 @@ Returns:
 
       my $areaSegs  =   [ grep{ $_->{reference_name} eq $refName } @{ $segSet } ];
       $areaSegs     =   [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegs];
-      $areaSegs     =   [ grep{ $_->{start}->[0] <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegs];
-      $areaSegs     =   [ grep{ $_->{end}->[-1] >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegs ];
+      $areaSegs     =   [ grep{ $_->{start_min} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegs];
+      $areaSegs     =   [ grep{ $_->{end_max} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegs ];
       foreach my $seg (@$areaSegs) {
-        if ($seg->{start}->[0] < $pgx->{referencebounds}->{$refName}->[0]) {
-          $seg->{start}->[0] = $pgx->{referencebounds}->{$refName}->[0] }
-        if ($seg->{end}->[-1] > $pgx->{referencebounds}->{$refName}->[1]) {
-          $seg->{end}->[-1]   = $pgx->{referencebounds}->{$refName}->[1] }
+        if ($seg->{start_min} < $pgx->{referencebounds}->{$refName}->[0]) {
+          $seg->{start_min} = $pgx->{referencebounds}->{$refName}->[0] }
+        if ($seg->{end_max} > $pgx->{referencebounds}->{$refName}->[1]) {
+          $seg->{end_max}   = $pgx->{referencebounds}->{$refName}->[1] }
 
-        my $seg_x0  =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start}->[0] - $pgx->{referencebounds}->{$refName}->[0]);
-        my $segPixEnd   =   sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($seg->{end}->[-1] - $seg->{start}->[0]));
+        my $seg_x0  =   sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start_min} - $pgx->{referencebounds}->{$refName}->[0]);
+        my $segPixEnd   =   sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($seg->{end_max} - $seg->{start_min} ));
         # providing a minimum sub-pixel segment plot length
         if ($segPixEnd < 0.02) { $segPixLen = 0.02 }
 
@@ -235,10 +245,10 @@ Returns:
 
   my $areaH     =   $pgx->{parameters}->{size_strip_h_px} * @{ $pgx->{frequencymaps} };
   my $stripArea =   GD::Image->new($pgx->{areawidth}, $areaH, 1);
-  my $gdBgCol   =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotbackground_hex}) } );
+  my $gdBgCol   =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
   $stripArea->filledRectangle(0, 0, $pgx->{areawidth}, $areaH, $gdBgCol);
-  my $gdAreaCol =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
-  $stripArea->transparent($gdBgCol);
+#   my $gdAreaCol =   $stripArea->colorAllocate( @{ hex2rgb($pgx->{parameters}->{color_plotarea_hex}) } );
+#   $stripArea->transparent($gdBgCol);
 
   my $gd_y0     =   0;
   my $gd_yn;
@@ -249,12 +259,16 @@ Returns:
     $fMapIndex++;
 
     if ($frequencymapsSet->{name} =~ /\w\w/) {
-      $pgx->{parameters}->{title_left}   =   $frequencymapsSet->{name} }
+      my $titeL =   {
+        text    =>  $frequencymapsSet->{name},
+        pos_y   =>  $pgx->{Y} + $pgx->{parameters}->{size_strip_h_px} * 0.5,
+        linkout =>  q{},
+      };
+      $pgx->svg_add_title_left($titeL);
+    }
 
     $gd_yn      =   $gd_y0 + $pgx->{parameters}->{size_strip_h_px};
     $area_x0    =   0;
-
-    $pgx->svg_add_title_left(($pgx->{Y} + $pgx->{parameters}->{size_strip_h_px} / 2));
 
     my $maxF		=		(sort {$a <=> $b} (@{ $frequencymapsSet->{dupfrequencies} }, @{ $frequencymapsSet->{delfrequencies} }) )[-1];
 

@@ -68,92 +68,91 @@ Returns:
 
 =cut
 
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
-
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   # one can skip cytoband plotting by setting the "size_chromosome_w_px"
   # parameter < 1
   if ($pgx->{parameters}->{size_chromosome_w_px} < 1) { return $pgx }
 
-  my $areaX_0   =   $pgx->{areastartx};
+  my $areaX_0 = $pgx->{areastartx};
 
-  $pgx->{svg}  .=  '
+  $pgx->{svg} .= '
 <defs>';
-  $pgx->{svg}  .=  _cytoband_svg_gradients($pgx->{plotid});
-  $pgx->{svg}  .=  '
+  $pgx->{svg} .= _cytoband_svg_gradients($pgx->{plotid});
+  $pgx->{svg} .= '
 <style type="text/css">
 <![CDATA[
 .chrlab { text-anchor: middle; font-size: '.$pgx->{parameters}->{size_text_px}.'px; fill: '.$pgx->{parameters}->{color_text_hex}.' }
 ]]>
 </style>';
-  $pgx->{svg}  .=  '
+  $pgx->{svg} .= '
 </defs>';
 
-  my $chrolabY  =   $pgx->{Y} + $pgx->{parameters}->{size_text_px} + $pgx->{parameters}->{size_plotarea_padding};
-  my $chroBandY =   $chrolabY + $pgx->{parameters}->{size_plotarea_padding};
+	my $chrolabY = $pgx->{Y} + $pgx->{parameters}->{size_text_px} + $pgx->{parameters}->{size_plotarea_padding};
+	my $chroBandY = $chrolabY + $pgx->{parameters}->{size_plotarea_padding};
 
-  foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
+	foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-    my $areaW   =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
-    my $chroX   =  sprintf "%.1f", $areaX_0 + $areaW / 2;
+		my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
+		my $chroX = sprintf "%.1f", $areaX_0 + $areaW / 2;
 
-    my $areabands   =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{cytobands} } ];
-    my $chrolabel   =   $refName;
+		my $areabands = [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{cytobands} } ];
+		my $chrolabel = $refName;
 
-    # adding the base boundaries if incomplete chromosome (from first and last
-    # cytoband )
-    if (
-      $pgx->{referencebounds}->{$refName}->[0] > $areabands->[0]->{start}
-      ||
-      $pgx->{referencebounds}->{$refName}->[1] < $areabands->[-1]->{end}
-    ) {
-      $chrolabel        .=  ' ('.$pgx->{referencebounds}->{$refName}->[0].'-'.$pgx->{referencebounds}->{$refName}->[1].')';
-    }
+		# adding the base boundaries if incomplete chromosome (from first and last
+		# cytoband )
+		if (
+		  $pgx->{referencebounds}->{$refName}->[0] > $areabands->[0]->{start}
+		  ||
+		  $pgx->{referencebounds}->{$refName}->[1] < $areabands->[-1]->{end}
+		) {
+		  $chrolabel .= ' ('.$pgx->{referencebounds}->{$refName}->[0].'-'.$pgx->{referencebounds}->{$refName}->[1].')';
+		}
 
-    $pgx->{svg}        .=  '
+		$pgx->{svg} .=  '
 <text x="'.$chroX.'" y="'.$chrolabY.'" class="chrlab">'.$chrolabel.'</text>';
 
-    $areabands  =   [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areabands];
-    $areabands  =   [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areabands ];
+		$areabands = [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areabands];
+		$areabands = [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areabands ];
 
-    foreach my $cb (@$areabands) {
+		foreach my $cb (@$areabands) {
 
-      if ($cb->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
-        $cb->{start}    =   $pgx->{referencebounds}->{$refName}->[0] }
-      if ($cb->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
-        $cb->{end}      =   $pgx->{referencebounds}->{$refName}->[1] }
+			if ($cb->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
+				$cb->{start} = $pgx->{referencebounds}->{$refName}->[0] }
+			if ($cb->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
+				$cb->{end} = $pgx->{referencebounds}->{$refName}->[1] }
 
-      my $cbX   =   sprintf "%.1f", $areaX_0 + $pgx->{basepixfrac} * ($cb->{start} - $pgx->{referencebounds}->{$refName}->[0]);
-      my $cbW   =   sprintf "%.1f", $pgx->{basepixfrac} * ($cb->{end} - $cb->{start});
-      my $cbY   =   $chroBandY;
-      my $cbH   =   $pgx->{parameters}->{size_chromosome_w_px};
+			my $cbX = sprintf "%.1f", $areaX_0 + $pgx->{basepixfrac} * ($cb->{start} - $pgx->{referencebounds}->{$refName}->[0]);
+			my $cbW = sprintf "%.1f", $pgx->{basepixfrac} * ($cb->{end} - $cb->{start});
+			my $cbY = $chroBandY;
+			my $cbH = $pgx->{parameters}->{size_chromosome_w_px};
 
-      # terminal and centromere bands are more narrow
-      if (
-        ($cb->{stain} =~ /cen/i)
-        ||
-        $cb->{end} >= ($pgx->{referencebounds}->{$refName}->[1] - 500)
-        ||
-        $cb->{start} <= ($pgx->{referencebounds}->{$refName}->[0] + 500) ) {
-        $cbY    +=  (0.1*$pgx->{parameters}->{size_chromosome_w_px});
-        $cbH    -=  (0.2*$pgx->{parameters}->{size_chromosome_w_px});
-      }
+			# terminal and centromere bands are narrow
+			if (
+				($cb->{stain} =~ /cen/i)
+				||
+				$cb->{end} >= ($pgx->{referencebounds}->{$refName}->[1] - 500)
+				||
+				$cb->{start} <= ($pgx->{referencebounds}->{$refName}->[0] + 500)
+			) {
+				$cbY += (0.1*$pgx->{parameters}->{size_chromosome_w_px});
+				$cbH -= (0.2*$pgx->{parameters}->{size_chromosome_w_px});
+			}
 
-      # acrocentric "stalk" bands are slim
-      if ($cb =~ /stalk/i) {
-        $cbY    +=  (0.3*$pgx->{parameters}->{size_chromosome_w_px});
-        $cbH    -=  (0.6*$pgx->{parameters}->{size_chromosome_w_px});
-      }
+			# acrocentric "stalk" bands are slim
+			if ($cb =~ /stalk/i) {
+				$cbY += (0.3*$pgx->{parameters}->{size_chromosome_w_px});
+				$cbH -= (0.6*$pgx->{parameters}->{size_chromosome_w_px});
+			}
 
-      $pgx->{svg}      .=  '
+			$pgx->{svg}      .=  '
 <rect x="'.$cbX.'" y="'.$cbY.'" width="'.$cbW.'" height="'.$cbH.'" style="fill: url(#'.$pgx->{plotid}.$cb->{stain}.'); " />';
 
-    }
-    $areaX_0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
-  }
+		}
+		$areaX_0 += $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
+	}
 
-  $pgx->{Y}    =  $chroBandY + $pgx->{parameters}->{size_chromosome_w_px};
+  $pgx->{Y} = $chroBandY + $pgx->{parameters}->{size_chromosome_w_px};
 
   return $pgx;
 
@@ -165,37 +164,40 @@ Returns:
 
 sub svg_add_title_left {
 
-  my $pgx       =   shift;
-  my $titleY    =   shift;
+	my $pgx = shift;
+	my $titeL = shift;
 
-  if ($pgx->{parameters}->{title_left} !~ /\w+?/) { return $pgx }
-  if ($pgx->{parameters}->{size_title_left_px} < 1) { return $pgx }
+	if ($titeL->{text} !~ /\w+?/) { return $pgx }
+	if ($pgx->{parameters}->{size_title_left_px} < 1) { return $pgx }
 
-  my $plotareaHeight  =   $pgx->{parameters}->{size_plotarea_h_px};
-  if ($plotareaHeight < $pgx->{parameters}->{size_strip_h_px}) {
-    $plotareaHeight  =   $pgx->{parameters}->{size_strip_h_px} }
+	my $text_x = $pgx->{areastartx} / 2;
+	my $text_y = sprintf "%.0f", $titeL->{pos_y} + $pgx->{parameters}->{size_text_title_left_px} * 0.5;
 
-  my $text_x    =   $pgx->{areastartx} /2;
-  my $text_y    =   $titleY + $pgx->{parameters}->{size_text_title_left_px} / 2;
+	my $label = '<text x="'.$text_x.'" y="'.$text_y.'"  transform="rotate('.$pgx->{parameters}->{title_left_rotation}.','.$text_x.','.$text_y.')" class="title-left">'.$titeL->{text}.'</text>';
+	if ($titeL->{linkout} =~ /.../) {
+		$label = '<a xlink:href="'.$titeL->{linkout}.'">'.$label.'</a>' }
 
-  $pgx->{svg}  .=  '
-<text x="'.$text_x.'" y="'.$text_y.'"  transform="rotate('.$pgx->{parameters}->{title_left_rotation}.','.$text_x.','.$text_y.')" style="text-anchor: middle; fill: '.$pgx->{parameters}->{color_text_hex}.'; font-size: '.$pgx->{parameters}->{size_text_title_left_px}.'px; ">'.$pgx->{parameters}->{title_left}.'</text>';
-
-  return $pgx;
+	$pgx->{svg} .= "\n".$label;
+	return $pgx;
 
 }
 
 ################################################################################
 ################################################################################
-################################################################################################################################################################
+################################################################################
 
 sub svg_add_labels_y {
 
-=pod
+=podmd
 
-Expects:
+##### Expects
 
-Returns:
+* a PGX object 
+* a definition of `label_y_m` parameters 
+
+##### Returns
+
+* the PGX object with `$pgx->{svg}` now expanded by the Y scale labels
 
 =cut
 
@@ -262,26 +264,26 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   if (@{ $pgx->{parameters}->{markers} } < 1) { return $pgx }
 
-  $pgx->{Y}    +=  $pgx->{parameters}->{size_chromosome_padding_px};
-  $pgx->{svg}  .=  '
+  $pgx->{Y} += $pgx->{parameters}->{size_chromosome_padding_px};
+  $pgx->{svg} .=  '
 <style type="text/css">
 <![CDATA[
 .marker { text-anchor: middle; font-size: '.$pgx->{parameters}->{marker_text_px}.'px }
 ]]>
 </style>';
 
-  my $areaX_0   =   $pgx->{areastartx};
+  my $areaX_0 =   $pgx->{areastartx};
   my $markerY_0 =   $pgx->{areastarty};
   if ($pgx->{markerstarty} > 0) {
     $markerY_0  =   $pgx->{markerstarty} }
 
   # stores the marker line index and the last X value there
-  my %markerLineNo      =   (1 => $pgx->{areastartx});
-  my $markerLineHeight  =   $pgx->{parameters}->{marker_text_px} + 4;
+  my %markerLineNo = (1 => $pgx->{areastartx});
+  my $markerLineHeight = $pgx->{parameters}->{marker_text_px} + 4;
 
   foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
@@ -290,6 +292,7 @@ Returns:
     my $areamarkers =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{parameters}->{markers} } ];
     $areamarkers    =   [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areamarkers];
     $areamarkers    =   [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areamarkers ];
+    $areamarkers = [ sort { $a->{start} <=> $b->{start} } @$areamarkers ];
 
     foreach my $marker (@$areamarkers) {
 
@@ -298,11 +301,9 @@ Returns:
       if ($marker->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
         $marker->{end}      =   $pgx->{referencebounds}->{$refName}->[1] }
 
-      my $mark_X0   =   sprintf "%.1f", $areaX_0 + ($marker->{start} - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
-      my $mark_W    =   sprintf "%.2f", ($marker->{end} - $marker->{start}) * $pgx->{basepixfrac};
+      my $mark_X0 = sprintf "%.1f", $areaX_0 + ($marker->{start} - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
+      my $mark_W = sprintf "%.2f", ($marker->{end} - $marker->{start}) * $pgx->{basepixfrac};
       if ($mark_W < 0.5) {$mark_W = 0.5}
-      $pgx->{svg}  .=  '
-<rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
 
       # adding a text label ####################################################
 
@@ -316,10 +317,10 @@ Returns:
         my $mLab_Y      =   $markbox_Y + $markerLineHeight - 3;
         foreach my $i (1..100) {
           if ($markerLineNo{$i} > $mLab_X0) {
-            $mLab_Y  		+=  $markerLineHeight + 1;
-            $markbox_Y  +=  $markerLineHeight + 1;
+            $mLab_Y +=  $markerLineHeight + 1;
+            $markbox_Y += $markerLineHeight + 1;
           } else {
-            $markerLineNo{$i} =   $mLab_Xn;
+            $markerLineNo{$i} = $mLab_Xn;
             last;
           }
         }
@@ -333,7 +334,7 @@ Returns:
       } else {
       	# if no label
       	my $mark_H    =   sprintf "%.0f", ($pgx->{Y} - $pgx->{markerstarty});
-				$pgx->{svg} .=  '
+		$pgx->{svg} .=  '
 <rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
 			}
 
@@ -343,8 +344,8 @@ Returns:
     $areaX_0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
   }
 
-  my $maxline   =   (sort { $a <=> $b } keys %markerLineNo)[-1];
-  $pgx->{Y}     +=  $maxline * ($markerLineHeight + 1) - 1;
+  my $maxline = (sort { $a <=> $b } keys %markerLineNo)[-1];
+  $pgx->{Y} += $maxline * ($markerLineHeight + 1) - 1;
 
   return $pgx;
 

@@ -26,9 +26,9 @@ sub segments_add_statusmaps {
   if (ref $segments ne 'ARRAY') {
     $segments   =   $pgx->{segmentdata} }
   
-=pod
+=podmd
 
-sub "segments_add_statusmaps"
+### Sub "segments_add_statusmaps"
 
 The subroutine returns an object containing statusvalues (DUP, DEL) and the (min, max)
 values of the overlapping variants, foreach of the provided $pgx->{genomeintervals} genome intervals.
@@ -90,13 +90,13 @@ maps:
     foreach my $ind (grep{
       $csVar->{reference_name} eq	$pgx->{genomeintervals}->[ $_ ]->{reference_name}
       &&
-      $csVar->{start}->[0] <=	$pgx->{genomeintervals}->[ $_ ]->{end}
+      $csVar->{start_min} <=	$pgx->{genomeintervals}->[ $_ ]->{end}
       &&
-      $csVar->{end}->[-1]	>=	$pgx->{genomeintervals}->[ $_ ]->{start}
+      $csVar->{end_max}	>=	$pgx->{genomeintervals}->[ $_ ]->{start}
     } 0..$#{ $pgx->{genomeintervals} }) {
 
-      my $ovEnd     =   (sort { $a <=> $b } ($pgx->{genomeintervals}->[ $ind ]->{end},  $csVar->{end}->[-1]) )[0];
-      my $ovStart   =   (sort { $b <=> $a } ($pgx->{genomeintervals}->[ $ind ]->{start},  $csVar->{start}->[0]) )[0];
+      my $ovEnd     =   (sort { $a <=> $b } ($pgx->{genomeintervals}->[ $ind ]->{end},  $csVar->{end_max} ) )[0];
+      my $ovStart   =   (sort { $b <=> $a } ($pgx->{genomeintervals}->[ $ind ]->{start},  $csVar->{start_min} ) )[0];
       my $overlap   =   $ovEnd - $ovStart + 1;
     
       $maps->{ $intStatLabs{ $csVar->{variant_type } } }->[$ind] = $csVar->{variant_type};

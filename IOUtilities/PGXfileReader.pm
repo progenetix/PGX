@@ -53,7 +53,7 @@ Returns:
   my $probeF    =   shift;
   my $probeT    =   shift;
   $probeT       ||= 'probedata';
-
+  
   $pgx->{$probeT}    =   [];
   my @randomV;
 
@@ -65,6 +65,10 @@ Returns:
     &&
     $probeT !~ /frac/i
   ) { $numfactor = -1 }
+
+  if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+    if ($probeT !~ /fracb/i) {
+      $pgx->{parameters}->{probebaseline} =   $pgx->{parameters}->{plot_adjust_baseline} } }
 
   open  FILE, "$probeF" or die "No file $probeF $!";
   local   $/;                             # no input separator
@@ -88,7 +92,7 @@ Returns:
     $reference_name     =~ s/^23$/X/;
     $reference_name     =~ s/^24$/Y/;
     $position   =   sprintf "%.0f", $position;  # due to some erroneous .5 in-between pos.
-    $value      =   sprintf "%.4f", $value;
+    $value      =   sprintf "%.4f", ($pgx->{parameters}->{probebaseline} + $value);
 
     if ($reference_name !~ /^\w\d?$/)             { next }
     if ($position       !~ /^\d{1,9}$/)           { next }
@@ -106,20 +110,11 @@ Returns:
     );
   }
   
-  if ($probeT =~ /fracb/i) { return $pgx }
-
   # random values
   if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
     my @randomV =   random_normal(scalar @{ $pgx->{$probeT} }, 0, 0.25);
     foreach my $n (0..$#{ $pgx->{$probeT} }) {
       $pgx->{$probeT}->[$n]->{value}  =   $randomV[$n];
-    }
-  }
-
-  # baseline adjustment
-  if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
-    foreach my $n (0..$#{ $pgx->{$probeT} }) {
-      $pgx->{$probeT}->[$n]->{value}  +=   $pgx->{parameters}->{plot_adjust_baseline};
     }
   }
 
@@ -179,7 +174,7 @@ Returns:
   my $segmentsF =   shift;
   my $segmentsT =   shift;
   $segmentsT    ||= 'segmentdata';
-  $pgx->{$segmentsT}  =   [];
+  $pgx->{$segmentsT}    =  [];
 
   if (! -f $segmentsF) { return $pgx }
 
@@ -189,6 +184,9 @@ Returns:
     &&
     $segmentsT !~ /frac/i
   ) { $numfactor = -1 }
+  
+  if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+    $pgx->{parameters}->{segbaseline} =   $pgx->{parameters}->{plot_adjust_baseline} }
 
   my %colOrder  =   (
     callset_id          =>  0,
@@ -218,10 +216,10 @@ Returns:
 
     $segVals{callset_id}        =~  s/[^\w\-\:]/_/g;
 
-    $segVals{reference_name}    =~ s/[^\dxXyY]//;
+    $segVals{reference_name}    =~ s/[^\dxXyY]//g;
     $segVals{reference_name}    =~ s/^23$/X/;
     $segVals{reference_name}    =~ s/^24$/Y/;
-    if ($segVals{reference_name}!~ /^\w\d?$/)             { next }
+    if ($segVals{reference_name}!~ /^\w\d?$/) { next }
 
     $segVals{start}     =   sprintf "%.0f", $segVals{start};	# sometimes "intermediate" positions
     $segVals{end}       =   sprintf "%.0f", $segVals{end};
@@ -238,8 +236,7 @@ Returns:
 		if ($segmentsT !~ /fracb/i) {
 
 			# baseline adjustment
-  		if ($pgx->{parameters}->{plot_adjust_baseline} =~ /^\-?(?:\d+?\.)?\d+?$/) {
-      	$segVals{value}	+=   $pgx->{parameters}->{plot_adjust_baseline} }
+      $segVals{value}	+=   $pgx->{parameters}->{segbaseline};
 
 			if ($segVals{value} >= $pgx->{parameters}->{cna_gain_threshold}) {
 				$varStatus	=		'DUP' }
@@ -263,9 +260,11 @@ Returns:
         no              =>  $i,
         callset_id      =>  $segVals{callset_id},
         reference_name  =>  $segVals{reference_name},
-        variant_type		=>	$varStatus,
-        start           =>  [ 1 * $segVals{start} ],
-        end             =>  [ 1 * $segVals{end} ],
+        variant_type	=>	$varStatus,
+        start_min       =>  1 * $segVals{start},
+        start_max       =>  1 * $segVals{start},
+        end_min         =>  1 * $segVals{end},
+        end_max         =>  1 * $segVals{end},
         info            =>  {
           value         =>  $numfactor * $segVals{value},
           svlen         =>  1 * ($segVals{end} - $segVals{start}),
@@ -339,7 +338,7 @@ sub read_webfile_to_split_array {
   my $table     =   [];
 
   if ($web =~ /dropbox\.com/) {
-  	$web 		=~	s/(\?dl=\w)?$/?dl=1/ }
+  	$web 		    =~	s/(\?dl=\w)?$/?dl=1/ }
 
 	$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} 	= 	0;
 
@@ -350,34 +349,33 @@ sub read_webfile_to_split_array {
   $req->header('Accept' => 'text/plain');
 
   my $res				=		$ua->request($req);
-	my @filecontent;
+	my @content;
 
 	if ($res =~ /\.(ods)|(xlsx?)$/i) {
 		my $book		=	ReadData($res->{_content});
 		foreach my $currentRow (Spreadsheet::Read::rows($book->[1])) {
 			push(
-				@filecontent,
+				@content,
 				join("\t", @{ $currentRow }),
 			);
 		}
 	} else {
-		@filecontent			  =		split("\n", $res->{_content});
-		chomp	@filecontent;
+		@content		=		split("\n", $res->{_content});
+		chomp	@content;
 	}
 
 	if ($args{DELCOMMENT} =~ /^T/i) {
-		@filecontent 			  = 	grep{ ! /^\#/ } @filecontent;
-		@filecontent 			  = 	grep{ /./ } @filecontent;
+		@content    = 	grep{ ! /^\#/ } @content;
+		@content 		= 	grep{ /./ } @content;
 	}
 	
-	foreach my $line (@filecontent) {
+	foreach my $line (@content) {
 		push(
 			@$table,
 			[ split("\t", $line) ],
 		);
 	}
 	
-
 	return	$table;
 
 }

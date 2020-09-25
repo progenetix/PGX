@@ -39,7 +39,7 @@ Returns:
   my $defaultsDir       =   '';
 
   if (defined($args->{'-defaultsfile'})) {
-    $defaultsDir        = $args->{'-defaultsfile'};
+    $defaultsDir        =   $args->{'-defaultsfile'};
     $defaultsDir        =~  s/\/[\w\.\,]+?$//;
     if (-f $args->{'-defaultsfile'}) {
       $locDefaults        =   LoadFile($args->{'-defaultsfile'});
@@ -72,9 +72,11 @@ Returns:
 
   # arguments to parameters
   foreach my $par (keys %$plotPars) {
-
+  
     if (! defined($args->{'-'.$par}) || $args->{'-'.$par} !~ /\w/) { next }
     # special evaluation: regions
+
+#     print $par.": ".$plotPars->{$par}." => ".$args->{'-'.$par}."\n";
     if ($par eq 'plotregions') {
 
       if (ref $args->{'-'.$par} eq 'ARRAY') {      
@@ -92,13 +94,23 @@ Returns:
     }}}
 
     # special evaluation: markers
+    elsif ($par eq 'labels') { }
     elsif ($par eq 'markers') {
+        
+    	my @m = ();
 
-      if (ref $args->{'-markers'} eq 'ARRAY') {      
-        $args->{'-markers'} =   join(',', @{ $args->{'-markers'} }) }
-      foreach (split(',', $args->{'-markers'})) {
-
-        my @markervals  =   split(':', $_);
+		if (ref $args->{'-markers'} eq 'ARRAY') {      
+			push(@m, @{ $args->{'-markers'} } ) }
+		else {
+			push(@m, split(',', $args->{'-markers'} ) ) }
+		if (ref $args->{'-labels'} eq 'ARRAY') {      
+			push(@m, @{ $args->{'-labels'} } ) }
+		else {
+			push(@m, split(',', $args->{'-labels'} ) ) }
+		
+      foreach (@m) {
+      
+        my @markervals = split(':', $_);
 
         if (
           $markervals[0]  =~ /^(chro?)?([\dxy]\d?)$/i

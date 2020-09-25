@@ -28,7 +28,7 @@ sub write_svg {
     return $pgx;
   }
 
-  if ($svgName !~ /\.svg$/) {
+  if ($fileName !~ /\.svg$/) {
     $fileName    =   $pgx->{parameters}->{plotid};    
     if ($fileName !~ /.../) {
       $fileName  =   "$^T"."$$" }
@@ -165,11 +165,11 @@ Returns:
     print FILE join("\t",
       $seg->{callset_id},
       $seg->{reference_name},
-      $seg->{start}->[0],
-      $seg->{end}->[-1],
-      $seg->{info}->{value},
+      $seg->{start_min},
+      $seg->{end_max},
+      $seg->{info}->{cnv_value},
       $seg->{info}->{probes},
-      $seg->{info}->{variant_type},
+      $seg->{variant_type},
     )."\n";
   }
   close FILE;

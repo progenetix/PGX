@@ -29,7 +29,7 @@ use PGX::GenomePlots::PlotParameters;
 # command line input
 my %args        =   @ARGV;
 
-$args{'-dataset'}       ||= 'arraymap_ga4gh';
+$args{'-dataset'}       ||= 'arraymap';
 $args{'-genome'}        ||= 'grch36';
 $args{'-randno'}        ||= -1;
 $args{'-binning'}       ||= 1000000;

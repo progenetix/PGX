@@ -124,33 +124,33 @@ called for more than 1 array. However, it uses the standard "samples" construct
 as input, which is an array of possibly multiple samples - the method should 
 only be called when populated with one.
 
-
 =cut
 
-  my $pgx       =   shift;
-  my $probefile =   shift;
+	my $pgx = shift;
+	my $probeF = shift;
+
+	if (@{ $pgx->{samples} } != 1 ) {
+		push(
+			@{ $pgx->{errors} },
+			scalar(@{ $pgx->{samples} }).' samples in array probe reading attempt; should be 1',
+		);
+	}
   
-  if (@{ $pgx->{samples} } != 1 ) {
-  	push(
-  		@{ $pgx->{errors} },
-  		scalar(@{ $pgx->{samples} }).' samples in array probe reading attempt',
-  	);
-  }
+	if ($probeF !~ /.../) {
+		if ($pgx->{samples}->[0]->{paths}->{probefile} =~ /.../) {
+			$probeF = $pgx->{samples}->[0]->{paths}->{probefile};
+			$probeF =~ s/^\///;
+		} else {
+  			my $seriesId = (split('::', $pgx->{samples}->[0]->{id}))[1];
+			my $arrayId = (split('::', $pgx->{samples}->[0]->{id}))[2];
+			$probeF = lc($pgx->{parameters}->{genome}).'/'.$seriesId.'/'.$arrayId.'/probes,cn.tsv'
+		}
+		$probeF = $pgx->{config}->{paths}->{dir_array_base_path}.'/'.$probeF;
+	}
   
-  if ($probefile !~ /\w/) {
-  	if ($pgx->{samples}->[0]->{paths}->{probefile} =~ /\w\.\w/) {
-  		$probefile	=		$pgx->{samples}->[0]->{paths}->{probefile} }
-  	else {
-  		my $seriesId		=		(split('::', $pgx->{samples}->[0]->{id}))[1];
-			my $arrayId			=		(split('::', $pgx->{samples}->[0]->{id}))[2];
-			$probefile	=		$pgx->{parameters}->{genome}.'/'.$seriesId.'/'.$arrayId.'/probes,cn.tsv'
-  	}
-  	$probefile	=~ s/^\///;
-  	$probefile	=			$pgx->{config}->{paths}->{dir_array_base_path}.'/'.$probefile;
-  }
-  
-  $pgx->read_probefile($probefile);
-  return $pgx;
+	$pgx->read_probefile($probeF);
+	
+	return $pgx;
 
 }
 

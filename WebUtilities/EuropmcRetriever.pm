@@ -82,12 +82,12 @@ notes:
   if ($epmcxml =~ /<authorString>(.+?)<\/authorString>/) {
     $pub->{authors} =   $1 }
 
-  $pub->{citelabel}   =   $pub->{authors};
-  $pub->{citelabel}   =~  s/^(.+?\w\w\w) .*?$/$1 et al./;
+  $pub->{label}   =   $pub->{authors};
+  $pub->{label}   =~  s/^(.+?\w\w\w) .*?$/$1 et al./;
   my $shortT    =   $pub->{TITLE};
   $shortT       =~    s/^(.{50,100} ).*?$/$1.../;;
 
-  $pub->{citelabel}   .=  ' ('.$pub->{year}.'): '.$shortT;
+  $pub->{label}   .=  ' ('.$pub->{year}.'): '.$shortT;
 
   return $pub;
 

@@ -22,16 +22,16 @@ require Exporter;
 
 sub pgx_open_handover {
 
-  my $pgx       =   shift;
-  my $config    =   shift;
-  my $accessid  =   shift;
+  my $pgx = shift;
+  my $config = shift;
+  my $accessid = shift;
 
   if ($accessid !~ /..../) { return $pgx }
 
-  $pgx->{handover}  =   MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { _id	=>  $accessid } );
-  $pgx->{dataconn}  =   MongoDB::MongoClient->new()->get_database( $pgx->{handover}->{source_db} );
+  $pgx->{handover} = MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { id => $accessid } );
+  $pgx->{dataconn} = MongoDB::MongoClient->new()->get_database( $pgx->{handover}->{source_db} );
 
- return $pgx;
+  return $pgx;
 
 }
 
@@ -39,25 +39,26 @@ sub pgx_open_handover {
 
 sub pgx_samples_from_handover {
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   if (! $pgx->{handover}) { return $pgx }
   if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
-  my $cscoll    =   $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
-  my $dataQuery =   { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
-  my $cursor	  =		$cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, info => 1 } );
-  my $callsets	=		[ $cursor->all ];
-  $callsets     =   [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
+  my $cscoll = $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
+  my $dataQuery = { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
+  my $cursor = $cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, info => 1 } );
+  my $callsets = [ $cursor->all ];
+  $callsets = [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
 
- 	#
-  $pgx->{samples} 	=   [
+  $pgx->{datasetid} = $pgx->{handover}->{source_db};
+
+  $pgx->{samples} = [
     map{
       {
-        id      => 	$_->{id},
-        biosample_id  => $_->{biosample_id},
-        statusmaps    => $_->{info}->{statusmaps},
-        info		=>	{ cnvstatistics => $_->{info}->{cnvstatistics} },
-        paths		=>	$_->{paths},
+        id => $_->{id},
+        biosample_id => $_->{biosample_id},
+        statusmaps => $_->{info}->{statusmaps},
+        info =>	{ cnvstatistics => $_->{info}->{cnvstatistics} },
+        paths => $_->{info}->{paths},
       }
     } @$callsets
   ];
@@ -95,32 +96,31 @@ sub pgx_add_variants_from_db {
 
 sub pgx_create_samples_from_segments {
 
-  my $pgx       =   shift;
+	my $pgx = shift;
 
-  if (! $pgx->{segmentdata}) { return $pgx }
+	if (! $pgx->{segmentdata}) { return $pgx }
 
-  my %csIds     =   map{ $_->{callset_id} => 1 } @{ $pgx->{segmentdata} };
+	my %csIds = map{ $_->{callset_id} => 1 } @{ $pgx->{segmentdata} };
 
-  $pgx->{samples}   ||= [];
+	$pgx->{samples} ||= [];
 
-  foreach my $csId (keys %csIds) {
+	foreach my $csId (keys %csIds) {
 
-    # a bit awkward re-assignment of segmentsdata
-    my $segments    =   [ grep{ $_->{callset_id} eq $csId } @{ $pgx->{segmentdata} } ];
-    $pgx->segments_add_statusmaps($segments);
-    push(
-      @{ $pgx->{samples} },
-      {
-        id        =>  $csId,
-        statusmaps    =>  $pgx->{statusmaps},
-        variants  =>  $segments,
-        name      =>  $csId,
-      }
-    );
+		# a bit awkward re-assignment of segmentsdata
+		my $segments = [ grep{ $_->{callset_id} eq $csId } @{ $pgx->{segmentdata} } ];	
+		$pgx->segments_add_statusmaps($segments);
+		push(
+		  @{ $pgx->{samples} },
+		  {
+			id =>  $csId,
+			statusmaps => $pgx->{statusmaps},
+			variants => $segments,
+			name =>  $csId,
+		  }
+		);
+	}
 
-  }
-
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -128,14 +128,13 @@ sub pgx_create_samples_from_segments {
 
 sub pgx_create_sample_collections {
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
-  $pgx->{samplecollections} =   [];
+  $pgx->{samplecollections} = [];
 
-  my %sortKeys  =   map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
+  my %sortKeys = map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
 
   # creation of the groups
-
   foreach my $sortKey (keys %sortKeys) {
 
     my @theirIndex  =   grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
@@ -182,39 +181,50 @@ sub pgx_create_sample_collections {
 
 sub pgx_callset_labels_from_biosamples {
 
-  my $pgx       =   shift;
-  my $config    =   shift;
+	my $pgx = shift;
+	my $config = shift;
 
-  if (! $pgx->{dataconn}) { return $pgx }
+	if (! $pgx->{dataconn}) { return $pgx }
 
-  my ($groupAttr, $groupType) =   split('::', $config->{param}->{-grouping}->[0]);
-  if ($groupAttr !~ /.../)  { $groupAttr = 'biocharacteristics' }
-  if ($groupType !~ /.../)  { $groupType = 'xxxx' }
-  my %biosIds   =   map{ $_->{biosample_id} => 1 } @{ $pgx->{samples} };
-  my $bscoll    =   $pgx->{dataconn}->get_collection( 'biosamples' );
-  $cursor	      =		$bscoll->find( { id => { '$in' => [ keys %biosIds ] } } )->fields( { id => 1, $groupAttr => 1 } );
-  my $bioS      =   [ $cursor->all ];
+	my ($groupAttr, $groupType);
 
-  for my $i (0..$#{ $pgx->{samples} }) {
+	# CAVE: both "$config" (environment) and "$pgx->{config}" used here ...
+	if ($config->{param}->{group_by}->[0] =~ /.../) {
+		for my $gra (qw(biosubsets datacollections)) {
+			for my $grt (keys %{ $pgx->{config}->{$gra} }) {
+				if ($grt eq $config->{param}->{group_by}->[0]) {
+					$groupType = $config->{param}->{group_by}->[0];
+					$groupAttr = $pgx->{config}->{$gra}->{$grt}->{samplefield};			
+	} } } }
 
-    my $csId    =   $pgx->{samples}->[$i]->{id};
-    my $bsId    =   $pgx->{samples}->[$i]->{biosample_id};
+	if ($groupAttr !~ /.../)  { $groupAttr = 'biocharacteristics' }
+	if ($groupType !~ /.../)  { $groupType = 'xxxx' }
 
-    $pgx->{samples}->[$i]->{sortkey}    =  'NA';
-    $pgx->{samples}->[$i]->{sortlabel}  =  'not specified';
+	my %biosIds = map{ $_->{biosample_id} => 1 } @{ $pgx->{samples} };
+	my $bscoll = $pgx->{dataconn}->get_collection( 'biosamples' );
+	my $cursor = $bscoll->find( { id => { '$in' => [ keys %biosIds ] } } )->fields( { id => 1, $groupAttr => 1 } );
+	my $bioS = [ $cursor->all ];
 
-    if ($bsId !~ /.../) { next }
-    my ($thisBios)  =   grep{ $_->{id} eq $bsId } @$bioS;
-    my ($thisbioc)  =   grep{ $_->{type}->{id} =~ /$groupType/ } @{ $thisBios->{$groupAttr} };
-    if ($thisbioc->{type}->{id} !~ /.../) { next }
+	for my $i (0..$#{ $pgx->{samples} }) {
 
-    $pgx->{samples}->[$i]->{sortkey}    =   $thisbioc->{type}->{id};
-    $pgx->{samples}->[$i]->{sortlabel}  =   ( $thisbioc->{type}->{label} =~ /.../ ? $thisbioc->{type}->{label} : $thisbioc->{type}->{id} );
-    $pgx->{samples}->[$i]->{sortlabel}  =~  s/^.+?\:\:?//;
+		my $csId = $pgx->{samples}->[$i]->{id};
+		my $bsId = $pgx->{samples}->[$i]->{biosample_id};
 
-  }
+		$pgx->{samples}->[$i]->{sortkey} =  'NA';
+		$pgx->{samples}->[$i]->{sortlabel} = 'not specified';
 
-  return $pgx;
+		if ($bsId !~ /.../) { next }
+		my ($thisBios) = grep{ $_->{id} eq $bsId } @$bioS;
+		my ($thisbioc) = grep{ $_->{type}->{id} =~ /$groupType/ } @{ $thisBios->{$groupAttr} };
+		if ($thisbioc->{type}->{id} !~ /.../) { next }
+
+		$pgx->{samples}->[$i]->{sortkey} = $thisbioc->{type}->{id};
+		$pgx->{samples}->[$i]->{sortlabel} = ( $thisbioc->{type}->{label} =~ /.../ ? $thisbioc->{type}->{label} : $thisbioc->{type}->{id} );
+		$pgx->{samples}->[$i]->{sortlabel} =~ s/^.+?\:\:?//;
+
+	}
+
+	return $pgx;
 
 }
 
@@ -362,12 +372,12 @@ input format (other attributes optional):
 			. ' samples<ul>' }
 
 		$infoText 	=~ 	s/\'/\\\'/g;
-		if (grep{ /pubmed/ } @{$locData{$locKey}->{ids}}) {
+		if (grep{ /PMID/ } @{$locData{$locKey}->{ids}}) {
 			$infoText	.=	'<ul>';
-      foreach my $pmid (grep{ /pubmed/ } @{$locData{$locKey}->{ids}}) {
+      foreach my $pmid (grep{ /PMID/ } @{$locData{$locKey}->{ids}}) {
 				$pmid		=~	s/pubmed\://;
 				 $infoText .=
-						'<li><a href="/cgi-bin/publications.cgi?id=pubmed:'
+						'<li><a href="/cgi-bin/publications.cgi?id=PMID:'
 					. $pmid
 					. '" target="_blank">pubmedid '
 					. $pmid
