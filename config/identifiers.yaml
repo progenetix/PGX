@@ -8,13 +8,13 @@ pmc:
   - pmc
 geogsm:
   - '^GSM\d+?$'
-  - geogsm
+  - geo
 geogse:
   - '^GSE\d+?$'
-  - geogse
+  - geo
 geogpl:
   - '^GPL\d+?$'
-  - geogpl
+  - geo
 egastudy:
   - '^EGAS\d{11}$'
   - ega.study

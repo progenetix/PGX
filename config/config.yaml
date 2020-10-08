@@ -61,15 +61,15 @@ datacollections:
     samplefield: external_references
   geogse:
     label: 'NCBI Gene Expression Omnibus series'
-    prefix: geogse
-    pattern: '^geogse\-GSE\d+?$'
-    greedymatch: '^geogse\-GSE\d*?$'
+    prefix: geo
+    pattern: '^geo\:GSE\d+?$'
+    greedymatch: '^geo\:GSE\d*?$'
     samplefield: external_references
   geogpl:
     label: 'NCBI Gene Expression Omnibus platform'
-    prefix: geogse
-    pattern: '^geogpl\-GPL\d+?$'
-    greedymatch: '^geogpl-GPL\d*?$'
+    prefix: geo
+    pattern: '^geo\:GPL\d+?$'
+    greedymatch: '^geo\:GPL\d*?$'
     samplefield: external_references
   egastudy:
     label: 'EGA Study'

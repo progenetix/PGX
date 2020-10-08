@@ -5,8 +5,8 @@ use PGX::GenomePlots::CytobandsPlotter;
 use PGX::GenomePlots::StripPlotter;
 
 require Exporter;
-@ISA            =   qw(Exporter);
-@EXPORT         =   qw(return_histoplot_svg get_histoplot_background get_histoplot_area);
+@ISA = qw(Exporter);
+@EXPORT = qw(return_histoplot_svg get_histoplot_background get_histoplot_area);
 
 ################################################################################
 
@@ -107,10 +107,18 @@ sub get_histoplot_background {
   $pgx->{areastarty} = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_padding};
   
   foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
+  
+  	my $is_single = 0;  
+  	my $p_a_h = $pgx->{parameters}->{size_plotarea_h_px};
+  	if (grep{ /count/ } keys %$frequencymapsSet) {
+  		if ($frequencymapsSet->{count} == 1) {
+  			$is_single = 1 } }	
+	if ($is_single ==1) { $p_a_h = $pgx->{parameters}->{size_chromosome_w_px} }
+  
     $pgx->{Y} += $pgx->{parameters}->{size_plotarea_padding};
 
     my $area_x0 = $pgx->{areastartx};
-    my $area_ycen = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
+    my $area_ycen = $pgx->{Y} + $p_a_h / 2;
 
     if ($frequencymapsSet->{name} =~ /\w\w/) {
       my $titeL = {
@@ -126,13 +134,13 @@ sub get_histoplot_background {
       my $areaW =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
       $pgx->{svg}  .=  '
-  <rect x="'.$area_x0.'" y="'.$pgx->{Y}.'" width="'.$areaW.'" height="'.$pgx->{parameters}->{size_plotarea_h_px}.'" style="fill: '.$pgx->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
+  <rect x="'.$area_x0.'" y="'.$pgx->{Y}.'" width="'.$areaW.'" height="'.$p_a_h.'" style="fill: '.$pgx->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
       $area_x0  +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
     }
 
-    $pgx->{Y} += $pgx->{parameters}->{size_plotarea_h_px};
+    $pgx->{Y} += $p_a_h;
 
   }
 
@@ -166,10 +174,18 @@ Returns:
   $pgx->{Y} = $pgx->{areastarty} - $pgx->{parameters}->{size_plotarea_padding};
   
   foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
+
     $pgx->{Y} += $pgx->{parameters}->{size_plotarea_padding};
 
+  	my $is_single = 0;  
+  	my $p_a_h = $pgx->{parameters}->{size_plotarea_h_px};
+  	if (grep{ /count/ } keys %$frequencymapsSet) {
+  		if ($frequencymapsSet->{count} == 1) {
+  			$is_single = 1 } }	
+	if ($is_single == 1) { $p_a_h = $pgx->{parameters}->{size_chromosome_w_px} }
+
     my $area_x0 = $pgx->{areastartx};
-    my $area_ycen = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
+    my $area_ycen = $pgx->{Y} + $p_a_h / 2;
 
     if ($frequencymapsSet->{name} =~ /\w\w/) {
       my $titeL = {
@@ -180,7 +196,7 @@ Returns:
       $pgx->svg_add_title_left($titeL);
     }
 
-    $pgx->svg_add_labels_y();
+    if ($is_single != 1) { $pgx->svg_add_labels_y() }
 
     foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
@@ -207,12 +223,12 @@ Returns:
 
           my $X =   sprintf "%.1f", $area_x0 - $x_corr + $pgx->{basepixfrac} * ($end - ($end - $start) / 2);
           my $H =   sprintf "%.1f", $frequencymapsSet->{$GL}->[$i] * $pgx->{parameters}->{pixyfactor};
+          if ($is_single = 1) { $H = $frequencymapsSet->{$GL}->[$i] * $p_a_h / 200 }
           $pgx->{svg}  .=  ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
 
         }
 
         $pgx->{svg} .= ' '.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'" fill="'.($GL =~ /del/i ? $pgx->{parameters}->{color_var_del_hex} : $pgx->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
-
       }
 
       $area_x0  +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
@@ -220,8 +236,9 @@ Returns:
     }
 
     # adding a baseline at 0
-    $pgx->{svg}    .=  '
-  <line x1="'.$pgx->{areastartx}.'"  y1="'.$area_ycen.'"  x2="'.($pgx->{areastartx} + $pgx->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />';
+    if ($is_single != 1) {
+    	$pgx->{svg}    .=  '
+  <line x1="'.$pgx->{areastartx}.'"  y1="'.$area_ycen.'"  x2="'.($pgx->{areastartx} + $pgx->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />' }
 
     my $labels_R    =   [];
     if ($frequencymapsSet->{labels}) { $labels_R = $frequencymapsSet->{labels} }
@@ -230,9 +247,9 @@ Returns:
       $labCol = $defLabCol }
     else { 
       $labCol = $altLabCol }
-    $pgx->svg_add_labels_right($labels_R, $pgx->{parameters}->{size_plotarea_h_px}, $labCol);
+    $pgx->svg_add_labels_right($labels_R, $p_a_h, $labCol);
 
-    $pgx->{Y} += $pgx->{parameters}->{size_plotarea_h_px};
+    $pgx->{Y} += $p_a_h;
 
   }
 

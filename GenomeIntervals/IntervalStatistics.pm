@@ -159,32 +159,35 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $cnvmaps   =   shift;
-  my $name      =   shift;
-  my $labels    =   shift;
-  my $maps      =   {
-    intervals   =>  scalar(@{ $pgx->{genomeintervals} }),
-    binning     =>  $pgx->{genomeintervals}->[0]->{end} - $pgx->{genomeintervals}->[0]->{start} + 1,
-    name        =>  ($name =~ /\w/ ? $name : q{}),
-    labels      =>  (@$labels > 0 ? $labels : []),
+  my $pgx = shift;
+  my $cnvmaps = shift;
+  my $name =  shift;
+  my $labels = shift;
+  
+  my $maps = {
+    intervals =>  scalar(@{ $pgx->{genomeintervals} }),
+    binning =>  $pgx->{genomeintervals}->[0]->{end} - $pgx->{genomeintervals}->[0]->{start} + 1,
+    name => ($name =~ /\w/ ? $name : q{}),
+    labels =>  (@$labels > 0 ? $labels : []),
+    count => scalar @{ $cnvmaps },
   };
+  
   my %intLabs   =   (
-    DUP         =>  'dupmap',
-    DEL         =>  'delmap',
+    DUP => 'dupmap',
+    DEL => 'delmap',
   );
   my %freqLabs      =   (
-    DUP         =>  'dupfrequencies',
-    DEL         =>  'delfrequencies',
+    DUP => 'dupfrequencies',
+    DEL => 'delfrequencies',
   );
 
   # avoiding division by 0 errors if improperly called
-  my $fFactor   =   100;
+  my $fFactor = 100;
   if (@{ $cnvmaps } > 1) { $fFactor = 100 / @{ $cnvmaps } }
 
   foreach my $type (keys %intLabs) {
     for my $i (0..$#{ $pgx->{genomeintervals} }) {
-      $maps->{ $freqLabs{ $type } }->[$i]   =   sprintf "%.3f", ($fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] eq $type } @{ $cnvmaps } ));
+      $maps->{ $freqLabs{ $type } }->[$i] = sprintf "%.3f", ($fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] eq $type } @{ $cnvmaps } ));
     }
   }
 
@@ -201,11 +204,11 @@ sub cluster_frequencymaps {
   use Algorithm::Cluster;
   no warnings 'uninitialized';
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
-  my @matrix    =   ();
-  my $labels    =   [];
-  my $order     =   [];
+  my @matrix = ();
+  my $labels = [];
+  my $order = [];
   
   if ($pgx->{parameters}->{cluster_linkage_method} !~ /^[ascm]$/) {
     $pgx->{parameters}->{cluster_linkage_method} = 'm' }

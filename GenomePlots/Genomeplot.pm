@@ -32,10 +32,11 @@ require Exporter;
 
 sub pgx_get_genome_regions {
 
-  my $pgx       =   shift;
-  my $regions   =   $pgx->{parameters}->{plotregions};
-  my %chros     =   map{ $_->{reference_name} => 1 } @$regions;
-  my @refNames  =   ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %chros), (sort grep{ ! /\d/ } keys %chros));
+  my $pgx = shift;
+  
+  my $regions = $pgx->{parameters}->{plotregions};
+  my %chros = map{ $_->{reference_name} => 1 } @$regions;
+  my @refNames = ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %chros), (sort grep{ ! /\d/ } keys %chros));
 
   if (! grep{ /^\d\w?$/ } @refNames) { return $pgx }
   if (! grep{ $_->{reference_name} =~ /^\d\w?$/ } @$regions) { return $pgx }
@@ -44,10 +45,10 @@ sub pgx_get_genome_regions {
   my $baseCount =   0;
 
   foreach my $ref (@refNames) {
-    my @allBounds       =   map{ $_->{start}, $_->{end} } (grep{ $_->{reference_name} eq $ref } @$regions);
-    @allBounds          =   sort {$a <=> $b } @allBounds;
-    $refLims->{$ref}    =   [ $allBounds[0], $allBounds[-1] ];
-    $baseCount          +=  ($allBounds[-1] - $allBounds[0]);
+    my @allBounds = map{ $_->{start}, $_->{end} } (grep{ $_->{reference_name} eq $ref } @$regions);
+    @allBounds = sort {$a <=> $b } @allBounds;
+    $refLims->{$ref} = [ $allBounds[0], $allBounds[-1] ];
+    $baseCount += ($allBounds[-1] - $allBounds[0]);
   }
 
   $pgx->{parameters}->{do_chromosomes_proportional} = /n/;
@@ -93,10 +94,10 @@ sub pgx_add_frequencymaps {
 
 =cut
 
-  my $pgx       =   shift;
-  my $csColls   =   shift;
+  my $pgx = shift;
+  my $csColls = shift;
 
-  $pgx->{frequencymaps}    =   [];
+  $pgx->{frequencymaps} = [];
 
   foreach my $csColl (@$csColls) {
     $pgx->interval_cnv_frequencies(
