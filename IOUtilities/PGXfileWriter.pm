@@ -270,35 +270,46 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $file      =   shift;
+	my $pgx = shift;
+	my $file = shift;
 
-  if (! $file) { die "No specification for output $file $!" }
-  if (! $pgx->{samples}->[0]->{statusmaps}) { return $pgx }
+	if (! $pgx->{samples}->[0]->{statusmaps}) { return $pgx }
+  
+	if (! -d $pgx->{parameters}->{path_loc}) {
+		warn "No correct specification for output path $pgx->{parameters}->{path_loc} $!";
+		return $pgx;
+	}
 
-  my $i         =   0;
-  open  FILE, '>'."$file";
-  print FILE join("\t",
-    'label',
-    ( map{ 'dup_'.($_+1) } @{ $pgx->{matrixindex} } ),
-    ( map{ 'del_'.($_+1) } @{ $pgx->{matrixindex} } ),
-  )."\n";
-  foreach my $sample (@{ $pgx->{samples} }) {
-    $i++;
-    my $label   =   'sample_'.$i;
-    if ($sample->{id} =~ /\w\w/) {
-      $label    =   $sample->{id} }
-    elsif ($sample->{UID} =~ /\w\w/) {
-      $label    =   $sample->{UID} }
-    $label      =~  s/[^\w\,\-]/_/g;
-    $label      =~  s/_$//g;      
-    print FILE $label."\t";
-    print FILE join("\t",
-      (map{ $sample->{statusmaps}->{dupmap}->[$_] eq 'DUP' ? 1 : 0 } @{ $pgx->{matrixindex} }),
-      (map{ $sample->{statusmaps}->{delmap}->[$_] eq 'DEL' ? 1 : 0 } @{ $pgx->{matrixindex} })
-    )."\n";
-  }
-  close FILE;
+	if ($file !~ /$pgx->{parameters}->{path_loc}/) {
+		$file = $pgx->{parameters}->{path_loc}.'/samplematrix.tab';
+		$pgx->{samplematrix_link_tmp} = $pgx->{parameters}->{path_web}.'/samplematrix.tab';
+	}
+
+	my $i = 0;
+	open  FILE, '>'."$file";
+	print FILE join("\t",
+		'label',
+		( map{ 'dup_'.($_+1) } @{ $pgx->{matrixindex} } ),
+		( map{ 'del_'.($_+1) } @{ $pgx->{matrixindex} } ),
+	)."\n";
+	foreach my $sample (@{ $pgx->{samples} }) {
+	$i++;
+	my $label   =   'sample_'.$i;
+	if ($sample->{id} =~ /\w\w/) {
+	  $label    =   $sample->{id} }
+	elsif ($sample->{UID} =~ /\w\w/) {
+	  $label    =   $sample->{UID} }
+	$label      =~  s/[^\w\,\-]/_/g;
+	$label      =~  s/_$//g;      
+	print FILE $label."\t";
+	print FILE join("\t",
+	  (map{ $sample->{statusmaps}->{dupmap}->[$_] eq 'DUP' ? 1 : 0 } @{ $pgx->{matrixindex} }),
+	  (map{ $sample->{statusmaps}->{delmap}->[$_] eq 'DEL' ? 1 : 0 } @{ $pgx->{matrixindex} })
+	)."\n";
+	}
+	close FILE;
+	
+	return $pgx;
 
 }
 
