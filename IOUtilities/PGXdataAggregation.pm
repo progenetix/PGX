@@ -6,8 +6,8 @@ use PGX::GenomePlots::PlotParameters;
 use PGX::Helpers::UtilityLibs;
 
 require Exporter;
-@ISA    =   qw(Exporter);
-@EXPORT =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   pgx_open_handover
   pgx_samples_from_handover
   pgx_add_variants_from_db
@@ -22,16 +22,16 @@ require Exporter;
 
 sub pgx_open_handover {
 
-  my $pgx = shift;
-  my $config = shift;
-  my $accessid = shift;
+	my $pgx = shift;
+	my $config = shift;
+	my $accessid = shift;
 
-  if ($accessid !~ /..../) { return $pgx }
+	if ($accessid !~ /..../) { return $pgx }
 
-  $pgx->{handover} = MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { id => $accessid } );
-  $pgx->{dataconn} = MongoDB::MongoClient->new()->get_database( $pgx->{handover}->{source_db} );
+	$pgx->{handover} = MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { id => $accessid } );
+	$pgx->{dataconn} = MongoDB::MongoClient->new()->get_database( $pgx->{handover}->{source_db} );
 
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -39,31 +39,31 @@ sub pgx_open_handover {
 
 sub pgx_samples_from_handover {
 
-  my $pgx = shift;
+	my $pgx = shift;
 
-  if (! $pgx->{handover}) { return $pgx }
-  if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
-  my $cscoll = $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
-  my $dataQuery = { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
-  my $cursor = $cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, info => 1 } );
-  my $callsets = [ $cursor->all ];
-  $callsets = [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
+	if (! $pgx->{handover}) { return $pgx }
+	if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
+	my $cscoll = $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
+	my $dataQuery = { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
+	my $cursor = $cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, info => 1 } );
+	my $callsets = [ $cursor->all ];
+	$callsets = [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
 
-  $pgx->{datasetid} = $pgx->{handover}->{source_db};
+	$pgx->{datasetid} = $pgx->{handover}->{source_db};
 
-  $pgx->{samples} = [
-    map{
-      {
-        id => $_->{id},
-        biosample_id => $_->{biosample_id},
-        statusmaps => $_->{info}->{statusmaps},
-        info =>	{ cnvstatistics => $_->{info}->{cnvstatistics} },
-        paths => $_->{info}->{paths},
-      }
-    } @$callsets
-  ];
+	$pgx->{samples} = [
+		map{
+			{
+				id => $_->{id},
+				biosample_id => $_->{biosample_id},
+				statusmaps => $_->{info}->{statusmaps},
+				info => { cnvstatistics => $_->{info}->{cnvstatistics} },
+				paths => $_->{info}->{paths},
+			}
+		} @$callsets
+	];
 
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -71,24 +71,21 @@ sub pgx_samples_from_handover {
 
 sub pgx_add_variants_from_db {
 
-  my $pgx       =   shift;
-  my $query     =   shift;
+	my $pgx = shift;
+	my $query = shift;
 
-  if (! $pgx->{handover}) { return $pgx }
-  if (! $pgx->{dataconn}) { return $pgx }
+	if (! $pgx->{handover}) { return $pgx }
+	if (! $pgx->{dataconn}) { return $pgx }
 
-  my $vcoll     =   $pgx->{dataconn}->get_collection('variants');
+	my $vcoll = $pgx->{dataconn}->get_collection('variants');
 
-  for my $i (0..$#{ $pgx->{samples} }) {
-
-  	my $dataQuery =   { 'callset_id' => $pgx->{samples}->[$i]->{id} };
-  	my $cursor	  =		$vcoll->find( $dataQuery )->fields( { _id => 0, updated => 0, created => 0 } );
-
-		$pgx->{samples}->[$i]->{variants}	=		[ $cursor->all ];
-
+	for my $i (0..$#{ $pgx->{samples} }) {
+		my $dataQuery = { 'callset_id' => $pgx->{samples}->[$i]->{id} };
+		my $cursor = $vcoll->find( $dataQuery )->fields( { _id => 0, updated => 0, created => 0 } );
+		$pgx->{samples}->[$i]->{variants} = [ $cursor->all ];
 	}
 
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -112,10 +109,10 @@ sub pgx_create_samples_from_segments {
 		push(
 		  @{ $pgx->{samples} },
 		  {
-			id =>  $csId,
+			id => $csId,
 			statusmaps => $pgx->{statusmaps},
 			variants => $segments,
-			name =>  $csId,
+			name => $csId,
 		  }
 		);
 	}
@@ -137,37 +134,37 @@ sub pgx_create_sample_collections {
   # creation of the groups
   foreach my $sortKey (keys %sortKeys) {
 
-    my @theirIndex  =   grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
+    my @theirIndex = grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
 
-    my $labelColor  =   random_hexcolor();
+    my $labelColor = random_hexcolor();
     if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) {
-      $labelColor   =   '#cccccc' }
+      $labelColor = '#cccccc' }
 
-    my $label       =   {
-      label_text  =>  $sortKey,
-      label_link  =>  q{},
-      label_color =>  $labelColor,
+    my $label = {
+      label_text => $sortKey,
+      label_link => q{},
+      label_color => $labelColor,
     };
 
-    $sortKey  =~  s/^.+?\:\:?//;
+    $sortKey =~ s/^.+?\:\:?//;
     foreach (@theirIndex) {
-      $pgx->{samples}->[$_]->{labels} =  [ $label ];
-      $pgx->{samples}->[$_]->{name}   =  $pgx->{samples}->[$_]->{id}.($sortKey =~ /.../ ? ' ('.$sortKey.')' : q{});
-      $pgx->{samples}->[$_]->{name}   =~  s/^.+?\:\://g;
-      $pgx->{samples}->[$_]->{name}   =~  s/^.+?\:\://g;
+      $pgx->{samples}->[$_]->{labels} = [ $label ];
+      $pgx->{samples}->[$_]->{name} = $pgx->{samples}->[$_]->{id}.($sortKey =~ /.../ ? ' ('.$sortKey.')' : q{});
+      $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
+      $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
     }
 
     if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) { next }
 
-    my $theseSamples =  [@{ $pgx->{samples} }[@theirIndex]];
-    my $name      =   $theseSamples->[0]->{sortlabel}.' ('.scalar(@$theseSamples).')';
+    my $theseSamples = [@{ $pgx->{samples} }[@theirIndex]];
+    my $name = $theseSamples->[0]->{sortlabel}.' ('.scalar(@$theseSamples).')';
 
     push(
       @{$pgx->{samplecollections}},
       {
-        labels        =>  [ $label ],
-        name          =>  $name,
-        statusmapsets =>  [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
+        labels => [ $label ],
+        name => $name,
+        statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
       },
     );
 
@@ -210,16 +207,16 @@ sub pgx_callset_labels_from_biosamples {
 		my $csId = $pgx->{samples}->[$i]->{id};
 		my $bsId = $pgx->{samples}->[$i]->{biosample_id};
 
-		$pgx->{samples}->[$i]->{sortkey} =  'NA';
+		$pgx->{samples}->[$i]->{sortkey} = 'NA';
 		$pgx->{samples}->[$i]->{sortlabel} = 'not specified';
 
 		if ($bsId !~ /.../) { next }
 		my ($thisBios) = grep{ $_->{id} eq $bsId } @$bioS;
-		my ($thisbioc) = grep{ $_->{type}->{id} =~ /$groupType/ } @{ $thisBios->{$groupAttr} };
-		if ($thisbioc->{type}->{id} !~ /.../) { next }
+		my ($thisbioc) = grep{ $_->{id} =~ /$groupType/ } @{ $thisBios->{$groupAttr} };
+		if ($thisbioc->{id} !~ /.../) { next }
 
-		$pgx->{samples}->[$i]->{sortkey} = $thisbioc->{type}->{id};
-		$pgx->{samples}->[$i]->{sortlabel} = ( $thisbioc->{type}->{label} =~ /.../ ? $thisbioc->{type}->{label} : $thisbioc->{type}->{id} );
+		$pgx->{samples}->[$i]->{sortkey} = $thisbioc->{id};
+		$pgx->{samples}->[$i]->{sortlabel} = ( $thisbioc->{label} =~ /.../ ? $thisbioc->{label} : $thisbioc->{id} );
 		$pgx->{samples}->[$i]->{sortlabel} =~ s/^.+?\:\:?//;
 
 	}
@@ -232,38 +229,38 @@ sub pgx_callset_labels_from_biosamples {
 
 sub pgx_callset_labels_from_file {
 
-  my $pgx       =   shift;
-  my $sortFile  =   shift;
+  my $pgx = shift;
+  my $sortFile = shift;
 
-  my $fallbackK =   'NA';
-  my $fallbackL =   'not specified';
+  my $fallbackK = 'NA';
+  my $fallbackL = 'not specified';
 
   if (! -f $sortFile)  { return $pgx }
 
   # this assumes that the first column contains an entry for the selected id (or id)
   # the second then the associated label
-  my $customSort  =   {};
+  my $customSort = {};
 
-  my $table     =   read_file_to_split_array($sortFile);
+  my $table = read_file_to_split_array($sortFile);
     foreach (@$table) {
       if ($_->[0] =~ /\w\w/ && $_->[1] =~ /\w/) {
-        $customSort->{$_->[0]}  =   {
-          sortkey     =>  $_->[1] =~ /\w\w/ ? $_->[1] : $fallbackK,
-          sortlabel   =>  $_->[2] =~ /\w\w/ ? $_->[2] : $fallbackL,
+        $customSort->{$_->[0]} = {
+          sortkey => $_->[1] =~ /\w\w/ ? $_->[1] : $fallbackK,
+          sortlabel => $_->[2] =~ /\w\w/ ? $_->[2] : $fallbackL,
         };
   }}
 
   for my $i (0..$#{ $pgx->{samples} }) {
 
-    my $csId    =   $pgx->{samples}->[$i]->{id};
+    my $csId = $pgx->{samples}->[$i]->{id};
 
-    $pgx->{samples}->[$i]->{sortkey}    =   $fallbackK;
-    $pgx->{samples}->[$i]->{sortlabel}  =   $fallbackL;
+    $pgx->{samples}->[$i]->{sortkey} = $fallbackK;
+    $pgx->{samples}->[$i]->{sortlabel} = $fallbackL;
 
     if ($customSort->{$csId}->{sortkey} !~ /.../) { next }
 
-    $pgx->{samples}->[$i]->{sortkey}    =   $customSort->{$csId}->{sortkey};
-    $pgx->{samples}->[$i]->{sortlabel}  =   $customSort->{$csId}->{sortlabel};
+    $pgx->{samples}->[$i]->{sortkey} = $customSort->{$csId}->{sortkey};
+    $pgx->{samples}->[$i]->{sortlabel} = $customSort->{$csId}->{sortlabel};
 
   }
 
@@ -302,30 +299,30 @@ input format (other attributes optional):
 
 =cut
 
-	my $pgx				=		shift;
-	my $data			=		shift;
-	my %locData		=		();
+	my $pgx = shift;
+	my $data = shift;
+	my %locData = ();
 
 	# the following re-assigns city etc. each time, assuming that there are
 	# always values
 	# the single key assignment is necessary so as not to lose the counts
 	foreach my $this (@$data) {
-    my $locKey 		= 	join(
+    my $locKey = join(
 			'',
 			'la',
 			$this->{provenance}->{geo}->{latitude},
 			'lo',
 			$this->{provenance}->{geo}->{longitude},
 		);
-		$locData{$locKey}->{label}			=		$this->{provenance}->{geo}->{label};
-		$locData{$locKey}->{latitude}		=		$this->{provenance}->{geo}->{latitude};
-		$locData{$locKey}->{longitude}	=		$this->{provenance}->{geo}->{longitude};
-		$locData{$locKey}->{city}				=		$this->{provenance}->{geo}->{city};
-		$locData{$locKey}->{country}		=		$this->{provenance}->{geo}->{country};
-		$locData{$locKey}->{counts}->{items}		+=	1;
+		$locData{$locKey}->{label} = $this->{provenance}->{geo}->{label};
+		$locData{$locKey}->{latitude} = $this->{provenance}->{geo}->{latitude};
+		$locData{$locKey}->{longitude} = $this->{provenance}->{geo}->{longitude};
+		$locData{$locKey}->{city} = $this->{provenance}->{geo}->{city};
+		$locData{$locKey}->{country} = $this->{provenance}->{geo}->{country};
+		$locData{$locKey}->{counts}->{items} += 1;
 		push(@{$locData{$locKey}->{ids}}, $this->{id});
 		foreach my $countKey (grep{ /.../ } keys %{ $this->{counts} }) {
-			$locData{$locKey}->{counts}->{$countKey}	+=	$this->{counts}->{$countKey};
+			$locData{$locKey}->{counts}->{$countKey} += $this->{counts}->{$countKey};
 		}
 	}
 
@@ -342,10 +339,10 @@ input format (other attributes optional):
 			$locData{$locKey}->{counts}->{items} < 1
 		) { next }
 
-		my $itemNo	=		$locData{$locKey}->{counts}->{items};
-    my $circleSize 	= 	$itemNo;    # * $scalingF;
+		my $itemNo = $locData{$locKey}->{counts}->{items};
+    my $circleSize = $itemNo;    # * $scalingF;
 		if ($circleSize > $maxsamples) {
-				$maxsamples = $circleSize }
+			$maxsamples = $circleSize }
 
     my @techNos;
 
@@ -358,8 +355,7 @@ input format (other attributes optional):
 			}
 		}
 
-		my $infoText		=
-				$locData{$locKey}->{city} . ', '
+		my $infoText = $locData{$locKey}->{city} . ', '
 			. $locData{$locKey}->{country}
 			. ':<br />'
 			. $locData{$locKey}->{counts}->{items}
@@ -367,23 +363,22 @@ input format (other attributes optional):
 			. ( $locData{$locKey}->{counts}->{items} > 1 ? 's' : q{} );
 
 		if (grep{ /\d/ } @techNos) {
-			$infoText	.=	' with '
+			$infoText .= ' with '
 			. join( ' and ', @techNos )
 			. ' samples<ul>' }
 
-		$infoText 	=~ 	s/\'/\\\'/g;
+		$infoText =~ s/\'/\\\'/g;
 		if (grep{ /PMID/ } @{$locData{$locKey}->{ids}}) {
-			$infoText	.=	'<ul>';
+			$infoText .= '<ul>';
       foreach my $pmid (grep{ /PMID/ } @{$locData{$locKey}->{ids}}) {
-				$pmid		=~	s/pubmed\://;
-				 $infoText .=
-						'<li><a href="/cgi-bin/publications.cgi?id=PMID:'
+				$pmid =~ s/pubmed\://;
+				 $infoText .= '<li><a href="/cgi-bin/publications.cgi?id=PMID:'
 					. $pmid
 					. '" target="_blank">pubmedid '
 					. $pmid
 					. '</a></li>';
 			}
-			$infoText	.=	'</ul>';
+			$infoText .= '</ul>';
 		}
 
     push(

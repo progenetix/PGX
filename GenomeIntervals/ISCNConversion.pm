@@ -1,7 +1,8 @@
 package PGX::GenomeIntervals::ISCNConversion;
 
-use PGX::GenomeIntervals::CytobandReader;
 use Data::Dumper;
+
+use PGX::GenomeIntervals::CytobandReader;
 
 require Exporter;
 @ISA    =   qw(Exporter);

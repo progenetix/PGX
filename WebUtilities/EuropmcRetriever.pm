@@ -4,7 +4,6 @@ use Data::Dumper;
 use Encode qw(decode encode);
 use LWP::Simple;
 
-
 require Exporter;
 @ISA        =   qw(Exporter);
 @EXPORT     =   qw(retrieve_epmc_core);

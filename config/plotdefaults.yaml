@@ -10,6 +10,7 @@ plotregions: []
 markers: []
 labels: []
 binning: 1000000
+bin_match_min: 0.0001
 title: ''
 subtitle: ''
 title_left: ''
@@ -27,6 +28,7 @@ segment_probecount_min: 2
 format_inputfiles: 'progenetix'
 simulated_probes: 'n'
 reverse: 'n'
+factor_probedots: 1
 
 # sizes
 size_plotmargin_px: 30
@@ -36,7 +38,6 @@ size_title_left_px: 0
 size_text_px: 9
 size_text_title_px: 16
 size_text_subtitle_px: 14
-size_text_title_left_px: 10
 size_text_lab_px: 8
 size_plotarea_h_px: 100
 size_strip_h_px: 7
@@ -54,7 +55,6 @@ size_matrixline_w_px: 14
 size_segments_stroke_px: 4
 size_centerline_stroke_px: 1
 size_clustertree_w_px: 50
-factor_probedots: 1
 
 # colors
 color_plotarea_hex: '#f3f9ff'

@@ -165,8 +165,8 @@ Returns:
     print FILE join("\t",
       $seg->{callset_id},
       $seg->{reference_name},
-      $seg->{start_min},
-      $seg->{end_max},
+      $seg->{start},
+      $seg->{end},
       $seg->{info}->{cnv_value},
       $seg->{info}->{probes},
       $seg->{variant_type},
@@ -262,9 +262,7 @@ sub write_status_matrix {
 
 Expects:
 
-
 Returns:
-
 
 =cut
 
@@ -272,6 +270,8 @@ Returns:
 
 	my $pgx = shift;
 	my $file = shift;
+	
+	my $covThresh = $pgx->{parameters}->{bin_match_min} * 1;
 
 	if (! $pgx->{samples}->[0]->{statusmaps}) { return $pgx }
   
@@ -294,17 +294,17 @@ Returns:
 	)."\n";
 	foreach my $sample (@{ $pgx->{samples} }) {
 	$i++;
-	my $label   =   'sample_'.$i;
+	my $label = 'sample_'.$i;
 	if ($sample->{id} =~ /\w\w/) {
-	  $label    =   $sample->{id} }
+	  $label = $sample->{id} }
 	elsif ($sample->{UID} =~ /\w\w/) {
-	  $label    =   $sample->{UID} }
-	$label      =~  s/[^\w\,\-]/_/g;
-	$label      =~  s/_$//g;      
+	  $label = $sample->{UID} }
+	$label =~ s/[^\w\,\-]/_/g;
+	$label =~ s/_$//g;      
 	print FILE $label."\t";
 	print FILE join("\t",
-	  (map{ $sample->{statusmaps}->{dupmap}->[$_] eq 'DUP' ? 1 : 0 } @{ $pgx->{matrixindex} }),
-	  (map{ $sample->{statusmaps}->{delmap}->[$_] eq 'DEL' ? 1 : 0 } @{ $pgx->{matrixindex} })
+ 			(map{ $sample->{statusmaps}->{dupcoverage}->[$_] >= $covThresh ? $sample->{statusmaps}->{dupcoverage}->[$_] : 0 } @{ $pgx->{matrixindex} }),
+ 			(map{ $sample->{statusmaps}->{delcoverage}->[$_] >= $covThresh ? $sample->{statusmaps}->{delcoverage}->[$_] : 0 } @{ $pgx->{matrixindex} })
 	)."\n";
 	}
 	close FILE;

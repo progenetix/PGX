@@ -14,8 +14,8 @@ use PGX::IOUtilities::PGXfileWriter;
 use PGX::IOUtilities::PGXdataAggregation;
 
 require Exporter;
-@ISA    =   qw(Exporter);
-@EXPORT =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   pgx_add_frequencymaps
   pgx_add_probes_from_file
   pgx_add_segments_from_file
@@ -32,48 +32,45 @@ require Exporter;
 
 sub pgx_get_genome_regions {
 
-  my $pgx = shift;
-  
-  my $regions = $pgx->{parameters}->{plotregions};
-  my %chros = map{ $_->{reference_name} => 1 } @$regions;
-  my @refNames = ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %chros), (sort grep{ ! /\d/ } keys %chros));
+	my $pgx = shift;
 
-  if (! grep{ /^\d\w?$/ } @refNames) { return $pgx }
-  if (! grep{ $_->{reference_name} =~ /^\d\w?$/ } @$regions) { return $pgx }
+	my $regions = $pgx->{parameters}->{plotregions};
+	my %chros = map{ $_->{reference_name} => 1 } @$regions;
+	my @refNames = ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %chros), (sort grep{ ! /\d/ } keys %chros));
 
-  my $refLims   =   {};
-  my $baseCount =   0;
+	if (! grep{ /^\d\w?$/ } @refNames) { return $pgx }
+	if (! grep{ $_->{reference_name} =~ /^\d\w?$/ } @$regions) { return $pgx }
 
-  foreach my $ref (@refNames) {
-    my @allBounds = map{ $_->{start}, $_->{end} } (grep{ $_->{reference_name} eq $ref } @$regions);
-    @allBounds = sort {$a <=> $b } @allBounds;
-    $refLims->{$ref} = [ $allBounds[0], $allBounds[-1] ];
-    $baseCount += ($allBounds[-1] - $allBounds[0]);
-  }
+	my $refLims = {};
+	my $baseCount = 0;
 
-  $pgx->{parameters}->{do_chromosomes_proportional} = /n/;
-  $pgx->{parameters}->{chr2plot}   =   [@refNames];
-  $pgx->{referencebounds}  =   $refLims;
-  $pgx->{genomesize}       =   $baseCount;
+	foreach my $ref (@refNames) {
+		my @allBounds = map{ $_->{start}, $_->{end} } (grep{ $_->{reference_name} eq $ref } @$regions);
+		@allBounds = sort {$a <=> $b } @allBounds;
+		$refLims->{$ref} = [ $allBounds[0], $allBounds[-1] ];
+		$baseCount += ($allBounds[-1] - $allBounds[0]);
+	}
 
-  $pgx->{matrixindex}  =   [];
-  my @selIntI   =   ();  
-  my $i         =   0;
-  foreach my $int (@{$pgx->{genomeintervals}}) {
-    if (
-      $pgx->{referencebounds}->{ $int->{reference_name} }
-      &&
-      $int->{start} <= $pgx->{referencebounds}->{ $int->{reference_name} }->[1]
-      &&
-      $int->{end} >= $pgx->{referencebounds}->{ $int->{reference_name} }->[0]
-    ) { 
-      push(@{ $pgx->{matrixindex} }, $i);
-    }
-    $i++;
+	$pgx->{parameters}->{do_chromosomes_proportional} = /n/;
+	$pgx->{parameters}->{chr2plot} = [@refNames];
+	$pgx->{referencebounds} = $refLims;
+	$pgx->{genomesize} = $baseCount;
 
-  }
+	$pgx->{matrixindex} = [];
+	my @selIntI = ();  
+	my $i = 0;
 
-  return $pgx;
+	foreach my $int (@{$pgx->{genomeintervals}}) {
+		if (
+		  $pgx->{referencebounds}->{ $int->{reference_name} } &&
+		  $int->{start} <= $pgx->{referencebounds}->{ $int->{reference_name} }->[1] &&
+		  $int->{end} >= $pgx->{referencebounds}->{ $int->{reference_name} }->[0]
+		) { 
+			push(@{ $pgx->{matrixindex} }, $i) }
+		$i++;
+	}
+
+	return $pgx;
 
 }
 
@@ -94,21 +91,20 @@ sub pgx_add_frequencymaps {
 
 =cut
 
-  my $pgx = shift;
-  my $csColls = shift;
+	my $pgx = shift;
+	my $csColls = shift;
 
-  $pgx->{frequencymaps} = [];
+	$pgx->{frequencymaps} = [];
 
-  foreach my $csColl (@$csColls) {
-    $pgx->interval_cnv_frequencies(
-      [ map{$_->{statusmaps}} @{ $csColl->{statusmapsets} } ],
-      $csColl->{name},
-      $csColl->{labels},
-    );
+	foreach my $csColl (@$csColls) {
+		$pgx->interval_cnv_frequencies(
+			[ map{$_->{statusmaps}} @{ $csColl->{statusmapsets} } ],
+			$csColl->{name},
+			$csColl->{labels},
+		);
+	}
 
-  }
-
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -140,13 +136,10 @@ only be called when populated with one.
 	if ($probeF !~ /.../) {
 		if ($pgx->{samples}->[0]->{paths}->{probefile} =~ /.../) {
 			$probeF = $pgx->{samples}->[0]->{paths}->{probefile};
+			$probeF =~ s/^.*?arraymap\///;
 			$probeF =~ s/^\///;
-		} else {
-  			my $seriesId = (split('::', $pgx->{samples}->[0]->{id}))[1];
-			my $arrayId = (split('::', $pgx->{samples}->[0]->{id}))[2];
-			$probeF = lc($pgx->{parameters}->{genome}).'/'.$seriesId.'/'.$arrayId.'/probes,cn.tsv'
+			$probeF = $pgx->{config}->{paths}->{dir_array_base_path}.'/'.$probeF;			
 		}
-		$probeF = $pgx->{config}->{paths}->{dir_array_base_path}.'/'.$probeF;
 	}
   
 	$pgx->read_probefile($probeF);
@@ -159,8 +152,8 @@ only be called when populated with one.
 
 sub pgx_add_segments_from_file {
 
-  my $pgx       =   shift;
-  my $segfile   =   shift;
+  my $pgx = shift;
+  my $segfile = shift;
 
   $pgx->read_segmentfile($segfile);
   return $pgx;
@@ -171,26 +164,26 @@ sub pgx_add_segments_from_file {
 
 sub pgx_add_segmentsets_from_samples {
 
-  my $pgx       =   shift;
-  my $callsets  =   shift;
-  my $idName    =   shift;
+  my $pgx = shift;
+  my $callsets = shift;
+  my $idName = shift;
   if ($idName !~ /\w\w/) {
-    $idName     =   'id'}
+    $idName = 'id'}
   
-  $pgx->{segmentsets}  =   [];
+  $pgx->{segmentsets} = [];
        
   foreach my $cs (@$callsets) {
   
     if (! $cs->{name}) {
-      $cs->{name}   =   $cs->{$idName} }
+      $cs->{name} = $cs->{$idName} }
       
     push (
       @{ $pgx->{segmentsets} },
       {
-        id          =>  $cs->{$idName},
-        name        =>  $cs->{name},
-        variants    =>  $cs->{variants},
-        statusmaps  =>  $cs->{statusmaps},        
+        id => $cs->{$idName},
+        name => $cs->{name},
+        variants => $cs->{variants},
+        statusmaps => $cs->{statusmaps},        
       }
     );
 
@@ -204,8 +197,8 @@ sub pgx_add_segmentsets_from_samples {
 
 sub pgx_add_fracbprobes_from_file {
 
-  my $pgx       =   shift;
-  my $probefile =   shift;
+  my $pgx = shift;
+  my $probefile = shift;
 
   $pgx->read_probefile($probefile, 'probedata_fracb');
   return $pgx;
@@ -216,8 +209,8 @@ sub pgx_add_fracbprobes_from_file {
 
 sub pgx_add_fracbsegments_from_file {
 
-  my $pgx       =   shift;
-  my $segfile   =   shift;
+  my $pgx = shift;
+  my $segfile = shift;
 
   $pgx->read_segmentfile($segfile, 'segmentdata_fracb');
   return $pgx;
@@ -239,49 +232,46 @@ a local context (i.e. run in the terminal, not in web instances).
 
 =cut
 
-  use Term::ProgressBar;
+	use Term::ProgressBar;
 
-  my $pgx       =   shift;
+	my $pgx = shift;
 
-  my $parent    = `ps -o ppid= -p $$ | xargs ps -o command= -p`;
-  my $progBar;
+	my $parent = `ps -o ppid= -p $$ | xargs ps -o command= -p`;
+	my $progBar;
 
-  if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
+	if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
 
-    my $i       =   0;
-    
-    if ($parent !~ /httpd/) {
-      $progBar  =   Term::ProgressBar->new(
-                      {
-                        name  => 'Adjusting Simulated Values',
-                        count => scalar @{ $pgx->{segmentdata} }
-                      }
-                    );
-    }
+		my $i = 0;
 
-    foreach my $seg (@{ $pgx->{segmentdata} }) {
+		if ($parent !~ /httpd/) {
+			$progBar = Term::ProgressBar->new( {
+				name => 'Adjusting Simulated Values',
+				count => scalar @{ $pgx->{segmentdata} }
+			} );
+		}
 
-      my @prI   =   map{ $_ } grep{
-                      $pgx->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
-                      &&
-                      $pgx->{probedata}->[$_]->{position} >=  $seg->{start}
-                      &&
-                      $pgx->{probedata}->[$_]->{position} <=  $seg->{end}
-                    } (0..$#{ $pgx->{probedata} });
+		foreach my $seg (@{ $pgx->{segmentdata} }) {
 
-      if ($parent !~ /httpd/) {
-        $progBar->update($i++) }
+			my @prI = map{ $_ } grep{
+				$pgx->{probedata}->[$_]->{reference_name} eq $seg->{reference_name}
+				&&
+				$pgx->{probedata}->[$_]->{position} >= $seg->{start}
+				&&
+				$pgx->{probedata}->[$_]->{position} <= $seg->{end}
+			} (0..$#{ $pgx->{probedata} });
 
-      foreach (@prI) {
-        $pgx->{probedata}->[$_]->{value}   +=  $seg->{info}->{value};
-    }}
+			if ($parent !~ /httpd/) { $progBar->update($i++) }
 
-    if ($parent !~ /httpd/) {
-      $progBar->update(scalar @{$pgx->{segmentdata}}) }
+			foreach (@prI) {
+				$pgx->{probedata}->[$_]->{value} += $seg->{info}->{value};
+			}
+		}
 
-  }
+		if ($parent !~ /httpd/) { $progBar->update(scalar @{$pgx->{segmentdata}}) }
 
-  return $pgx;
+	}
+
+	return $pgx;
 
 }
 

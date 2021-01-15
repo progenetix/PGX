@@ -158,13 +158,13 @@ sub get_arrayplot_area {
     # segments #    ####    ####    ####    ####    ####    ####    ####    ####
     my $areaSegments    =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{samples}->[0]->{variants} } ];
     $areaSegments       =   [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegments];
-    $areaSegments       =   [ grep{ $_->{start_min} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegments];
-    $areaSegments       =   [ grep{ $_->{end_max} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegments ];
+    $areaSegments       =   [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areaSegments];
+    $areaSegments       =   [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areaSegments ];
 
     foreach my $seg (@$areaSegments) {
 			
-		my $start = $seg->{start_min};
-		my $end = $seg->{end_max};
+		my $start = $seg->{start};
+		my $end = $seg->{end};
 		if ($start < $pgx->{referencebounds}->{$refName}->[0]) {
         	$start   = $pgx->{referencebounds}->{$refName}->[0] }
 		if ($end > $pgx->{referencebounds}->{$refName}->[1]) {
@@ -308,8 +308,8 @@ Returns:
 
     foreach my $seg (@$areaSegments) {
 
-			my $start	=		$seg->{start_min};
-			my $end		=		$seg->{end_max};
+			my $start	=		$seg->{start};
+			my $end		=		$seg->{end};
       if ($start < $pgx->{referencebounds}->{$refName}->[0]) {
         $start = $pgx->{referencebounds}->{$refName}->[0] }
       if ($end > $pgx->{referencebounds}->{$refName}->[1]) {

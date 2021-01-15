@@ -3,8 +3,8 @@ package PGX::GenomePlots::CytobandsPlotter;
 use Data::Dumper;
 
 require Exporter;
-@ISA        =   qw(Exporter);
-@EXPORT     =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   svg_add_title
   svg_add_cytobands
   svg_add_title_left
@@ -31,24 +31,24 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   if ($pgx->{parameters}->{title} !~ /\w+?/) { return $pgx }
 
-  $pgx->{Y}    +=   $pgx->{parameters}->{size_text_title_px};
-  $pgx->{svg}  .=  '
+  $pgx->{Y}    += $pgx->{parameters}->{size_text_title_px};
+  $pgx->{svg}  .= '
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$pgx->{parameters}->{size_text_title_px}.'px">'.$pgx->{parameters}->{title}.'</text>';
 
   if ($pgx->{parameters}->{subtitle} !~ /\w+?/) { 
-    $pgx->{Y}  +=  $pgx->{parameters}->{size_text_title_px}; 
+    $pgx->{Y}  += $pgx->{parameters}->{size_text_title_px}; 
     return $pgx;
   }
 
-  $pgx->{Y}    +=   sprintf "%.0f", $pgx->{parameters}->{size_text_subtitle_px} * 1.5;
-  $pgx->{svg}  .=  '
+  $pgx->{Y}    += sprintf "%.0f", $pgx->{parameters}->{size_text_subtitle_px} * 1.5;
+  $pgx->{svg}  .= '
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$pgx->{parameters}->{size_text_subtitle_px}.'px">'.$pgx->{parameters}->{subtitle}.'</text>';
 
-  $pgx->{Y}    +=  $pgx->{parameters}->{size_text_title_px};
+  $pgx->{Y}    += $pgx->{parameters}->{size_text_title_px};
   
   return $pgx;
 
@@ -109,7 +109,7 @@ Returns:
 		  $chrolabel .= ' ('.$pgx->{referencebounds}->{$refName}->[0].'-'.$pgx->{referencebounds}->{$refName}->[1].')';
 		}
 
-		$pgx->{svg} .=  '
+		$pgx->{svg} .= '
 <text x="'.$chroX.'" y="'.$chrolabY.'" class="chrlab">'.$chrolabel.'</text>';
 
 		$areabands = [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areabands];
@@ -145,7 +145,7 @@ Returns:
 				$cbH -= (0.6*$pgx->{parameters}->{size_chromosome_w_px});
 			}
 
-			$pgx->{svg}      .=  '
+			$pgx->{svg}      .= '
 <rect x="'.$cbX.'" y="'.$cbY.'" width="'.$cbW.'" height="'.$cbH.'" style="fill: url(#'.$pgx->{plotid}.$cb->{stain}.'); " />';
 
 		}
@@ -168,7 +168,7 @@ sub svg_add_title_left {
 	my $titeL = shift;
 
 	if ($titeL->{text} !~ /\w+?/) { return $pgx }
-	if ($pgx->{parameters}->{size_title_left_px} < 1) { return $pgx }
+	if ($pgx->{parameters}->{size_title_left_px} < 5) { return $pgx }
 
 	my $text_x = $pgx->{areastartx} / 2;
 	my $text_y = sprintf "%.0f", $titeL->{pos_y} + $pgx->{parameters}->{size_text_title_left_px} * 0.5;
@@ -203,11 +203,11 @@ sub svg_add_labels_y {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   if (@{ $pgx->{parameters}->{label_y_m} } < 1) { return $pgx }
 
-  $pgx->{svg}  .=  '
+  $pgx->{svg}  .= '
 <style type="text/css"><![CDATA[
   .cen {stroke-width: '.$pgx->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$pgx->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
   .tick {stroke-width: 1px; stroke: '.$pgx->{parameters}->{color_label_y_hex}.'; opacity: 0.8 ; }
@@ -215,19 +215,19 @@ sub svg_add_labels_y {
   .ylabe {text-anchor: start; font-size: '.$pgx->{parameters}->{size_text_lab_px}.'px; fill: '.$pgx->{parameters}->{color_label_y_hex}.';}
 ]]></style>';
 
-  my $area_x0   =   $pgx->{areastartx};
-  my $area_y0   =   $pgx->{Y};
-  my $area_ycen =   $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
-  my $area_yn   =   $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px};
+  my $area_x0 = $pgx->{areastartx};
+  my $area_y0 = $pgx->{Y};
+  my $area_ycen = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
+  my $area_yn = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px};
 
   foreach my $lab (@{ $pgx->{parameters}->{label_y_m} }) {
 
-    my $lab_y   =   sprintf "%.1f", $area_ycen - $lab * $pgx->{parameters}->{pixyfactor};
+    my $lab_y = sprintf "%.1f", $area_ycen - $lab * $pgx->{parameters}->{pixyfactor};
 
     # checking area boundaries
     if ($lab_y < $area_y0 || $lab_y > $area_yn) { next }
 
-    $pgx->{svg}        .=  '
+    $pgx->{svg}        .= '
 <line x1="'.($area_x0 - 1).'"  y1="'.$lab_y.'"  x2="'.$area_x0.'"  y2="'.$lab_y.'"  class="tick"  />
 <line x1="'.($area_x0 + $pgx->{areawidth}).'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $pgx->{areawidth} + 1).'"  y2="'.$lab_y.'"  class="tick"  />
 <line x1="'.$area_x0.'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $pgx->{areawidth}).'"  y2="'.$lab_y.'"  class="cen"  />';
@@ -235,11 +235,11 @@ sub svg_add_labels_y {
     # avoiding too dense labels
     if (@{ $pgx->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
     # positioning the label text
-    $lab_y              +=  ($pgx->{parameters}->{size_text_lab_px} / 2) - 1;
-    $pgx->{svg}        .=  '
+    $lab_y              += ($pgx->{parameters}->{size_text_lab_px} / 2) - 1;
+    $pgx->{svg}        .= '
 <text x="'.($area_x0 - 2).'" y="'.$lab_y.'" class="ylabs">'.$lab.$pgx->{parameters}->{plot_unit_y}.'</text>';
     if ($pgx->{parameters}->{size_clustertree_w_px} < 1) {
-      $pgx->{svg}      .=  '
+      $pgx->{svg}      .= '
 <text x="'.($area_x0 + $pgx->{areawidth} + 2).'" y="'.$lab_y.'" class="ylabe">'.$lab.$pgx->{parameters}->{plot_unit_y}.'</text>';
     }
   }
@@ -269,17 +269,17 @@ Returns:
   if (@{ $pgx->{parameters}->{markers} } < 1) { return $pgx }
 
   $pgx->{Y} += $pgx->{parameters}->{size_chromosome_padding_px};
-  $pgx->{svg} .=  '
+  $pgx->{svg} .= '
 <style type="text/css">
 <![CDATA[
 .marker { text-anchor: middle; font-size: '.$pgx->{parameters}->{marker_text_px}.'px }
 ]]>
 </style>';
 
-  my $areaX_0 =   $pgx->{areastartx};
-  my $markerY_0 =   $pgx->{areastarty};
+  my $areaX_0 = $pgx->{areastartx};
+  my $markerY_0 = $pgx->{areastarty};
   if ($pgx->{markerstarty} > 0) {
-    $markerY_0  =   $pgx->{markerstarty} }
+    $markerY_0 = $pgx->{markerstarty} }
 
   # stores the marker line index and the last X value there
   my %markerLineNo = (1 => $pgx->{areastartx});
@@ -287,19 +287,19 @@ Returns:
 
   foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-    my $areaW   =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
+    my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
-    my $areamarkers =   [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{parameters}->{markers} } ];
-    $areamarkers    =   [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areamarkers];
-    $areamarkers    =   [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areamarkers ];
+    my $areamarkers = [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{parameters}->{markers} } ];
+    $areamarkers = [ grep{ $_->{start} <= $pgx->{referencebounds}->{$refName}->[1] } @$areamarkers];
+    $areamarkers = [ grep{ $_->{end} >= $pgx->{referencebounds}->{$refName}->[0] } @$areamarkers ];
     $areamarkers = [ sort { $a->{start} <=> $b->{start} } @$areamarkers ];
 
     foreach my $marker (@$areamarkers) {
 
       if ($marker->{start} < $pgx->{referencebounds}->{$refName}->[0]) {
-        $marker->{start}    =   $pgx->{referencebounds}->{$refName}->[0] }
+        $marker->{start} = $pgx->{referencebounds}->{$refName}->[0] }
       if ($marker->{end} > $pgx->{referencebounds}->{$refName}->[1]) {
-        $marker->{end}      =   $pgx->{referencebounds}->{$refName}->[1] }
+        $marker->{end} = $pgx->{referencebounds}->{$refName}->[1] }
 
       my $mark_X0 = sprintf "%.1f", $areaX_0 + ($marker->{start} - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
       my $mark_W = sprintf "%.2f", ($marker->{end} - $marker->{start}) * $pgx->{basepixfrac};
@@ -309,39 +309,39 @@ Returns:
 
       if ($marker->{label} =~ /\w/) {
 
-        my $mLablen     =   sprintf "%.0f", length($marker->{label}) * $pgx->{parameters}->{marker_text_px} * 0.7 + 4;
-        my $mLab_Xcen   =   sprintf "%.1f", $mark_X0 + $mark_W / 2;
-        my $mLab_X0     =   $mLab_Xcen - $mLablen / 2;
-        my $mLab_Xn     =   $mLab_X0 + $mLablen;
-        my $markbox_Y   =   $pgx->{Y};
-        my $mLab_Y      =   $markbox_Y + $markerLineHeight - 3;
+        my $mLablen = sprintf "%.0f", length($marker->{label}) * $pgx->{parameters}->{marker_text_px} * 0.7 + 4;
+        my $mLab_Xcen = sprintf "%.1f", $mark_X0 + $mark_W / 2;
+        my $mLab_X0 = $mLab_Xcen - $mLablen / 2;
+        my $mLab_Xn = $mLab_X0 + $mLablen;
+        my $markbox_Y = $pgx->{Y};
+        my $mLab_Y = $markbox_Y + $markerLineHeight - 3;
         foreach my $i (1..100) {
           if ($markerLineNo{$i} > $mLab_X0) {
-            $mLab_Y +=  $markerLineHeight + 1;
+            $mLab_Y += $markerLineHeight + 1;
             $markbox_Y += $markerLineHeight + 1;
           } else {
             $markerLineNo{$i} = $mLab_Xn;
             last;
           }
         }
-      	my $mark_H  =   sprintf "%.0f", ($markbox_Y - $markerY_0);
-      	$pgx->{svg} .=  '
+      	my $mark_H = sprintf "%.0f", ($markbox_Y - $markerY_0);
+      	$pgx->{svg} .= '
 <rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
-        $pgx->{svg}    .=  '
+        $pgx->{svg}    .= '
 <rect x="'.$mLab_X0.'" y="'.$markbox_Y.'" width="'.$mLablen.'" height="'.$markerLineHeight.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_label_opacity}.'; " />
 <text x="'.$mLab_Xcen.'" y="'.$mLab_Y.'" class="marker">'.$marker->{label}.'</text>';
 
       } else {
       	# if no label
-      	my $mark_H    =   sprintf "%.0f", ($pgx->{Y} - $pgx->{markerstarty});
-		$pgx->{svg} .=  '
+      	my $mark_H = sprintf "%.0f", ($pgx->{Y} - $pgx->{markerstarty});
+		$pgx->{svg} .= '
 <rect x="'.$mark_X0.'" y="'.$markerY_0.'" width="'.$mark_W.'" height="'.$mark_H.'" style="fill: '.$marker->{color}.'; fill-opacity: '.$pgx->{parameters}->{marker_opacity}.'; " />';
 			}
 
       # / text label ###########################################################
       
     }
-    $areaX_0    +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
+    $areaX_0    += $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
   }
 
   my $maxline = (sort { $a <=> $b } keys %markerLineNo)[-1];
@@ -369,7 +369,7 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   if (
     $pgx->{parameters}->{text_bottom_left} !~ /\w+?/
@@ -377,17 +377,17 @@ Returns:
     $pgx->{parameters}->{text_bottom_right} !~ /\w+?/
   ) { return $pgx }
 
-  $pgx->{Y}    +=  $pgx->{parameters}->{size_chromosome_padding_px};
+  $pgx->{Y}    += $pgx->{parameters}->{size_chromosome_padding_px};
 
   if ($pgx->{parameters}->{text_bottom_right} =~ /copy/i) {
     $pgx->{parameters}->{text_bottom_right} = '&#x24B8; '.(localtime->strftime('%Y')).' progenetix.org'
 }
-  $pgx->{Y}    +=   $pgx->{parameters}->{size_text_px};
-  $pgx->{svg}  .=  '
+  $pgx->{Y}    += $pgx->{parameters}->{size_text_px};
+  $pgx->{svg}  .= '
 <text x="'.$pgx->{parameters}->{size_plotmargin_px}.'" y="'.$pgx->{Y}.'" style="text-anchor: start; font-size: '.$pgx->{parameters}->{size_text_px}.'px; fill: '.$pgx->{parameters}->{color_label_bottom_hex}.'">'.$pgx->{parameters}->{text_bottom_left}.'</text>
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth}).'" y="'.$pgx->{Y}.'" style="text-anchor: end; font-size: '.$pgx->{parameters}->{size_text_px}.'px; fill: '.$pgx->{parameters}->{color_label_bottom_hex}.'">'.$pgx->{parameters}->{text_bottom_right}.'</text>';
 
-  $pgx->{Y}    +=  $pgx->{parameters}->{size_chromosome_padding_px};
+  $pgx->{Y}    += $pgx->{parameters}->{size_chromosome_padding_px};
   return $pgx;
 
 }
@@ -398,10 +398,10 @@ Returns:
 
 sub svg_add_labels_right {
 
-  my $pgx       =   shift;
-  my $labels    =   shift;
-  my $thisH     =   shift;
-  my $labCol    =   shift;
+  my $pgx = shift;
+  my $labels = shift;
+  my $thisH = shift;
+  my $labCol = shift;
   
   if ($pgx->{parameters}->{size_clustertree_w_px} < 1) { return $pgx }
   # adding labels to the right side of the plot
@@ -410,18 +410,18 @@ sub svg_add_labels_right {
       push (
         @$labels,
         {
-          label_text  =>  q{},
-          label_link  =>  q{},
+          label_text =>  q{},
+          label_link =>  q{},
           label_color =>  $labCol,     
         }
       );
     }
-    my $labW    =   sprintf "%.1f", ( $pgx->{parameters}->{size_label_right_px} / @$labels);
-    my $labX    =   $pgx->{areaendx} + $pgx->{parameters}->{size_chromosome_padding_px};
+    my $labW = sprintf "%.1f", ( $pgx->{parameters}->{size_label_right_px} / @$labels);
+    my $labX = $pgx->{areaendx} + $pgx->{parameters}->{size_chromosome_padding_px};
     foreach my $lab (@$labels) {
-      $pgx->{svg}  .=  '
+      $pgx->{svg}  .= '
 <rect x="'.$labX.'" y="'.$pgx->{Y}.'" width="'.$labW.'" height="'.$thisH.'" style="fill: '.$lab->{label_color}.'; " />';
-      $labX     +=  $labW; 
+      $labX     += $labW; 
     }
   }
   # / labels
@@ -436,7 +436,7 @@ sub svg_add_labels_right {
 
 sub svg_add_cluster_tree {
 
-  my $pgx       =   shift;
+  my $pgx = shift;
 
   if (! defined($pgx->{clustertree})) { return $pgx }
 
@@ -446,22 +446,22 @@ sub svg_add_cluster_tree {
      (scalar @{$pgx->{clustertree}} < 2)
   ) { return $pgx }
 
-  my $nodeN     =   scalar @{ $pgx->{clustertree} } + 1;
-  my $treePixH  =   $pgx->{Y} - $pgx->{areastarty};
-	my $yPixF			=		$treePixH	/ $nodeN;
-	my $yCorr			=		$pgx->{areastarty} + ($treePixH / $nodeN / 2);
-	my $maxTreeX	=		(sort {$a <=> $b } ( map{ $_->{NODEX} } @{ $pgx->{clustertree} } ) )[-1];
-	my $xPixF			=		$pgx->{parameters}->{size_clustertree_w_px} / ($maxTreeX == 0 ? 1 : $maxTreeX);
+  my $nodeN = scalar @{ $pgx->{clustertree} } + 1;
+  my $treePixH = $pgx->{Y} - $pgx->{areastarty};
+	my $yPixF = $treePixH	/ $nodeN;
+	my $yCorr = $pgx->{areastarty} + ($treePixH / $nodeN / 2);
+	my $maxTreeX = (sort {$a <=> $b } ( map{ $_->{NODEX} } @{ $pgx->{clustertree} } ) )[-1];
+	my $xPixF = $pgx->{parameters}->{size_clustertree_w_px} / ($maxTreeX == 0 ? 1 : $maxTreeX);
 
 	foreach (@{ $pgx->{clustertree} }) {
 
-		my $xStartLpix	=		sprintf "%.1f", $pgx->{areatreex} + $_->{LX} * $xPixF;
-		my $xStartRpix	=		sprintf "%.1f", $pgx->{areatreex} + $_->{RX} * $xPixF;
-		my $xNodePix	  =		sprintf "%.1f", $pgx->{areatreex} + $_->{NODEX} * $xPixF;
-		my $yLpix		    =		sprintf "%.1f", $yCorr + $_->{LY} * $yPixF;
-		my $yRpix		    =		sprintf "%.1f", $yCorr + $_->{RY} * $yPixF;
+		my $xStartLpix = sprintf "%.1f", $pgx->{areatreex} + $_->{LX} * $xPixF;
+		my $xStartRpix = sprintf "%.1f", $pgx->{areatreex} + $_->{RX} * $xPixF;
+		my $xNodePix = sprintf "%.1f", $pgx->{areatreex} + $_->{NODEX} * $xPixF;
+		my $yLpix = sprintf "%.1f", $yCorr + $_->{LY} * $yPixF;
+		my $yRpix = sprintf "%.1f", $yCorr + $_->{RY} * $yPixF;
 
-		$pgx->{svg} .=	'
+		$pgx->{svg} .= '
 <line x1="'.$xStartLpix.'" y1="'.$yLpix.'" x2="'.$xNodePix.'" y2="'.$yLpix.'" stroke="#666666" />
 <line x1="'.$xStartRpix.'" y1="'.$yRpix.'" x2="'.$xNodePix.'" y2="'.$yRpix.'" stroke="#666666" />
 <line x1="'.$xNodePix.'" y1="'.$yLpix.'" x2="'.$xNodePix.'" y2="'.$yRpix.'" stroke="#666666" />';
@@ -478,7 +478,7 @@ sub svg_add_cluster_tree {
 
 sub _cytoband_svg_gradients {
 
-  my $id        =   $_[0];
+  my $id = $_[0];
 
   return '
 <linearGradient id="'.$id.'gpos100" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">

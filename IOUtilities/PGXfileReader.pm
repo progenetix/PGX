@@ -6,8 +6,8 @@ use PGX::GenomePlots::PlotParameters;
 use PGX::Helpers::UtilityLibs;
 
 require Exporter;
-@ISA    =   qw(Exporter);
-@EXPORT =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   read_probefile
   read_segmentfile
   read_file_to_split_array
@@ -34,11 +34,11 @@ Returns:
   - a list reference of genome position / value objects:
     [
       {
-        no              =>  __integer__,          # 1 -> n
-        probe_id        =>  __string__,
-        reference_name  =>  __string__,
-        position        =>  __integer__,
-        value           =>  __long__,
+        no => __integer__,          # 1 -> n
+        probe_id => __string__,
+        reference_name => __string__,
+        position => __integer__,
+        value => __long__,
       },
       {
       ...
@@ -49,74 +49,72 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $probeF    =   shift;
-  my $probeT    =   shift;
-  $probeT       ||= 'probedata';
+	my $pgx = shift;
+	my $probeF = shift;
+	my $probeT = shift;
+	$probeT ||= 'probedata';
+
+	$pgx->{$probeT} = [];
+	my @randomV;
+
+	if (! -f $probeF) { return $pgx->{$probeT} }
+
+	my $numfactor = 1;
+	if (
+		$pgx->{parameters}->{'reverse'} =~ /y/i
+		&&
+		$probeT !~ /frac/i
+	) { $numfactor = -1 }
+
+	if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+	if ($probeT !~ /fracb/i) {
+	  $pgx->{parameters}->{probebaseline} =   $pgx->{parameters}->{plot_adjust_baseline} } }
+
+	my $probeData = _f2l( $probeF );
+	shift @$probeData;
+
+	my $i = 0;
+
+	foreach (@$probeData) {
+
+		$i++;
+		my (
+			$probe_id,
+			$reference_name,
+			$position,
+			$value,
+		) = split (/\s/, $_, 5);
+
+		$probe_id =~  s/[^\w\-\,]/_/g;
+		$reference_name =~ s/[^\dxXyY]//;
+		$reference_name =~ s/^23$/X/;
+		$reference_name =~ s/^24$/Y/;
+		$position = sprintf "%.0f", $position;  # due to some erroneous .5 in-between pos.
+		$value = sprintf "%.4f", ($pgx->{parameters}->{probebaseline} + $value);
+
+		if ($reference_name !~ /^\w\d?$/)             { next }
+		if ($position       !~ /^\d{1,9}$/)           { next }
+		if ($value          !~ /^\-?\d+?(\.\d+?)?$/)  { next }
+
+		push(
+			@{ $pgx->{$probeT} },
+			{
+				no => $i,
+				probe_id => $probe_id,
+				reference_name => $reference_name,
+				position => $position,
+				value => $numfactor * $value,
+			}
+		);
+	}
   
-  $pgx->{$probeT}    =   [];
-  my @randomV;
-
-  if (! -f $probeF) { return $pgx->{$probeT} }
-
-  my $numfactor =   1;
-  if (
-    $pgx->{parameters}->{'reverse'} =~ /y/i
-    &&
-    $probeT !~ /frac/i
-  ) { $numfactor = -1 }
-
-  if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
-    if ($probeT !~ /fracb/i) {
-      $pgx->{parameters}->{probebaseline} =   $pgx->{parameters}->{plot_adjust_baseline} } }
-
-  open  FILE, "$probeF" or die "No file $probeF $!";
-  local   $/;                             # no input separator
-  my $fContent  =   <FILE>;
-  close FILE;
-  my @probeData =   split(/\r\n?|\n/, $fContent);
-  shift @probeData;
-
-  my $i         =   0;
-  foreach (@probeData) {
-
-    $i++;
-    my (
-      $probe_id,
-      $reference_name,
-      $position,
-      $value,
-    )           =   split (/\s/, $_, 5);
-    $probe_id   =~  s/[^\w\-\,]/_/g;
-    $reference_name     =~ s/[^\dxXyY]//;
-    $reference_name     =~ s/^23$/X/;
-    $reference_name     =~ s/^24$/Y/;
-    $position   =   sprintf "%.0f", $position;  # due to some erroneous .5 in-between pos.
-    $value      =   sprintf "%.4f", ($pgx->{parameters}->{probebaseline} + $value);
-
-    if ($reference_name !~ /^\w\d?$/)             { next }
-    if ($position       !~ /^\d{1,9}$/)           { next }
-    if ($value          !~ /^\-?\d+?(\.\d+?)?$/)  { next }
-
-    push(
-      @{ $pgx->{$probeT} },
-      {
-        no              =>  $i,
-        probe_id        =>  $probe_id,
-        reference_name  =>  $reference_name,
-        position        =>  $position,
-        value           =>  $numfactor * $value,
-      }
-    );
-  }
-  
-  # random values
-  if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
-    my @randomV =   random_normal(scalar @{ $pgx->{$probeT} }, 0, 0.25);
-    foreach my $n (0..$#{ $pgx->{$probeT} }) {
-      $pgx->{$probeT}->[$n]->{value}  =   $randomV[$n];
-    }
-  }
+	# random values
+	if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
+		my @randomV = random_normal(scalar @{ $pgx->{$probeT} }, 0, 0.25);
+		foreach my $n (0..$#{ $pgx->{$probeT} }) {
+			$pgx->{$probeT}->[$n]->{value}  =   $randomV[$n];
+		}
+	}
 
   return $pgx;
 
@@ -126,7 +124,7 @@ Returns:
 
 sub read_segmentfile {
 
-  no warnings 'uninitialized';
+	  no warnings 'uninitialized';
 
 =pod
 
@@ -147,18 +145,18 @@ Returns:
   - a list reference of genome CNV objects:
     [
       {
-        no              =>  __integer__,    # 1 -> n
-        callset_id      =>  __string__,
-        reference_name  =>  __string__,
-        start           =>  __integer__,
-        end             =>  __integer__,
-        variant_type    =>  __string__,     # DUP, DEL
-        info            =>  {
-          value           =>  __long__,
-          svlen           =>  __integer__,
-          probes          =>  __integer__,
-          assembly_id     =>  __string__,     # GRCh36 ...
-          experiment_type =>  __string__,     # aCGH ...
+        no => __integer__,    # 1 -> n
+        callset_id => __string__,
+        reference_name => __string__,
+        start => __integer__,
+        end => __integer__,
+        variant_type => __string__,       # DUP, DEL
+        info =>  {
+          value => __long__,
+          svlen => __integer__,
+          probes => __integer__,
+          assembly_id => __string__,      # GRCh36 ...
+          experiment_type => __string__,  # aCGH ...
         },
       },
       {
@@ -170,117 +168,139 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $segmentsF =   shift;
-  my $segmentsT =   shift;
-  $segmentsT    ||= 'segmentdata';
-  $pgx->{$segmentsT}    =  [];
+	my $pgx = shift;
+	my $segmentsF = shift;
+	my $segmentsT = shift;
+	$segmentsT  ||= 'segmentdata';
+	$pgx->{$segmentsT} = [];
 
-  if (! -f $segmentsF) { return $pgx }
+	if (! -f $segmentsF) { return $pgx }
 
-  my $numfactor =   1;
-  if (
-    $pgx->{parameters}->{'reverse'} =~ /y/i
-    &&
-    $segmentsT !~ /frac/i
-  ) { $numfactor = -1 }
-  
-  if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
-    $pgx->{parameters}->{segbaseline} =   $pgx->{parameters}->{plot_adjust_baseline} }
+	my $numfactor = 1;
+	if (
+		$pgx->{parameters}->{'reverse'} =~ /y/i
+		&&
+		$segmentsT !~ /frac/i
+	) { $numfactor = -1 }
 
-  my %colOrder  =   (
-    callset_id          =>  0,
-    reference_name      =>  1,
-    start               =>  2,
-    end                 =>  3,
-    value               =>  4,
-    probes              =>  5,
-  );
+	if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
+		$pgx->{parameters}->{segbaseline} = $pgx->{parameters}->{plot_adjust_baseline} }
 
-  if ($pgx->{parameters}->{format_inputfiles} =~ /tcga/i) {
-    $colOrder{value}    =   5;
-    $colOrder{probes}   =   4;
-  };
+	my %colOrder = (
+		callset_id => 0,
+		reference_name => 1,
+		start => 2,
+		end => 3,
+		value => 4,
+		probes => 5,
+	);
 
-  my $table     =   read_file_to_split_array($segmentsF);
+	if ($pgx->{parameters}->{format_inputfiles} =~ /tcga/i) {
+		$colOrder{value} = 5;
+		$colOrder{probes} = 4;
+	};
 
-  my $i         =   0;
+	my $table = read_file_to_split_array($segmentsF);
 
-  foreach my $segment (@$table) {
+	my $i = 0;
 
-    my %segVals =   ();
-    foreach (keys %colOrder) {
-      $segVals{$_}  =   $segment->[$colOrder{$_}];
-      $segVals{$_}	=~	s/\s//g;
-    };
+	foreach my $segment (@$table) {
 
-    $segVals{callset_id}        =~  s/[^\w\-\:]/_/g;
+		my %segVals =  ();
+		foreach (keys %colOrder) {
+			$segVals{$_} = $segment->[$colOrder{$_}];
+			$segVals{$_} =~ s/\s//g;
+		};
 
-    $segVals{reference_name}    =~ s/[^\dxXyY]//g;
-    $segVals{reference_name}    =~ s/^23$/X/;
-    $segVals{reference_name}    =~ s/^24$/Y/;
-    if ($segVals{reference_name}!~ /^\w\d?$/) { next }
+		$segVals{callset_id} =~  s/[^\w\-\:]/_/g;
 
-    $segVals{start}     =   sprintf "%.0f", $segVals{start};	# sometimes "intermediate" positions
-    $segVals{end}       =   sprintf "%.0f", $segVals{end};
-    $segVals{probes}    =~  s/[^\d]//g;
+		$segVals{reference_name} =~ s/[^\dxXyY]//g;
+		$segVals{reference_name} =~ s/^23$/X/;
+		$segVals{reference_name} =~ s/^24$/Y/;
+		if ($segVals{reference_name}!~ /^\w\d?$/) { next }
 
-    if ($segVals{start} !~ /^\d{1,9}$/)           { next }
-    if ($segVals{end}   !~ /^\d{1,9}$/)           { next }
-    if ($segVals{value} !~ /^\-?\d+?(\.\d+?)?$/)  { next }
+		$segVals{start} = sprintf "%.0f", $segVals{start};	# sometimes "intermediate" positions
+		$segVals{end} = sprintf "%.0f", $segVals{end};
+		$segVals{probes} =~ s/[^\d]//g;
 
-    $segVals{value}     =   sprintf "%.4f", $segVals{value};
+		if ($segVals{start} !~ /^\d{1,9}$/)           { next }
+		if ($segVals{end}   !~ /^\d{1,9}$/)           { next }
+		if ($segVals{value} !~ /^\-?\d+?(\.\d+?)?$/)  { next }
 
-		my $varStatus				=		'_NS_';
-		
+		$segVals{value} = sprintf "%.4f", $segVals{value};
+
+		my $varStatus = '_NS_';
+
 		if ($segmentsT !~ /fracb/i) {
 
 			# baseline adjustment
-      $segVals{value}	+=   $pgx->{parameters}->{segbaseline};
+			$segVals{value}	+=   $pgx->{parameters}->{segbaseline};
 
 			if ($segVals{value} >= $pgx->{parameters}->{cna_gain_threshold}) {
-				$varStatus	=		'DUP' }
+				$varStatus = 'DUP' }
 			elsif ($segVals{value} <= $pgx->{parameters}->{cna_loss_threshold}) {
-				$varStatus	=		'DEL' }
+				$varStatus = 'DEL' }
 			else {
-					next	
-		}}
+				next }
+		}
 
-    if (
-      $segVals{probes} =~ /\d/
-      &&
-      $segVals{probes} < $pgx->{parameters}->{segment_probecount_min}
-    )                                                     { next }
+		if (
+			$segVals{probes} =~ /\d/
+			&&
+			$segVals{probes} < $pgx->{parameters}->{segment_probecount_min}
+		) { next }
 
-    $i++;
+		$i++;
 
-    push(
-      @{ $pgx->{$segmentsT} },
-      {
-        no              =>  $i,
-        callset_id      =>  $segVals{callset_id},
-        reference_name  =>  $segVals{reference_name},
-        variant_type	=>	$varStatus,
-        start_min       =>  1 * $segVals{start},
-        start_max       =>  1 * $segVals{start},
-        end_min         =>  1 * $segVals{end},
-        end_max         =>  1 * $segVals{end},
-        info            =>  {
-          value         =>  $numfactor * $segVals{value},
-          svlen         =>  1 * ($segVals{end} - $segVals{start}),
-          probes        =>  $segVals{probes},
-        },
-        digest					=>	join(':',
+		push(
+			@{ $pgx->{$segmentsT} },
+			{
+				no =>  $i,
+				callset_id =>  $segVals{callset_id},
+				reference_name =>  $segVals{reference_name},
+				variant_type =>	$varStatus,
+				start => 1 * $segVals{start},
+				end => 1 * $segVals{end},
+				info =>  {
+				  value =>  $numfactor * $segVals{value},
+				  svlen => 1 * ($segVals{end} - $segVals{start}),
+				  probes =>  $segVals{probes},
+				},
+				digest => join(':',
 					$segVals{reference_name},
 					join(',', $segVals{start}.'-'.$segVals{end} ),
 					$varStatus
 				),
-      }
-    );
+			}
+		);
 
-  }
+	}
 
-  return $pgx;
+	return $pgx;
+
+}
+
+################################################################################
+
+sub _f2l {
+
+	my $file = shift;
+	open FILE, "$file" or die "No file $file $!";
+	local $/;
+	my $fContent = <FILE>;
+	close FILE;
+	return [ split(/\r\n?|\n/, $fContent) ];
+
+}
+
+################################################################################
+
+sub _l2t {
+
+	my $list = shift;
+	my $table = [ ];
+	foreach (@$list) { push( @$table, [ split("\t", $_) ] ) }
+	return $table;
 
 }
 
@@ -288,39 +308,21 @@ Returns:
 
 sub read_file_to_split_array {
 
-	my $file      =   shift;
-  my $table     =   [];
+	my $file = shift;
 
 	if ($file =~ /\.(ods)|(xlsx?)$/i) {
-
-    use	Spreadsheet::Read;
-    use	Spreadsheet::XLSX;
-    use Spreadsheet::ReadSXC;
-
-    my $book			=	  ReadData($file);
-    foreach my $currentRow (Spreadsheet::Read::rows($book->[1])) {
-      push(
-        @$table,
-        $currentRow,
-      );
-    }
-
-	} else {
-
-    my $fContent  =   q{};
-    open	FILE, "$file" or die "No file $file $!";
-    local 	$/;															# no input separator
-    $fContent   =	  <FILE>;
-    close FILE;
-    foreach my $line (split(/\r\n?|\n/, $fContent)) {
-      push(
-        @$table,
-        [ split("\t", $line) ],
-      );
-    }
+		use	Spreadsheet::Read;
+		use	Spreadsheet::XLSX;
+		use Spreadsheet::ReadSXC;
+		my $book = ReadData($file);
+		my $table = [];
+		foreach my $currentRow (Spreadsheet::Read::rows($book->[1])) {
+		  push( @$table, $currentRow );
+		}
+		return $table;
 	}
 	
-	return	$table;
+	return _l2t( _f2l( $file ) );
 
 }
 
@@ -334,49 +336,38 @@ sub read_webfile_to_split_array {
 	use	Spreadsheet::XLSX;
 	use Spreadsheet::ReadSXC;
 
-	my $web      	=   shift;
-  my $table     =   [];
+	my $web = shift;
 
-  if ($web =~ /dropbox\.com/) {
-  	$web 		    =~	s/(\?dl=\w)?$/?dl=1/ }
+	if ($web =~ /dropbox\.com/) {
+	$web =~	s/(\?dl=\w)?$/?dl=1/ }
 
-	$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} 	= 	0;
+	$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} 	= 0;
 
-	my $ua				=		new LWP::UserAgent;
-  $ua->agent("Mozilla/8.0");
+	my $ua = new LWP::UserAgent;
+	$ua->agent("Mozilla/8.0");
 
-  my $req				=		new HTTP::Request 'GET' => $web;
-  $req->header('Accept' => 'text/plain');
+	my $req = new HTTP::Request 'GET' => $web;
+	$req->header('Accept' => 'text/plain');
 
-  my $res				=		$ua->request($req);
+	my $res = $ua->request($req);
 	my @content;
 
 	if ($res =~ /\.(ods)|(xlsx?)$/i) {
-		my $book		=	ReadData($res->{_content});
+		my $book = ReadData($res->{_content});
 		foreach my $currentRow (Spreadsheet::Read::rows($book->[1])) {
-			push(
-				@content,
-				join("\t", @{ $currentRow }),
-			);
+			push( @content, join("\t", @{ $currentRow }) );
 		}
 	} else {
-		@content		=		split("\n", $res->{_content});
-		chomp	@content;
+		@content = split("\n", $res->{_content});
+		chomp @content;
 	}
 
 	if ($args{DELCOMMENT} =~ /^T/i) {
-		@content    = 	grep{ ! /^\#/ } @content;
-		@content 		= 	grep{ /./ } @content;
+		@content = grep{ ! /^\#/ } @content;
+		@content = grep{ /./ } @content;
 	}
 	
-	foreach my $line (@content) {
-		push(
-			@$table,
-			[ split("\t", $line) ],
-		);
-	}
-	
-	return	$table;
+	return _l2t( \@content );
 
 }
 

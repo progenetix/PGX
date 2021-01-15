@@ -34,12 +34,12 @@ sub return_histoplot_svg {
     $pgx->{areawidth} *= ($pgx->{referencebounds}->{ $pgx->{parameters}->{chr2plot}->[0] }->[1] / $pgx->{referencebounds}->{ '1' }->[1]);
     $plotW = $pgx->{areawidth} + 2 * $pgx->{parameters}->{size_plotmargin_px};
   }
-  $pgx->{basepixfrac} =   ( $pgx->{areawidth} - ($#{ $pgx->{parameters}->{chr2plot} } * $pgx->{parameters}->{size_chromosome_padding_px}) ) / $pgx->{genomesize};
-  $plotW +=  $pgx->{parameters}->{size_label_right_px};
-  $pgx->{areaendx}  =   $pgx->{areastartx} + $pgx->{areawidth};
-  $pgx->{areatreex} =   $pgx->{areaendx};
+  $pgx->{basepixfrac} = ( $pgx->{areawidth} - ($#{ $pgx->{parameters}->{chr2plot} } * $pgx->{parameters}->{size_chromosome_padding_px}) ) / $pgx->{genomesize};
+  $plotW += $pgx->{parameters}->{size_label_right_px};
+  $pgx->{areaendx} = $pgx->{areastartx} + $pgx->{areawidth};
+  $pgx->{areatreex} = $pgx->{areaendx};
   if ($pgx->{parameters}->{size_label_right_px} > 0) {
-    $pgx->{areatreex}   +=  $pgx->{parameters}->{size_chromosome_padding_px} + $pgx->{parameters}->{size_label_right_px} }
+    $pgx->{areatreex}   += $pgx->{parameters}->{size_chromosome_padding_px} + $pgx->{parameters}->{size_label_right_px} }
   $pgx->svg_add_title();
   
   if ($pgx->{parameters}->{size_plotarea_h_px} > 0) {
@@ -66,10 +66,10 @@ sub return_histoplot_svg {
   }
   
   $pgx->svg_add_bottom_text();
-  $pgx->{Y}     +=   $pgx->{parameters}->{size_plotmargin_bottom_px};
-  my $plotH     =   sprintf "%.0f", $pgx->{Y};
-  $plotW        =   sprintf "%.0f", $plotW;
-  $pgx->{svg}   =   '<svg
+  $pgx->{Y}     += $pgx->{parameters}->{size_plotmargin_bottom_px};
+  my $plotH = sprintf "%.0f", $pgx->{Y};
+  $plotW = sprintf "%.0f", $plotW;
+  $pgx->{svg} = '<svg
 xmlns="http://www.w3.org/2000/svg"
 xmlns:xlink="http://www.w3.org/1999/xlink"
 version="1.1"
@@ -131,12 +131,12 @@ sub get_histoplot_background {
 
     foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-      my $areaW =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
+      my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
-      $pgx->{svg}  .=  '
+      $pgx->{svg}  .= '
   <rect x="'.$area_x0.'" y="'.$pgx->{Y}.'" width="'.$areaW.'" height="'.$p_a_h.'" style="fill: '.$pgx->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
-      $area_x0  +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
+      $area_x0  += $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
     }
 
@@ -169,7 +169,7 @@ Returns:
 
   my $defLabCol = '#dddddd';
   my $altLabCol = '#fefefe';
-  my $labCol    = '#dddddd';
+  my $labCol = '#dddddd';
   
   $pgx->{Y} = $pgx->{areastarty} - $pgx->{parameters}->{size_plotarea_padding};
   
@@ -200,15 +200,15 @@ Returns:
 
     foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-      my $areaW =  sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
+      my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
        # intervals through index #    ####    ####    ####    ####    ####    ####
-      my @ind   =  grep{ $refName eq $pgx->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $pgx->{genomeintervals} };
-      @ind      =  grep{ $pgx->{genomeintervals}->[$_]->{start} <=  $pgx->{referencebounds}->{$refName}->[1]  } @ind;
-      @ind      =  grep{ $pgx->{genomeintervals}->[$_]->{end} >=  $pgx->{referencebounds}->{$refName}->[0]  } @ind;
+      my @ind = grep{ $refName eq $pgx->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $pgx->{genomeintervals} };
+      @ind = grep{ $pgx->{genomeintervals}->[$_]->{start} <= $pgx->{referencebounds}->{$refName}->[1]  } @ind;
+      @ind = grep{ $pgx->{genomeintervals}->[$_]->{end} >= $pgx->{referencebounds}->{$refName}->[0]  } @ind;
 
       foreach my $GL (qw(dupfrequencies delfrequencies)) {
-        $pgx->{svg}      .=    '
+        $pgx->{svg}      .= '
   <polygon points="'.$area_x0.' '.$area_ycen;
 
         foreach my $i (@ind) {
@@ -221,26 +221,26 @@ Returns:
           if ($end > $pgx->{referencebounds}->{$refName}->[1]) {
             $end = $pgx->{referencebounds}->{$refName}->[1] }
 
-          my $X =   sprintf "%.1f", $area_x0 - $x_corr + $pgx->{basepixfrac} * ($end - ($end - $start) / 2);
-          my $H =   sprintf "%.1f", $frequencymapsSet->{$GL}->[$i] * $pgx->{parameters}->{pixyfactor};
+          my $X = sprintf "%.1f", $area_x0 - $x_corr + $pgx->{basepixfrac} * ($end - ($end - $start) / 2);
+          my $H = sprintf "%.1f", $frequencymapsSet->{$GL}->[$i] * $pgx->{parameters}->{pixyfactor};
           if ($is_single = 1) { $H = $frequencymapsSet->{$GL}->[$i] * $p_a_h / 200 }
-          $pgx->{svg}  .=  ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
+          $pgx->{svg}  .= ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
 
         }
 
         $pgx->{svg} .= ' '.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'" fill="'.($GL =~ /del/i ? $pgx->{parameters}->{color_var_del_hex} : $pgx->{parameters}->{color_var_dup_hex}).'" stroke-width="0px" />';
       }
 
-      $area_x0  +=  $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
+      $area_x0  += $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
     }
 
     # adding a baseline at 0
     if ($is_single != 1) {
-    	$pgx->{svg}    .=  '
+    	$pgx->{svg}    .= '
   <line x1="'.$pgx->{areastartx}.'"  y1="'.$area_ycen.'"  x2="'.($pgx->{areastartx} + $pgx->{areawidth}).'"  y2="'.$area_ycen.'"  class="cen"  />' }
 
-    my $labels_R    =   [];
+    my $labels_R = [];
     if ($frequencymapsSet->{labels}) { $labels_R = $frequencymapsSet->{labels} }
     # fallback color; defined here for alternation...
     if ($labCol eq $altLabCol) { 

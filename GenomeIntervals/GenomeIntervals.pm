@@ -3,8 +3,8 @@ package PGX::GenomeIntervals::GenomeIntervals;
 use Data::Dumper;
 
 require Exporter;
-@ISA        =   qw(Exporter);
-@EXPORT     =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   make_genome_intervals
   get_reference_base_limits
   get_genome_basecount
@@ -20,7 +20,7 @@ Expects:
   - a list reference of genome interval objects, usually representing cytobands:
     [
       {
-        no    =>  __integer__,            # not used
+        no =>  __integer__,            # not used
         reference_name  =>  __string__,
         start =>  __integer__,
         end   =>  __integer__,
@@ -54,50 +54,49 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my (
-    $cytobands,
-    $intSize
-  )             =   @_;
+	my $cytobands = shift;
+	my $intSize = shift;
 
-  if ($intSize !~ /^\d{3,9}$/) { $intSize = 1000000 }
+	my $refLims =  get_reference_base_limits($cytobands);
+	my $gi = [];
 
-  my $refLims   =   get_reference_base_limits($cytobands);
-  my $gi        =   [];
+	# references are sorted with numerical ones first, then others (e.g. 1 -> 22, X, Y)
+	my @refNames = ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %$refLims), (sort grep{ ! /\d/ } keys %$refLims));
 
-  # references are sorted with numerical ones first, then others (e.g. 1 -> 22, X, Y)
-  my @refNames  =   ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %$refLims), (sort grep{ ! /\d/ } keys %$refLims));
+	my $intI = 1;
+	for my $i (0..$#refNames) {
 
-  my $intI      =   1;
-  for my $i (0..$#refNames) {
+		my $refName = $refNames[$i];
+		my $start = $refLims->{ $refName }->[0];
+		my $end = $intSize;
 
-    my $refName =   $refNames[$i];
-    my $start   =   $refLims->{ $refName }->[0];
-    my $end     =   $intSize - 1;
+		while ($start < $refLims->{ $refName }->[1]) {
 
-    while ($start < $refLims->{ $refName }->[1]) {
+			# adjusting the end of the last interval
+			if ($end > $refLims->{ $refName }->[1]) {
+				$end = $refLims->{ $refName }->[1] };
 
-      # adjusting the end of the last interval
-      if ($end > $refLims->{ $refName }->[1]) { $end = $refLims->{ $refName }->[1] };
-      my $thisSize  =   $end - $start +1;
-      push(
-        @$gi,
-        {
-          no    =>  $intI,
-          reference_name  =>  $refName,
-          start =>  $start,
-          end   =>  $end,
-          length  =>  $thisSize,
-          label =>  $refName.':'.$start.'-'.$end,
-        }
-      );
+			my $thisSize = $end - $start;
+			push(
+				@$gi,
+				{
+					no =>  $intI,
+					reference_name => $refName,
+					start => $start,
+					end => $end,
+					length => $thisSize,
+					label => $refName.':'.$start.'-'.$end,
+				}
+			);
 
-      $start    +=  $thisSize;
-      $end      +=  $thisSize;
-      $intI++;
+			$start += $thisSize;
+			$end += $thisSize;
+			$intI++;
 
-  }}
+		}
+	}
 
-  return $gi;
+	return $gi;
 
 }
 
@@ -133,16 +132,17 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $refLims   =   {};
-  my $allRefs   =   $_[0];
+	my $allRefs = shift;
 
-  foreach my $ref (map{ $_->{reference_name} } @$allRefs) {
-    my @refRefs =   grep{ $_->{reference_name} =~ /^$ref$/i } @$allRefs;
-    my @bases   =   sort { $a <=> $b } ((map{ $_->{start} } @refRefs), (map{ $_->{end} } @refRefs));
-    $refLims->{$ref}  =   [ $bases[0], $bases[-1] ];
-  }
+	my $refLims = {};
 
-  return $refLims;
+	foreach my $ref (map{ $_->{reference_name} } @$allRefs) {
+		my @refRefs = grep{ $_->{reference_name} =~ /^$ref$/i } @$allRefs;
+		my @bases = sort { $a <=> $b } ((map{ $_->{start} } @refRefs), (map{ $_->{end} } @refRefs));
+		$refLims->{$ref} = [ $bases[0], $bases[-1] ];
+	}
+
+	return $refLims;
 
 }
 
@@ -150,18 +150,20 @@ Returns:
 
 sub get_genome_basecount {
 
-  my $genBases;
-  my ($allRefs, $chr2plot)  =   @_;
+	my $allRefs = shift;
+	my $chr2plot = shift;
+	
+	my $genBases;
 
-  my %refNames  =   map { $_ => 1 } @$chr2plot;
+	my %refNames = map { $_ => 1 } @$chr2plot;
 
-  foreach my $ref (keys %refNames) {
-    my @refRefs =   grep{ $_->{reference_name} =~ /^$ref$/i } @$allRefs;
-    my @bases   =   sort { $a <=> $b } ((map{ $_->{start} } @refRefs), (map{ $_->{end} } @refRefs));
-    $genBases   +=  ($bases[-1] - $bases[0]);
-  }
+	foreach my $ref (keys %refNames) {
+		my @refRefs = grep{ $_->{reference_name} =~ /^$ref$/i } @$allRefs;
+		my @bases = sort { $a <=> $b } ((map{ $_->{start} } @refRefs), (map{ $_->{end} } @refRefs));
+		$genBases += ($bases[-1] - $bases[0]);
+	}
 
-  return $genBases;
+	return $genBases;
 
 }
 

@@ -4,8 +4,8 @@ use Data::Dumper;
 use YAML::XS qw(LoadFile DumpFile);
 
 require Exporter;
-@ISA        =   qw(Exporter);
-@EXPORT     =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   args_modify_plot_parameters
   hex2rgb
   random_hexcolor
@@ -16,7 +16,7 @@ require Exporter;
 
 sub args_modify_plot_parameters {
 
-  no warnings 'uninitialized';
+	no warnings 'uninitialized';
 
 =pod
 
@@ -31,137 +31,133 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my ($plotPars, $args) =   @_;
+	my $plotPars = shift;
+	my $args = shift;
 
-  # local defaults overwrite general values; but command line parameters
-  # take precedence later on
-  my $locDefaults       =   {};
-  my $defaultsDir       =   '';
+	# local defaults overwrite general values; but command line parameters
+	# take precedence later on
+	my $locDefaults = {};
+	my $defaultsDir = '';
 
-  if (defined($args->{'-defaultsfile'})) {
-    $defaultsDir        =   $args->{'-defaultsfile'};
-    $defaultsDir        =~  s/\/[\w\.\,]+?$//;
-    if (-f $args->{'-defaultsfile'}) {
-      $locDefaults        =   LoadFile($args->{'-defaultsfile'});
-      foreach my $par (keys %$plotPars) {
-        if ($locDefaults->{$par}) {
-          $plotPars->{$par}   =   $locDefaults->{$par};
-        }
-      }
-    }
-  }
+	if (defined($args->{'-defaultsfile'})) {
+		$defaultsDir = $args->{'-defaultsfile'};
+		$defaultsDir =~  s/\/[\w\.\,]+?$//;
+		if (-f $args->{'-defaultsfile'}) {
+			$locDefaults = LoadFile($args->{'-defaultsfile'});
+			foreach my $par (keys %$plotPars) {
+				if ($locDefaults->{$par}) {
+				  $plotPars->{$par} = $locDefaults->{$par} }
+			}
+		}
+	}
 
-  # the -plottype | -colorschema specific mappings are processed first & removed
-  # thereafter (there are still fallbacks if no parameters given)
-  if (defined($args->{'-colorschema'}) && grep{ $args->{'-colorschema'} eq $_ } keys %{ $plotPars->{colorschemas} }) {
-    my $colorschema     =   $args->{'-colorschema'};
-    foreach (keys %{ $plotPars->{colorschemas}->{ $colorschema } }) {
-      if ($plotPars->{colorschemas}->{ $colorschema }->{$_} =~ /^(\#\w{6})$/) {
-        $plotPars->{$_} =   $1 }
-    }
-    delete $plotPars->{colorschemas};
-    delete $args->{'-colorschema'};
-  }
+	# the -plottype | -colorschema specific mappings are processed first & removed
+	# thereafter (there are still fallbacks if no parameters given)
+	if (defined($args->{'-colorschema'}) && grep{ $args->{'-colorschema'} eq $_ } keys %{ $plotPars->{colorschemas} }) {
+		my $colorschema = $args->{'-colorschema'};
+		foreach (keys %{ $plotPars->{colorschemas}->{ $colorschema } }) {
+			if ($plotPars->{colorschemas}->{ $colorschema }->{$_} =~ /^(\#\w{6})$/) {
+				$plotPars->{$_} = $1 }
+		}
+		delete $plotPars->{colorschemas};
+		delete $args->{'-colorschema'};
+	}
 
-  # adjusting arguments for the selected plot type
-  if (grep{ $args->{'-plottype'} eq $_ } keys %{ $plotPars->{plottype_values} }) {
-    foreach (keys %{ $plotPars->{plottype_values}->{ $args->{'-plottype'} } }) {
-      $plotPars->{$_} =   $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_} }
-    delete $plotPars->{plottype_values};
-  }
+	# adjusting arguments for the selected plot type
+	if (grep{ $args->{'-plottype'} eq $_ } keys %{ $plotPars->{plottype_values} }) {
+		foreach (keys %{ $plotPars->{plottype_values}->{ $args->{'-plottype'} } }) {
+			$plotPars->{$_} = $plotPars->{plottype_values}->{ $args->{'-plottype'} }->{$_};
+		}
+		delete $plotPars->{plottype_values};
+	}
 
-  # arguments to parameters
-  foreach my $par (keys %$plotPars) {
-  
-    if (! defined($args->{'-'.$par}) || $args->{'-'.$par} !~ /\w/) { next }
-    # special evaluation: regions
+	# arguments to parameters
+	foreach my $par (keys %$plotPars) {
 
-#     print $par.": ".$plotPars->{$par}." => ".$args->{'-'.$par}."\n";
-    if ($par eq 'plotregions') {
+		my $formPar = '-'.$par;
 
-      if (ref $args->{'-'.$par} eq 'ARRAY') {      
-        $args->{'-'.$par} =   join(',', @{ $args->{'-'.$par} }) }
+		if (! defined($args->{$formPar}) || $args->{$formPar} !~ /\w/) { next }
+		# special evaluation: regions
 
-      foreach my $plotregion (split(',', $args->{'-plotregions'})) {
+		if ($par eq 'plotregions') {
 
-        if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
-          my $plotR =   {
-            reference_name  =>  $1,
-            start           =>  $2,
-            end             =>  $3,
-          };
-          push(@{ $plotPars->{'plotregions'} }, $plotR);
-    }}}
+		  if (ref $args->{$formPar} eq 'ARRAY') {      
+			$args->{$formPar} = join(',', @{ $args->{$formPar} }) }
 
-    # special evaluation: markers
-    elsif ($par eq 'labels') { }
-    elsif ($par eq 'markers') {
-        
-    	my @m = ();
+		  foreach my $plotregion (split(',', $args->{'-plotregions'})) {
 
-		if (ref $args->{'-markers'} eq 'ARRAY') {      
-			push(@m, @{ $args->{'-markers'} } ) }
-		else {
-			push(@m, split(',', $args->{'-markers'} ) ) }
-		if (ref $args->{'-labels'} eq 'ARRAY') {      
-			push(@m, @{ $args->{'-labels'} } ) }
-		else {
-			push(@m, split(',', $args->{'-labels'} ) ) }
+			if ($plotregion =~ /^(?:chro?)?(\w\d?)\:(\d+?)\-(\d+?)$/) {
+			  my $plotR = {
+				reference_name =>  $1,
+				start =>  $2,
+				end =>  $3,
+			  };
+			  push(@{ $plotPars->{'plotregions'} }, $plotR);
+		}}}
+
+		# special evaluation: markers
+		elsif ($par eq 'markers' || $par eq 'labels') {
+
+			my @m = ();
+
+			if (ref $args->{ $formPar } eq 'ARRAY') {      
+				push(@m, @{ $args->{ $formPar } } ) }
+			else {
+				push(@m, split(',', $args->{ $formPar } ) ) }
+
+			foreach (@m) {
+				my @markervals = split(':', $_);
+				if (
+				  $markervals[0] =~ /^(chro?)?([\dxy]\d?)$/i
+				  &&
+				  $markervals[1] =~ /^\d+?\-\d+?$/
+				) {
+					my $mark = { reference_name =>  $markervals[0] };
+					$mark->{reference_name} =~  s/[^xy\d]//gi;
+					($mark->{start}, $mark->{end}) = split('-', $markervals[1]);
+					if ($markervals[2] =~ /^\w[\w \-\(\)\[\]]+?$/) {
+						$mark->{label} = $markervals[2] }
+					if ($markervals[3] =~ /^\#\w\w\w(\w\w\w)?$/) {
+						$mark->{color} = $markervals[3] }
+					if ($mark->{color} !~ /^\#\w\w\w(?:\w\w\w)?$/) {
+						$mark->{color} = random_hexcolor() }
+
+					push(@{ $plotPars->{'markers'} }, $mark);
+			  
+				}
+			}
+		}
+		# / markers
 		
-      foreach (@m) {
-      
-        my @markervals = split(':', $_);
-
-        if (
-          $markervals[0]  =~ /^(chro?)?([\dxy]\d?)$/i
-          &&
-          $markervals[1]  =~ /^\d+?\-\d+?$/
-        ) {
-          my $mark     =   { reference_name  =>  $markervals[0] };
-          $mark->{reference_name} =~  s/[^xy\d]//gi;
-          ($mark->{start}, $mark->{end})  =   split('-', $markervals[1]);
-          if ($markervals[2] =~ /^\w[\w \-\(\)\[\]]+?$/) {
-            $mark->{label}  =  $markervals[2] }
-          if ($markervals[3] =~ /^\#\w\w\w(\w\w\w)?$/) {
-            $mark->{color}  =  $markervals[3] }
-          if ($mark->{color} !~ /^\#\w\w\w(?:\w\w\w)?$/) {
-            $mark->{color}  =   random_hexcolor() }
-          push(@{ $plotPars->{'markers'} }, $mark);
-    }}}
-    # list style parameters are provided comma concatenated => deparsed
-    elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
-      if (ref $args->{'-'.$par} eq 'ARRAY') {      
-        $args->{'-'.$par} =   join(',', @{ $args->{'-'.$par} }) }
-
-      $plotPars->{$par}   =   [ split(',', $args->{'-'.$par}) ] }
-    elsif (
+		# list style parameters are provided comma concatenated => deparsed
+		elsif (grep{ $par eq $_ } qw(chr2plot label_y_m)) {
+			if (ref $args->{'-'.$par} eq 'ARRAY') {      
+				$args->{'-'.$par} = join(',', @{ $args->{$formPar} }) }
+			$plotPars->{$par} = [ split(',', $args->{$formPar}) ] }
+		elsif (
 			($par =~/^color/ || $par =~/color$/)
 			&&
-			$args->{'-'.$par}	=~	/^\w{6}$/
+			$args->{'-'.$par} =~	/^\w{6}$/
 		) {
-      $plotPars->{$par}   =   '#'.$args->{'-'.$par} }
-    else {
-      $plotPars->{$par}   =   $args->{'-'.$par} }
-      
-    if ($par eq 'title') {
-			$plotPars->{$par} =~  s/arraymap/arrayMap/i;
-			$plotPars->{$par} =~  s/progenetix/Progenetix/i;
-		}
+			$plotPars->{$par} = '#'.$args->{$formPar} }
+		else {
+			$plotPars->{$par} = $args->{$formPar} }
 
-  }
+	}
+	# end of arguments to parameters loop
 
-  # derived
-  $plotPars->{pixyfactor}   =   1 * $plotPars->{size_plotarea_h_px} / (2 * $plotPars->{value_plot_y_max});
-  foreach my $override (keys %$locDefaults) {
-    if (! grep{ $_ eq $override } @{ $plotPars->{local_overrides} }) {
-      delete $locDefaults->{$override};
-    }
-  }
+	# derived
+	$plotPars->{pixyfactor} = 1 * $plotPars->{size_plotarea_h_px} / (2 * $plotPars->{value_plot_y_max});
 
-  if (-d $defaultsDir) {
-    DumpFile($args->{'-defaultsfile'}, $locDefaults) }
+	foreach my $override (keys %$locDefaults) {
+		if (! grep{ $_ eq $override } @{ $plotPars->{local_overrides} }) {
+		  delete $locDefaults->{$override} }
+	}
 
-  return $plotPars;
+	if (-d $defaultsDir) {
+		DumpFile($args->{'-defaultsfile'}, $locDefaults) }
+
+	return $plotPars;
 
 }
 
@@ -169,7 +165,7 @@ Returns:
 
 sub hex2rgb {
 
-    my ($r, $g, $b)     =   $_[0] =~  m/^\#?(\w{2})(\w{2})(\w{2})$/;
+    my ($r, $g, $b) = $_[0] =~  m/^\#?(\w{2})(\w{2})(\w{2})$/;
 
     return [ CORE::hex($r), CORE::hex($g), CORE::hex($b) ];
 
@@ -181,13 +177,7 @@ sub random_hexcolor {
 
   use List::Util qw(shuffle);
 
-=pod
-
-random_hexcolor()
-
-=cut
-
-  my @randRGB   =   (
+  my @randRGB = (
     (shuffle(0..180))[0],
     (shuffle(60..255))[0],
     (shuffle(200..255))[0],
@@ -205,16 +195,16 @@ sub frequencies2rgb {
     $dupF,
     $delF,
     $maxF
-  )             =   @_;
+  ) = @_;
 	if ($maxF < 0.001) {$maxF = 100}
 
-	my $dupRGB		=		hex2rgb($plotPars->{color_var_dup_hex});
-	my $delRGB		=		hex2rgb($plotPars->{color_var_del_hex});
+	my $dupRGB = hex2rgb($plotPars->{color_var_dup_hex});
+	my $delRGB = hex2rgb($plotPars->{color_var_del_hex});
   my @RGB;
 
   for my $i (0..2) {
-    $dupRGB->[$i]	=		int($dupRGB->[$i] * $dupF / $maxF);
-	  $delRGB->[$i]	=		int($delRGB->[$i] * $delF / $maxF);
+    $dupRGB->[$i] = int($dupRGB->[$i] * $dupF / $maxF);
+	  $delRGB->[$i] = int($delRGB->[$i] * $delF / $maxF);
     if (($dupRGB->[$i] + $delRGB->[$i]) < 255) { $RGB[$i] = $dupRGB->[$i] + $delRGB->[$i] }
     else { $RGB[$i] = 255 }
   }
