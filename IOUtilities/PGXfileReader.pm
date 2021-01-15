@@ -69,9 +69,16 @@ Returns:
 	if ($pgx->{parameters}->{plot_adjust_baseline} =~ /[123456789]/) {
 	if ($probeT !~ /fracb/i) {
 	  $pgx->{parameters}->{probebaseline} =   $pgx->{parameters}->{plot_adjust_baseline} } }
+	  
+	if ($pgx->{debug}) {
+		print "probes from $probeF\n" }
 
 	my $probeData = _f2l( $probeF );
 	shift @$probeData;
+
+	my $probeNo = @$probeData;
+	if ($pgx->{debug}) {
+		print "$probeNo probes from $probeF\n" }
 
 	my $i = 0;
 
@@ -171,7 +178,7 @@ Returns:
 	my $pgx = shift;
 	my $segmentsF = shift;
 	my $segmentsT = shift;
-	$segmentsT  ||= 'segmentdata';
+	$segmentsT ||= 'segmentdata';
 	$pgx->{$segmentsT} = [];
 
 	if (! -f $segmentsF) { return $pgx }
@@ -201,6 +208,10 @@ Returns:
 	};
 
 	my $table = read_file_to_split_array($segmentsF);
+	
+	my $segNo = @$table;
+	if ($pgx->{debug}) {
+		print "$segNo segments from $segmentsF\n" }
 
 	my $i = 0;
 
@@ -261,10 +272,10 @@ Returns:
 				variant_type =>	$varStatus,
 				start => 1 * $segVals{start},
 				end => 1 * $segVals{end},
-				info =>  {
-				  value =>  $numfactor * $segVals{value},
+				info => {
+				  value => $numfactor * $segVals{value},
 				  svlen => 1 * ($segVals{end} - $segVals{start}),
-				  probes =>  $segVals{probes},
+				  probes => $segVals{probes},
 				},
 				digest => join(':',
 					$segVals{reference_name},

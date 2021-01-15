@@ -3,8 +3,8 @@ package PGX::IOUtilities::PGXfileWriter;
 use Data::Dumper;
 
 require Exporter;
-@ISA    =   qw(Exporter);
-@EXPORT =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
   write_svg
   write_probefile
   write_segmentfile
@@ -20,8 +20,8 @@ require Exporter;
 
 sub write_svg {
 
-  my $pgx       =   shift;
-  my $fileName  =   shift;
+  my $pgx = shift;
+  my $fileName = shift;
  
   if (! -d $pgx->{parameters}->{path_loc}) {
     warn "No correct specification for output path $pgx->{parameters}->{path_loc} $!";
@@ -29,17 +29,17 @@ sub write_svg {
   }
 
   if ($fileName !~ /\.svg$/) {
-    $fileName    =   $pgx->{parameters}->{plotid};    
+    $fileName = $pgx->{parameters}->{plotid};    
     if ($fileName !~ /.../) {
-      $fileName  =   "$^T"."$$" }
-    $fileName    .=  '.svg';
+      $fileName = "$^T"."$$" }
+    $fileName .= '.svg';
   }
       
-  $pgx->{svg_path_loc}  =   $pgx->{parameters}->{path_loc}.'/'.$fileName;
+  $pgx->{svg_path_loc} = $pgx->{parameters}->{path_loc}.'/'.$fileName;
 
   if ($pgx->{parameters}->{path_web} =~ /./) {
-    $pgx->{svg_path_web}    =   $pgx->{parameters}->{path_web}.'/'.$fileName;
-    $pgx->{svg_html_embed}  =   '<a href="'.$pgx->{svg_path_web}.'" target="_blank"><img src="'.$pgx->{svg_path_web}.'" /></a>';
+    $pgx->{svg_path_web} = $pgx->{parameters}->{path_web}.'/'.$fileName;
+    $pgx->{svg_html_embed} = '<a href="'.$pgx->{svg_path_web}.'" target="_blank"><img src="'.$pgx->{svg_path_web}.'" /></a>';
   }
   open  (FILE, ">", $pgx->{svg_path_loc}) || warn 'output file '.$pgx->{svg_path_loc}.' could not be created.';
   binmode(FILE, ":utf8");
@@ -60,11 +60,11 @@ Expects:
   - a list reference of genome position / value objects:
     [
       {
-        no              =>  __integer__,          # 1 -> n
-        probe_id        =>  __string__,
-        reference_name  =>  __string__,
-        position        =>  __integer__,
-        value           =>  __long__,
+        no => __integer__,          # 1 -> n
+        probe_id => __string__,
+        reference_name => __string__,
+        position => __integer__,
+        value => __long__,
       },
       {
       ...
@@ -85,12 +85,12 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $file      =   shift;
+  my $pgx = shift;
+  my $file = shift;
 
   if (! $file) { die "No specification for output $file $!" }
 
-  my @columnKs  =   qw(probe_id reference_name position value);
+  my @columnKs = qw(probe_id reference_name position value);
   open  FILE, '>'."$file";
   print FILE join("\t", @columnKs)."\n";
   foreach my $probe (@{ $pgx->{probedata} }) {
@@ -110,18 +110,18 @@ Expects:
   - a list reference of genome CNV objects:
     [
       {
-        no              =>  __integer__,    # 1 -> n
-        callset_id      =>  __string__,
-        reference_name  =>  __string__,
-        start           =>  __integer__,
-        end             =>  __integer__,
-        variant_type    =>  __string__,     # DUP, DEL
-        info            =>  {
-          value           =>  __long__,
-          svlen           =>  __integer__,
-          probes          =>  __integer__,
-          assembly_id     =>  __string__,     # GRCh36 ...
-          experiment_type =>  __string__,     # aCGH ...
+        no => __integer__,    # 1 -> n
+        callset_id => __string__,
+        reference_name => __string__,
+        start => __integer__,
+        end => __integer__,
+        variant_type => __string__,     # DUP, DEL
+        info => {
+          value => __long__,
+          svlen => __integer__,
+          probes => __integer__,
+          assembly_id => __string__,     # GRCh36 ...
+          experiment_type => __string__,     # aCGH ...
         },
       },
       {
@@ -148,15 +148,15 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $file      =   shift;
+  my $pgx = shift;
+  my $file = shift;
 
   if (! $file) { die "No specification for output $file $!" }
 
-  my @columnKs  =   qw(sample chro start stop mean probes variant_type);
+  my @columnKs = qw(sample chro start stop mean probes variant_type);
 
   if (! $pgx->{segmentdata}) {
-    $pgx->{segmentdata} =  [ map{ @{ $_->{variants} } } @{ $pgx->{samples} } ] }
+    $pgx->{segmentdata} = [ map{ @{ $_->{variants} } } @{ $pgx->{samples} } ] }
 
   open  FILE, '>'."$file";
   print FILE join("\t", @columnKs)."\n";
@@ -184,12 +184,12 @@ sub write_labelfile {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $file      =   shift;
+  my $pgx = shift;
+  my $file = shift;
 
   if (! $file) { die "No specification for output $file $!" }
 
-  my @columnKs  =   qw(sample key label color);
+  my @columnKs = qw(sample key label color);
 
   open  FILE, '>'."$file";
   print FILE join("\t", @columnKs)."\n";
@@ -221,13 +221,13 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $file      =   shift;
+  my $pgx = shift;
+  my $file = shift;
 
   if (! $file) { die "No specification for output $file $!" }
   if (! $pgx->{frequencymaps}->[0]) { return $pgx }
 
-  my $i         =   0;
+  my $i = 0;
   open  FILE, '>'."$file";
   print FILE join("\t",
     'label',
@@ -237,9 +237,9 @@ Returns:
   foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
     $i++;
     if ($frequencymapsSet->{name} =~ /\w\w/) {
-      my $label =   $frequencymapsSet->{name};
-      $label    =~  s/[^\w\,]/_/g;
-      $label    =~  s/_$//g;
+      my $label = $frequencymapsSet->{name};
+      $label =~ s/[^\w\,]/_/g;
+      $label =~ s/_$//g;
       print FILE $label."\t" }
     else {
       print FILE 'subset_'.$i."\t" }
@@ -331,13 +331,13 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx       =   shift;
-  my $file      =   shift;
+  my $pgx = shift;
+  my $file = shift;
 
   if (! $file) { die "No file $file $!" }
   if (! $pgx->{samples}->[0]->{statusmaps}) { return $pgx }
 
-  my $i         =   0;
+  my $i = 0;
   open  FILE, '>'."$file";
   print FILE join("\t",
     'label',
@@ -347,9 +347,9 @@ Returns:
   foreach my $sample (@{ $pgx->{samples} }) {
     $i++;
     if ($sample->{id} =~ /\w\w/) {
-      my $label =   $sample->{id};
-      $label    =~  s/[^\w\,]/_/g;
-      $label    =~  s/_$//g;
+      my $label = $sample->{id};
+      $label =~ s/[^\w\,]/_/g;
+      $label =~ s/_$//g;
       print FILE $label."\t" }
     else {
       print FILE 'sample_'.$i."\t" }

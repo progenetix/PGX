@@ -223,7 +223,7 @@ Returns:
 
           my $X = sprintf "%.1f", $area_x0 - $x_corr + $pgx->{basepixfrac} * ($end - ($end - $start) / 2);
           my $H = sprintf "%.1f", $frequencymapsSet->{$GL}->[$i] * $pgx->{parameters}->{pixyfactor};
-          if ($is_single = 1) { $H = $frequencymapsSet->{$GL}->[$i] * $p_a_h / 200 }
+          if ($is_single == 1) { $H = $frequencymapsSet->{$GL}->[$i] * $p_a_h / 200 }
           $pgx->{svg}  .= ' '.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
 
         }

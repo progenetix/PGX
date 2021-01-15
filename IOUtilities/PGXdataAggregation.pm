@@ -10,6 +10,7 @@ require Exporter;
 @EXPORT = qw(
   pgx_open_handover
   pgx_samples_from_handover
+  pgx_segmentdata_from_sample_0
   pgx_add_variants_from_db
   pgx_create_samples_from_segments
   pgx_callset_labels_from_biosamples
@@ -91,6 +92,22 @@ sub pgx_add_variants_from_db {
 
 ################################################################################
 
+sub pgx_segmentdata_from_sample_0 {
+
+	my $pgx = shift;
+	
+	if (! $pgx->{samples}) { return $pgx }
+	if (! $pgx->{samples}->[0]->{variants}) { return $pgx }
+	if ($pgx->{segmentdata}) { return $pgx }
+	
+	$pgx->{segmentdata} = $pgx->{samples}->[0]->{variants};
+	
+	return $pgx;
+
+}
+
+################################################################################
+
 sub pgx_create_samples_from_segments {
 
 	my $pgx = shift;
@@ -125,52 +142,54 @@ sub pgx_create_samples_from_segments {
 
 sub pgx_create_sample_collections {
 
-  my $pgx = shift;
+	no warnings 'uninitialized';
 
-  $pgx->{samplecollections} = [];
+	my $pgx = shift;
 
-  my %sortKeys = map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
+	$pgx->{samplecollections} = [];
 
-  # creation of the groups
-  foreach my $sortKey (keys %sortKeys) {
+	my %sortKeys = map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
 
-    my @theirIndex = grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
+	# creation of the groups
+	foreach my $sortKey (keys %sortKeys) {
 
-    my $labelColor = random_hexcolor();
-    if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) {
-      $labelColor = '#cccccc' }
+	my @theirIndex = grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
 
-    my $label = {
-      label_text => $sortKey,
-      label_link => q{},
-      label_color => $labelColor,
-    };
+	my $labelColor = random_hexcolor();
+	if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) {
+	  $labelColor = '#cccccc' }
 
-    $sortKey =~ s/^.+?\:\:?//;
-    foreach (@theirIndex) {
-      $pgx->{samples}->[$_]->{labels} = [ $label ];
-      $pgx->{samples}->[$_]->{name} = $pgx->{samples}->[$_]->{id}.($sortKey =~ /.../ ? ' ('.$sortKey.')' : q{});
-      $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
-      $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
-    }
+	my $label = {
+	  label_text => $sortKey,
+	  label_link => q{},
+	  label_color => $labelColor,
+	};
 
-    if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) { next }
+	$sortKey =~ s/^.+?\:\:?//;
+	foreach (@theirIndex) {
+	  $pgx->{samples}->[$_]->{labels} = [ $label ];
+	  $pgx->{samples}->[$_]->{name} = $pgx->{samples}->[$_]->{id}.($sortKey =~ /.../ ? ' ('.$sortKey.')' : q{});
+	  $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
+	  $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
+	}
 
-    my $theseSamples = [@{ $pgx->{samples} }[@theirIndex]];
-    my $name = $theseSamples->[0]->{sortlabel}.' ('.scalar(@$theseSamples).')';
+	if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) { next }
 
-    push(
-      @{$pgx->{samplecollections}},
-      {
-        labels => [ $label ],
-        name => $name,
-        statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
-      },
-    );
+	my $theseSamples = [@{ $pgx->{samples} }[@theirIndex]];
+	my $name = $theseSamples->[0]->{sortlabel}.' ('.scalar(@$theseSamples).')';
 
-  }
+	push(
+	  @{$pgx->{samplecollections}},
+	  {
+		labels => [ $label ],
+		name => $name,
+		statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
+	  },
+	);
 
-  return $pgx;
+	}
+
+	return $pgx;
 
 }
 
@@ -229,42 +248,44 @@ sub pgx_callset_labels_from_biosamples {
 
 sub pgx_callset_labels_from_file {
 
-  my $pgx = shift;
-  my $sortFile = shift;
+	my $pgx = shift;
+	my $sortFile = shift;
 
-  my $fallbackK = 'NA';
-  my $fallbackL = 'not specified';
+	my $fallbackK = 'NA';
+	my $fallbackL = 'not specified';
 
-  if (! -f $sortFile)  { return $pgx }
+	for my $i (0..$#{ $pgx->{samples} }) {
+		$pgx->{samples}->[$i]->{sortkey} = $fallbackK;
+		$pgx->{samples}->[$i]->{sortlabel} = $fallbackL;
+	}
 
-  # this assumes that the first column contains an entry for the selected id (or id)
-  # the second then the associated label
-  my $customSort = {};
+	if (! -f $sortFile)  { return $pgx }
 
-  my $table = read_file_to_split_array($sortFile);
-    foreach (@$table) {
-      if ($_->[0] =~ /\w\w/ && $_->[1] =~ /\w/) {
-        $customSort->{$_->[0]} = {
-          sortkey => $_->[1] =~ /\w\w/ ? $_->[1] : $fallbackK,
-          sortlabel => $_->[2] =~ /\w\w/ ? $_->[2] : $fallbackL,
-        };
-  }}
+	# this assumes that the first column contains an entry for the selected id (or id)
+	# the second then the associated label
+	my $customSort = {};
 
-  for my $i (0..$#{ $pgx->{samples} }) {
+	my $table = read_file_to_split_array($sortFile);
+	foreach (@$table) {
+	  if ($_->[0] =~ /\w\w/ && $_->[1] =~ /\w/) {
+		$customSort->{$_->[0]} = {
+		  sortkey => $_->[1] =~ /\w\w/ ? $_->[1] : $fallbackK,
+		  sortlabel => $_->[2] =~ /\w\w/ ? $_->[2] : $fallbackL,
+		};
+	}}
 
-    my $csId = $pgx->{samples}->[$i]->{id};
+	for my $i (0..$#{ $pgx->{samples} }) {
 
-    $pgx->{samples}->[$i]->{sortkey} = $fallbackK;
-    $pgx->{samples}->[$i]->{sortlabel} = $fallbackL;
+		my $csId = $pgx->{samples}->[$i]->{id};
 
-    if ($customSort->{$csId}->{sortkey} !~ /.../) { next }
+		if ($customSort->{$csId}->{sortkey} !~ /.../) { next }
 
-    $pgx->{samples}->[$i]->{sortkey} = $customSort->{$csId}->{sortkey};
-    $pgx->{samples}->[$i]->{sortlabel} = $customSort->{$csId}->{sortlabel};
+		$pgx->{samples}->[$i]->{sortkey} = $customSort->{$csId}->{sortkey};
+		$pgx->{samples}->[$i]->{sortlabel} = $customSort->{$csId}->{sortlabel};
 
-  }
+	}
 
-  return $pgx;
+	return $pgx;
 
 }
 
