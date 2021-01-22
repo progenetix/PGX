@@ -57,7 +57,7 @@ Returns:
 	my $cytobands = shift;
 	my $intSize = shift;
 
-	my $refLims =  get_reference_base_limits($cytobands);
+	my $refLims = get_reference_base_limits($cytobands);
 	my $gi = [];
 
 	# references are sorted with numerical ones first, then others (e.g. 1 -> 22, X, Y)
