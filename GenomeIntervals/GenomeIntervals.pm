@@ -1,4 +1,4 @@
-package PGX::GenomeIntervals::GenomeIntervals;
+package GenomeIntervals::GenomeIntervals;
 
 use Data::Dumper;
 

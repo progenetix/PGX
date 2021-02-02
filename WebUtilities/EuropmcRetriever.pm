@@ -1,4 +1,4 @@
-package PGX::WebUtilities::EuropmcRetriever;
+package WebUtilities::EuropmcRetriever;
 
 use Data::Dumper;
 use Encode qw(decode encode);

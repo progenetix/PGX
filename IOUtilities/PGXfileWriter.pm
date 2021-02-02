@@ -1,4 +1,4 @@
-package PGX::IOUtilities::PGXfileWriter;
+package IOUtilities::PGXfileWriter;
 
 use Data::Dumper;
 

@@ -1,11 +1,11 @@
-package PGX::MapPlots::Mapplot;
+package MapPlots::Mapplot;
 
 use Data::Dumper;
 
 use GenomePlots::PlotParameters;
-use PGX::IOUtilities::PGXfileReader;
-use PGX::IOUtilities::PGXfileWriter;
-use PGX::IOUtilities::PGXdataAggregation;
+use IOUtilities::PGXfileReader;
+use IOUtilities::PGXfileWriter;
+use IOUtilities::PGXdataAggregation;
 require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(
@@ -22,7 +22,7 @@ sub new {
 
   my $class     =   shift;
   my $args      =   shift;
-  $args         =   args_modify_plot_parameters(PGX::read_plot_defaults(), $args);
+  $args         =   args_modify_plot_parameters(read_plot_defaults(), $args);
   my $self      =   {
     parameters  =>  $args,
     plotid      =>  $args->{plotid},

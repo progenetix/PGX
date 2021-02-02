@@ -1,17 +1,17 @@
-package PGX::GenomePlots::Genomeplot;
+package GenomePlots::Genomeplot;
 
 use Data::Dumper;
-use PGX::GenomeIntervals::CytobandReader;
-use PGX::GenomeIntervals::GenomeIntervals;
-use PGX::GenomeIntervals::IntervalStatistics;
-use PGX::GenomePlots::PlotParameters;
-use PGX::GenomePlots::HistoPlotter;
-use PGX::GenomePlots::ArrayPlotter;
-use PGX::GenomePlots::StripPlotter;
-use PGX::GenomePlots::CytobandsPlotter;
-use PGX::IOUtilities::PGXfileReader;
-use PGX::IOUtilities::PGXfileWriter;
-use PGX::IOUtilities::PGXdataAggregation;
+use GenomeIntervals::CytobandReader;
+use GenomeIntervals::GenomeIntervals;
+use GenomeIntervals::IntervalStatistics;
+use GenomePlots::PlotParameters;
+use GenomePlots::HistoPlotter;
+use GenomePlots::ArrayPlotter;
+use GenomePlots::StripPlotter;
+use GenomePlots::CytobandsPlotter;
+use IOUtilities::PGXfileReader;
+use IOUtilities::PGXfileWriter;
+use IOUtilities::PGXdataAggregation;
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -93,7 +93,7 @@ sub pgx_add_frequencymaps {
 
 	my $pgx = shift;
 	my $csColls = shift;
-
+	
 	$pgx->{frequencymaps} = [];
 
 	foreach my $csColl (@$csColls) {
@@ -188,7 +188,7 @@ sub pgx_add_segmentsets_from_samples {
     );
 
   }
-
+  
   return $pgx;
 
 }

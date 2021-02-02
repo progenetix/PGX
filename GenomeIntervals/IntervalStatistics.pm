@@ -1,6 +1,6 @@
-package PGX::GenomeIntervals::IntervalStatistics;
+package GenomeIntervals::IntervalStatistics;
 
-use PGX::GenomeIntervals::ClusterTree;
+use GenomeIntervals::ClusterTree;
 
 use Data::Dumper;
 
@@ -49,6 +49,7 @@ maps:
 
 	if (ref $segments ne 'ARRAY') {
 		$segments = $pgx->{segmentdata} }
+		
 
 	my $maps = {
 		intervals => scalar(@{ $pgx->{genomeintervals} }),
@@ -163,7 +164,7 @@ Returns:
 	# avoiding division by 0 errors if improperly called
 	my $fFactor = 100;
 	if (@{ $cnvmaps } > 1) { $fFactor = 100 / @{ $cnvmaps } }
-	
+		
 	$pgx->{parameters}->{bin_match_min} *= 1;
 	foreach my $type (keys %intLabs) {
 		for my $i (0..$#{ $pgx->{genomeintervals} }) {
@@ -182,7 +183,7 @@ Returns:
 sub use_Eisen_tree {
 
 	use Algorithm::Cluster;
-	no warnings 'uninitialized';
+	no warnings;
 	
 	my $pgx = shift;
 	my $matrix = shift;
@@ -239,7 +240,7 @@ sub cluster_frequencymaps {
 sub cluster_samples {
 
 	use Algorithm::Cluster;
-	no warnings 'uninitialized';
+	no warnings;
 
 	my $pgx = shift;
 

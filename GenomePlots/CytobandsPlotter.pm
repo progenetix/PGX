@@ -1,4 +1,4 @@
-package PGX::GenomePlots::CytobandsPlotter;
+package GenomePlots::CytobandsPlotter;
 
 use Data::Dumper;
 
@@ -20,6 +20,8 @@ require Exporter;
 ################################################################################
 
 sub svg_add_title {
+
+	no warnings 'uninitialized';
 
 =pod
 
@@ -44,11 +46,11 @@ Returns:
     return $pgx;
   }
 
-  $pgx->{Y}    += sprintf "%.0f", $pgx->{parameters}->{size_text_subtitle_px} * 1.5;
+  $pgx->{Y} += sprintf "%.0f", $pgx->{parameters}->{size_text_subtitle_px} * 1.5;
   $pgx->{svg}  .= '
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$pgx->{parameters}->{size_text_subtitle_px}.'px">'.$pgx->{parameters}->{subtitle}.'</text>';
 
-  $pgx->{Y}    += $pgx->{parameters}->{size_text_title_px};
+  $pgx->{Y} += $pgx->{parameters}->{size_text_title_px};
   
   return $pgx;
 
@@ -59,6 +61,8 @@ Returns:
 ################################################################################
 
 sub svg_add_cytobands {
+
+	no warnings 'uninitialized';
 
 =pod
 
@@ -163,6 +167,8 @@ Returns:
 ################################################################################
 
 sub svg_add_title_left {
+
+	no warnings 'uninitialized';
 
 	my $pgx = shift;
 	my $titeL = shift;

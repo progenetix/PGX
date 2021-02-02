@@ -1,4 +1,4 @@
-package PGX::GenomeIntervals::CytobandReader;
+package GenomeIntervals::CytobandReader;
 
 use Data::Dumper;
 

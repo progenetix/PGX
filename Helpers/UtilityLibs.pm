@@ -1,4 +1,4 @@
-package PGX::Helpers::UtilityLibs;
+package Helpers::UtilityLibs;
 
 require Exporter;
 @ISA    =   qw(Exporter);

@@ -1,9 +1,9 @@
-package PGX::GenomePlots::StripPlotter;
+package GenomePlots::StripPlotter;
 
 use GD::Simple;
 use Data::Dumper;
-use PGX::GenomePlots::CytobandsPlotter;
-use PGX::GenomePlots::PlotParameters;
+use GenomePlots::CytobandsPlotter;
+use GenomePlots::PlotParameters;
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -139,7 +139,7 @@ Returns:
   my $area_x0;
   
   foreach my $sample (@{ $pgx->{samples} }) {
-
+  
     $gd_yn = $gd_y0 + $pgx->{parameters}->{size_strip_h_px};
     $area_x0 = 0;
 

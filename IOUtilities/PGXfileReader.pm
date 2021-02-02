@@ -1,9 +1,9 @@
-package PGX::IOUtilities::PGXfileReader;
+package IOUtilities::PGXfileReader;
 
 use Data::Dumper;
 use Math::Random qw(random_normal);
-use PGX::GenomePlots::PlotParameters;
-use PGX::Helpers::UtilityLibs;
+use GenomePlots::PlotParameters;
+use Helpers::UtilityLibs;
 
 require Exporter;
 @ISA = qw(Exporter);

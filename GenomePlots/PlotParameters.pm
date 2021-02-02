@@ -1,4 +1,4 @@
-package PGX::GenomePlots::PlotParameters;
+package GenomePlots::PlotParameters;
 
 use Data::Dumper;
 use YAML::XS qw(LoadFile DumpFile);

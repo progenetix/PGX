@@ -1,9 +1,11 @@
-package PGX::IOUtilities::PGXdataAggregation;
+package IOUtilities::PGXdataAggregation;
 
 use Data::Dumper;
 use Math::Random qw(random_normal);
-use PGX::GenomePlots::PlotParameters;
-use PGX::Helpers::UtilityLibs;
+use GenomePlots::PlotParameters;
+use Helpers::UtilityLibs;
+
+use IOUtilities::PGXfileReader;
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -150,42 +152,43 @@ sub pgx_create_sample_collections {
 
 	my %sortKeys = map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
 
+
 	# creation of the groups
 	foreach my $sortKey (keys %sortKeys) {
 
-	my @theirIndex = grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
+		my @theirIndex = grep{ $pgx->{samples}->[$_]->{sortkey} eq $sortKey } 0..$#{ $pgx->{samples} };
 
-	my $labelColor = random_hexcolor();
-	if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) {
-	  $labelColor = '#cccccc' }
+		my $labelColor = random_hexcolor();
+		if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) {
+		  $labelColor = '#cccccc' }
 
-	my $label = {
-	  label_text => $sortKey,
-	  label_link => q{},
-	  label_color => $labelColor,
-	};
+		my $label = {
+		  label_text => $sortKey,
+		  label_link => q{},
+		  label_color => $labelColor,
+		};
 
-	$sortKey =~ s/^.+?\:\:?//;
-	foreach (@theirIndex) {
-	  $pgx->{samples}->[$_]->{labels} = [ $label ];
-	  $pgx->{samples}->[$_]->{name} = $pgx->{samples}->[$_]->{id}.($sortKey =~ /.../ ? ' ('.$sortKey.')' : q{});
-	  $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
-	  $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
-	}
+		$sortKey =~ s/^.+?\:\:?//;
+		foreach (@theirIndex) {
+		  $pgx->{samples}->[$_]->{labels} = [ $label ];
+		  $pgx->{samples}->[$_]->{name} = $pgx->{samples}->[$_]->{id}.($sortKey =~ /.../ ? ' ('.$sortKey.')' : q{});
+		  $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
+		  $pgx->{samples}->[$_]->{name} =~ s/^.+?\:\://g;
+		}
 
-	if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) { next }
+		if ( @theirIndex < $pgx->{parameters}->{min_group_no} ) { next }
 
-	my $theseSamples = [@{ $pgx->{samples} }[@theirIndex]];
-	my $name = $theseSamples->[0]->{sortlabel}.' ('.scalar(@$theseSamples).')';
+		my $theseSamples = [@{ $pgx->{samples} }[@theirIndex]];
+		my $name = $theseSamples->[0]->{sortlabel}.' ('.scalar(@$theseSamples).')';
 
-	push(
-	  @{$pgx->{samplecollections}},
-	  {
-		labels => [ $label ],
-		name => $name,
-		statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
-	  },
-	);
+		push(
+		  @{$pgx->{samplecollections}},
+		  {
+			labels => [ $label ],
+			name => $name,
+			statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
+		  },
+		);
 
 	}
 

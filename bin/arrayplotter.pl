@@ -1,6 +1,14 @@
 #!/usr/bin/perl
 
-=pod
+# CPAN packages
+use Data::Dumper;
+use File::Basename;
+use POSIX 'strftime';
+use strict;
+use Term::ProgressBar;
+use JSON::XS;
+
+=podmd
 
 This is a utility script for plotting positional genome data:
 
@@ -12,16 +20,7 @@ Examples:
 
 * perl arrayplotter.pl -in ../../in/GSM325151/ -chr2plot 2 -plotregions 2:0-180000000 -markers 2:29332467-29575397:ALK:#ff3300 -factor_probedots 2 -marker_text_px 14
 
-
 =cut
-
-# CPAN packages
-use Data::Dumper;
-use File::Basename;
-use POSIX 'strftime';
-use strict;
-use Term::ProgressBar;
-use JSON::XS;
 
 # local packages
 
@@ -32,13 +31,6 @@ BEGIN {
 }
 
 use PGX;
-use PGX::GenomeIntervals::GenomeIntervals;
-use PGX::GenomePlots::ArrayPlotter;
-use PGX::GenomeIntervals::CytobandReader;
-use PGX::GenomePlots::Genomeplot;
-use PGX::GenomeIntervals::IntervalStatistics;
-use PGX::GenomePlots::PlotParameters;
-use PGX::Helpers::UtilityLibs;
 
 # command line input
 
