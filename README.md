@@ -1,6 +1,6 @@
-## PGX - Genome visualisation from the arrayMap and Progenetix projects
+## PGX - Genome visualisation from the Progenetix project
 
-This repository contains code and resources for visualizing different types of genome data, focussed on copy number variants (CNV). The software is mostly used for the <progenetix.org> visualizations; however, users can just download the package & use with their own data (though documentatuion is ... sparse).
+This repository contains code and resources for visualizing different types of genome data, focussed on copy number variants (CNV). The software is mostly used for the [progenetix.org](http://progenetix.org) visualizations; however, users can just download the package & use with their own data (though documentatuion is ... sparse).
 
 Current implementations (in `bin`):
 
