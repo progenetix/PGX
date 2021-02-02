@@ -19,7 +19,7 @@ Current implementations (in `bin`):
 ### Example use
   
 * download `PGX` to whichever location (`___my_path___`)
-* run as in example below, replacing the segnment and label files with your own
+* run as in example below, replacing the segment and label files with your own
 
 ```
 cd ___my_path___/PGX/bin/
