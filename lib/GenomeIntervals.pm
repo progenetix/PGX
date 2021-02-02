@@ -1,4 +1,4 @@
-package GenomeIntervals::GenomeIntervals;
+package lib::GenomeIntervals;
 
 use Data::Dumper;
 

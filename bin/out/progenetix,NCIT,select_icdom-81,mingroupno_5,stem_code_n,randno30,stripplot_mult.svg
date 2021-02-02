@@ -1,0 +1,1137 @@
+<svg
+xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+version="1.1"
+id="genomeplot"
+width="1948px"
+height="545px"
+style="margin: auto; font-family: Helvetica, sans-serif;">
+<style type="text/css"><![CDATA[
+  .title-left {text-anchor: middle; fill: #000000; font-size: 8px;}
+]]></style>
+
+<rect x="0" y="0" width="1948" height="545" style="fill: #ffffff; " />
+
+
+<text x="1121.5" y="73" style="text-anchor: middle; font-size: 48px">CNA Frequencies in 2 Cancer Entities by NCIt Neoplasm Code</text>
+<text x="1121.5" y="121" style="text-anchor: middle; font-size: 32px">Display of CNV Profiles from 30 Individual Samples from the progenetix Collection</text>
+<defs>
+<linearGradient id="genomeplotgpos100" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(39,39,39)" />
+    <stop offset="100%" stop-color="rgb(0,0,0)" />
+</linearGradient>
+<linearGradient id="genomeplotgpos75" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(87,87,87)" />
+    <stop offset="100%" stop-color="rgb(39,39,39)" />
+</linearGradient>
+<linearGradient id="genomeplotgpos50" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(196,196,196)" />
+    <stop offset="100%" stop-color="rgb(111,111,111)" />
+</linearGradient>
+<linearGradient id="genomeplotgpos25" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(223,223,223)" />
+    <stop offset="100%" stop-color="rgb(196,196,196)" />
+</linearGradient>
+<linearGradient id="genomeplotgneg" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="white" />
+    <stop offset="100%" stop-color="rgb(223,223,223)" />
+</linearGradient>
+<linearGradient id="genomeplotgvar" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(196,196,196)" />
+    <stop offset="100%" stop-color="rgb(111,111,111)" />
+</linearGradient>
+<linearGradient id="genomeplotstalk" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(39,39,39)" />
+    <stop offset="100%" stop-color="rgb(0,0,0)" />
+</linearGradient>
+<linearGradient id="genomeplotacen" x1="0%" x2="0%" y1="0%" y2="80%" spreadMethod="reflect">
+    <stop offset="0%" stop-color="rgb(163,55,247)" />
+    <stop offset="100%" stop-color="rgb(138,43,226)" />
+</linearGradient>
+
+<style type="text/css">
+<![CDATA[
+.chrlab { text-anchor: middle; font-size: 12px; fill: #000000 }
+]]>
+</style>
+</defs>
+<text x="596.8" y="184" class="chrlab">1</text>
+<rect x="550.0" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="550.9" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="552.0" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="552.7" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="553.4" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="554.7" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="556.0" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="557.6" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="558.9" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="560.4" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="561.2" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="562.1" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="562.9" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="564.9" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="566.4" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="567.4" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="568.9" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="570.9" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="572.0" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="572.8" y="187" width="2.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="575.7" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="576.0" y="187" width="5.7" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="581.7" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="583.0" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="584.4" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="585.4" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="587.3" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="588.2" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="590.1" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="591.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="593.4" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="594.0" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="595.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="595.7" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="596.4" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="597.0" y="187" width="6.8" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="603.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="605.4" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="606.6" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="608.3" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="608.8" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="609.8" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="610.3" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="612.2" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="612.8" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="614.2" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="615.0" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="616.2" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="617.7" y="187" width="2.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="619.8" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="621.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="622.8" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="624.6" y="187" width="3.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="627.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="629.4" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="630.5" y="187" width="3.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="634.1" y="187" width="0.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="634.3" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="635.2" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="636.6" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="638.1" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="638.8" y="187" width="2.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="641.5" y="188.2" width="2.0" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="692.0" y="184" class="chrlab">2</text>
+<rect x="646.5" y="188.2" width="1.7" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="648.2" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="649.1" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="651.0" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="652.7" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="653.6" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="655.4" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="656.9" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="657.7" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="658.4" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="660.1" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="660.9" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="662.1" y="187" width="2.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="664.3" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="666.3" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="667.0" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="669.4" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="670.5" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="672.2" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="673.3" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="674.0" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="674.6" y="187" width="3.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="677.7" y="187" width="3.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="681.0" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="681.8" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="682.6" y="187" width="2.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="684.9" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="686.1" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="686.6" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="687.3" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="688.6" y="187" width="2.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="690.9" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="692.2" y="187" width="2.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="695.0" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="696.0" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="697.0" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="697.6" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="699.7" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="700.4" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="702.1" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="702.5" y="187" width="0.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="702.7" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="704.4" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="706.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="707.7" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="709.9" y="187" width="3.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="713.0" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="714.0" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="714.9" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="717.3" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="718.3" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="720.4" y="187" width="2.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="722.6" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="723.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="724.7" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="727.1" y="187" width="2.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="729.4" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="730.8" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="731.1" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="732.9" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="734.7" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="735.3" y="188.2" width="2.2" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="777.8" y="184" class="chrlab">3</text>
+<rect x="740.5" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotgpos50); " />
+<rect x="741.6" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="742.0" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="743.5" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="744.9" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="745.5" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="746.6" y="187" width="2.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="749.4" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="750.4" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="752.1" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="752.5" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="754.2" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="755.3" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="756.9" y="187" width="0.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="757.1" y="187" width="0.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="757.1" y="187" width="2.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="759.5" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="760.1" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="760.9" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="762.5" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="764.5" y="187" width="2.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="766.7" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="768.3" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="770.5" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="771.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="773.2" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="773.5" y="188.2" width="1.2" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="774.6" y="188.2" width="1.2" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="775.8" y="187" width="1.7" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="777.5" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="778.2" y="187" width="0.3" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="778.5" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="779.2" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="780.5" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="781.1" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="782.4" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="783.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="784.7" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="785.3" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="786.4" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="787.1" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="787.9" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="789.1" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="790.8" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="791.6" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="792.7" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="794.3" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="796.5" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="797.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="798.8" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="799.6" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="800.3" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="801.0" y="187" width="2.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="803.6" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="804.8" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="806.6" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="807.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="809.2" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="809.9" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="810.5" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="811.2" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="812.9" y="188.2" width="2.1" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="853.8" y="184" class="chrlab">4</text>
+<rect x="818.0" y="188.2" width="1.7" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="819.7" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="820.3" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="822.2" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="823.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="824.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="826.0" y="187" width="2.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="828.4" y="187" width="3.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="831.4" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="833.5" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="834.8" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="836.1" y="188.2" width="0.7" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="836.8" y="188.2" width="0.7" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="837.5" y="187" width="2.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="840.0" y="187" width="2.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="842.6" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="844.1" y="187" width="2.2" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="846.3" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="847.3" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="848.6" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="849.3" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="850.3" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="850.7" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="852.9" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="853.4" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="854.8" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="855.6" y="187" width="2.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="858.1" y="187" width="2.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="860.5" y="187" width="2.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="863.0" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="864.1" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="866.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="866.9" y="187" width="3.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="870.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="870.8" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="872.8" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="873.4" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="874.4" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="876.1" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="878.4" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="879.5" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="881.6" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="882.2" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="883.9" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="884.3" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="886.5" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="887.9" y="188.2" width="1.5" height="9.6" style="fill: url(#genomeplotgpos25); " />
+<text x="926.6" y="184" class="chrlab">5</text>
+<rect x="892.5" y="188.2" width="1.7" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="894.2" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="894.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="896.2" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="898.1" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="899.4" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="901.3" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="901.7" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="903.4" y="187" width="1.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="905.2" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="906.9" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="908.5" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="909.8" y="188.2" width="1.0" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="910.8" y="188.2" width="1.0" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="911.8" y="187" width="3.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="914.9" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="916.4" y="187" width="0.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="916.5" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="917.8" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="918.5" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="920.3" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="921.7" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="923.3" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="923.9" y="187" width="3.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="927.4" y="187" width="2.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="929.7" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="931.3" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="932.0" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="933.9" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="934.6" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="935.2" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="936.0" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="938.4" y="187" width="2.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="940.5" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="941.8" y="187" width="2.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="943.9" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="945.1" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="947.0" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="949.0" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="950.1" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="951.2" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="952.8" y="187" width="3.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="956.0" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="957.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="959.0" y="188.2" width="1.7" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="995.8" y="184" class="chrlab">6</text>
+<rect x="963.7" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="964.6" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="965.3" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="966.4" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="967.7" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="968.1" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="968.7" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="969.4" y="187" width="3.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="973.2" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="973.9" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="975.2" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="975.8" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="976.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="977.4" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="978.9" y="187" width="2.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="981.1" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="983.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="983.6" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="985.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="985.7" y="188.2" width="0.5" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="986.2" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="987.2" y="187" width="0.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="987.3" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="989.7" y="187" width="2.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="991.9" y="187" width="3.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="995.0" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="995.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="996.5" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="998.4" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1000.9" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1001.3" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1003.1" y="187" width="3.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1006.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1008.0" y="187" width="0.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1008.1" y="187" width="2.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1011.0" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1011.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1012.5" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1012.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1014.3" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1015.7" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1017.1" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1018.2" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1019.5" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1020.8" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1022.0" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1024.0" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1025.3" y="188.2" width="2.5" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1060.9" y="184" class="chrlab">7</text>
+<rect x="1030.9" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1032.0" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1032.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1033.6" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1036.0" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1037.1" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1038.8" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1040.5" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1041.4" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1041.7" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1044.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1044.8" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1047.2" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1048.0" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1049.3" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1049.9" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1051.1" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1052.7" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1053.5" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1054.2" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1056.3" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1058.2" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1060.2" y="187" width="3.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1063.5" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1064.1" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1065.3" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1065.9" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1067.9" y="187" width="2.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1070.0" y="187" width="0.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1070.3" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1071.4" y="187" width="2.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1074.1" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1075.1" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1076.5" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1077.5" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1078.8" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1079.6" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1080.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1080.8" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1082.9" y="187" width="1.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1084.8" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1086.6" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1088.3" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1089.2" y="188.2" width="1.6" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1121.1" y="184" class="chrlab">8</text>
+<rect x="1093.8" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1094.7" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1096.2" y="187" width="2.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1098.6" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1101.0" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1102.6" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1104.1" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1104.7" y="187" width="2.9" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1107.6" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1108.3" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1108.8" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1110.0" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1110.8" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1111.5" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1113.1" y="187" width="0.2" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1113.2" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1114.3" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1116.6" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1116.8" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1118.3" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1119.0" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1119.9" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1120.8" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1121.8" y="187" width="0.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1121.9" y="187" width="3.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1125.2" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1126.1" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1128.5" y="187" width="2.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1130.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1131.6" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1133.3" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1134.9" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1135.5" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1137.6" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1138.2" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1139.4" y="187" width="1.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1141.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1142.8" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1144.7" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1146.0" y="188.2" width="2.3" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1177.3" y="184" class="chrlab">9</text>
+<rect x="1151.3" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1152.1" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1153.0" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1154.7" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1156.6" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1157.5" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1158.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1158.8" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1160.9" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1161.8" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1163.8" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1164.9" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1165.5" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1166.0" y="187" width="0.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1166.3" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1167.2" y="188.2" width="0.3" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1167.5" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1168.4" y="187" width="6.0" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1174.4" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1175.7" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1177.3" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1178.1" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1180.1" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1180.8" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1181.9" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1183.0" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1184.3" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1184.8" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1185.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1186.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1187.6" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1188.8" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1190.9" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1192.1" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1193.4" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1194.5" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1196.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1197.5" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1199.2" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1200.4" y="187" width="0.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1200.5" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1201.3" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1201.8" y="188.2" width="1.5" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1231.5" y="184" class="chrlab">10</text>
+<rect x="1206.3" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1207.4" y="187" width="0.3" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1207.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1208.8" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1210.9" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1212.8" y="187" width="0.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1213.2" y="187" width="0.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1213.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1214.7" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1215.4" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1217.3" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1218.0" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1219.1" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1220.6" y="188.2" width="0.7" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1221.3" y="188.2" width="0.7" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1221.9" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1223.4" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1224.6" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1225.5" y="187" width="3.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1228.6" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1229.9" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1232.1" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1233.8" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1234.8" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1236.5" y="187" width="2.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1238.6" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1239.2" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1240.5" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1241.0" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1242.1" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1242.9" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1243.9" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1244.3" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1245.0" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1245.4" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1247.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1248.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1250.4" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1251.3" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1251.9" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1253.5" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1254.7" y="188.2" width="1.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1285.0" y="184" class="chrlab">11</text>
+<rect x="1259.6" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1260.7" y="187" width="3.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1264.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1264.8" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1265.9" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1267.9" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1269.4" y="187" width="0.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1269.8" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1271.2" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1273.3" y="187" width="2.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1275.9" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1277.9" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1278.8" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1279.7" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1280.6" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1282.2" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1282.9" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1283.5" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1284.4" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1285.4" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1286.1" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1288.0" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1288.7" y="187" width="3.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1291.9" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1292.9" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1294.5" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1296.2" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1298.0" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1298.3" y="187" width="2.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1301.1" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1301.9" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1302.6" y="187" width="2.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1305.2" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1306.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1307.6" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1308.8" y="188.2" width="1.6" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1338.4" y="184" class="chrlab">12</text>
+<rect x="1313.3" y="188.2" width="1.2" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1314.5" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1315.3" y="187" width="1.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1317.1" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1318.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1318.8" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1320.7" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1321.2" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1323.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1323.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1324.8" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1325.8" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1326.6" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1327.5" y="187" width="3.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1330.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1331.6" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1332.5" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1333.8" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1334.4" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1335.0" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1336.9" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1337.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1338.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1340.0" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1341.6" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1343.3" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1345.7" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1346.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1347.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1349.3" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1351.3" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1352.2" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1354.1" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1355.1" y="187" width="0.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1355.3" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1356.1" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1357.0" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1357.5" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1358.5" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1360.4" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1361.6" y="188.2" width="1.7" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1387.9" y="184" class="chrlab">13</text>
+<rect x="1366.4" y="188.2" width="1.7" height="9.6" style="fill: url(#genomeplotgvar); " />
+<rect x="1368.1" y="187" width="2.1" height="12" style="fill: url(#genomeplotstalk); " />
+<rect x="1370.2" y="187" width="2.4" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1372.6" y="188.2" width="0.5" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1373.0" y="188.2" width="0.5" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1373.5" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1374.9" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1375.8" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1376.6" y="187" width="0.4" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1377.0" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1378.3" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1378.9" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1379.5" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1381.2" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1383.2" y="187" width="0.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1383.4" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1383.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1385.3" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1386.9" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1388.6" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1389.6" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1390.9" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1392.0" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1393.7" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1394.5" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1395.2" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1395.9" y="187" width="3.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1399.1" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1400.0" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1401.9" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1403.0" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1403.5" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1404.4" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1405.5" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1406.4" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1407.6" y="188.2" width="1.8" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1432.5" y="184" class="chrlab">14</text>
+<rect x="1412.4" y="188.2" width="1.4" height="9.6" style="fill: url(#genomeplotgvar); " />
+<rect x="1413.8" y="187" width="1.7" height="12" style="fill: url(#genomeplotstalk); " />
+<rect x="1415.4" y="187" width="3.0" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1418.4" y="188.2" width="0.4" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1418.9" y="188.2" width="0.4" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1419.2" y="187" width="2.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1421.5" y="187" width="3.3" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1424.8" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1425.5" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1426.0" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1426.4" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1428.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1429.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1431.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1432.5" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1433.1" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1434.0" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1435.5" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1436.6" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1437.7" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1438.6" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1439.9" y="187" width="2.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1442.0" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1443.6" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1444.1" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1445.9" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1446.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1447.8" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1448.4" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1450.3" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1451.0" y="187" width="0.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1451.3" y="188.2" width="1.3" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1474.8" y="184" class="chrlab">15</text>
+<rect x="1455.6" y="188.2" width="1.6" height="9.6" style="fill: url(#genomeplotgvar); " />
+<rect x="1457.2" y="187" width="2.1" height="12" style="fill: url(#genomeplotstalk); " />
+<rect x="1459.2" y="187" width="2.9" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1462.2" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1462.7" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1463.3" y="187" width="1.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1465.2" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1466.0" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1466.9" y="187" width="0.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1467.2" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1468.1" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1470.6" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1471.6" y="187" width="0.3" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1471.9" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1472.3" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1474.1" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1475.4" y="187" width="2.3" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1477.7" y="187" width="0.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1477.8" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1479.4" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1480.7" y="187" width="0.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1480.8" y="187" width="0.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1480.8" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1482.8" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1483.7" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1484.3" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1484.9" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1486.2" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1487.4" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1488.8" y="187" width="2.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1490.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1492.4" y="188.2" width="1.5" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1513.9" y="184" class="chrlab">16</text>
+<rect x="1496.9" y="188.2" width="2.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1499.8" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1500.8" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1501.6" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1502.4" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1503.2" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1504.9" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1506.0" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1507.6" y="187" width="2.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1510.2" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1510.7" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1511.3" y="187" width="3.2" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1514.6" y="187" width="2.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1516.7" y="187" width="1.3" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1517.9" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1518.4" y="187" width="3.5" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1521.9" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1523.5" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1524.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1524.7" y="187" width="1.9" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1526.7" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1527.6" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1528.5" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1529.6" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1530.2" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1549.5" y="184" class="chrlab">17</text>
+<rect x="1533.8" y="188.2" width="1.3" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1535.1" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1536.2" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1537.9" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1539.8" y="187" width="2.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1542.3" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1543.2" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1544.1" y="187" width="2.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1546.4" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1548.8" y="187" width="0.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1548.9" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1549.9" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1551.4" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1552.3" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1553.4" y="187" width="2.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1556.2" y="187" width="0.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1556.4" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1557.5" y="187" width="0.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1558.1" y="187" width="0.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1558.7" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1559.8" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1561.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1562.7" y="187" width="0.2" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1562.8" y="188.2" width="2.3" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1583.2" y="184" class="chrlab">18</text>
+<rect x="1568.1" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1569.2" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1570.8" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1571.3" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1572.2" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1573.9" y="188.2" width="1.2" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1575.0" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1576.2" y="187" width="2.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1578.4" y="187" width="2.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1581.3" y="187" width="1.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1582.9" y="187" width="2.4" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1585.3" y="187" width="1.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1587.1" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1589.2" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1590.1" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1591.1" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1592.1" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1594.1" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1594.8" y="187" width="1.7" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1596.4" y="188.2" width="1.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1612.3" y="184" class="chrlab">19</text>
+<rect x="1601.3" y="188.2" width="2.6" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1603.9" y="187" width="2.1" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1606.0" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1606.5" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1607.3" y="187" width="1.4" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1608.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1610.4" y="188.2" width="0.8" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1611.1" y="188.2" width="0.7" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1611.9" y="187" width="1.4" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1613.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1614.5" y="187" width="1.0" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1615.5" y="187" width="0.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1615.6" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1617.4" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1618.1" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1619.1" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1620.4" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1621.2" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1622.3" y="188.2" width="1.1" height="9.6" style="fill: url(#genomeplotgpos25); " />
+<text x="1638.4" y="184" class="chrlab">20</text>
+<rect x="1626.3" y="188.2" width="1.9" height="9.6" style="fill: url(#genomeplotgneg); " />
+<rect x="1628.2" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1629.8" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1630.8" y="187" width="2.2" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1633.0" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1634.3" y="187" width="0.4" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1634.7" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1636.0" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1636.9" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1637.7" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1638.9" y="187" width="0.9" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1639.7" y="187" width="1.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1641.0" y="187" width="1.5" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1642.5" y="187" width="0.2" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1642.6" y="187" width="1.6" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1644.3" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1645.5" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1647.5" y="187" width="0.5" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1648.0" y="187" width="0.7" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1648.7" y="188.2" width="1.8" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1662.3" y="184" class="chrlab">21</text>
+<rect x="1653.5" y="188.2" width="1.2" height="9.6" style="fill: url(#genomeplotgvar); " />
+<rect x="1654.7" y="187" width="1.5" height="12" style="fill: url(#genomeplotstalk); " />
+<rect x="1656.1" y="187" width="1.5" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1657.6" y="188.2" width="0.4" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1658.0" y="188.2" width="0.4" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1658.4" y="187" width="0.8" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1659.1" y="187" width="2.9" height="12" style="fill: url(#genomeplotgpos100); " />
+<rect x="1662.0" y="187" width="1.1" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1663.1" y="187" width="1.8" height="12" style="fill: url(#genomeplotgpos75); " />
+<rect x="1664.8" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1666.4" y="187" width="0.8" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1667.2" y="187" width="0.7" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1667.9" y="187" width="1.1" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1669.0" y="188.2" width="2.1" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="1683.6" y="184" class="chrlab">22</text>
+<rect x="1674.0" y="188.2" width="1.6" height="9.6" style="fill: url(#genomeplotgvar); " />
+<rect x="1675.6" y="187" width="1.9" height="12" style="fill: url(#genomeplotstalk); " />
+<rect x="1677.5" y="187" width="1.6" height="12" style="fill: url(#genomeplotgvar); " />
+<rect x="1679.1" y="188.2" width="0.5" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1679.6" y="188.2" width="0.9" height="9.6" style="fill: url(#genomeplotacen); " />
+<rect x="1680.5" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1682.2" y="187" width="0.5" height="12" style="fill: url(#genomeplotgpos25); " />
+<rect x="1682.7" y="187" width="0.9" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1683.6" y="187" width="1.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1685.0" y="187" width="1.0" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1685.9" y="187" width="2.0" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1688.0" y="187" width="1.3" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1689.3" y="187" width="1.2" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1690.5" y="187" width="1.6" height="12" style="fill: url(#genomeplotgneg); " />
+<rect x="1692.1" y="187" width="0.4" height="12" style="fill: url(#genomeplotgpos50); " />
+<rect x="1692.4" y="188.2" width="0.6" height="9.6" style="fill: url(#genomeplotgneg); " />
+<text x="275" y="211"  transform="rotate(0,275,211)" class="title-left">pgxbs-kftvkya9 (ncit:c27720)</text>
+<rect x="1696" y="202" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="221"  transform="rotate(0,275,221)" class="title-left">pgxbs-kftvhaas (ncit:c27720)</text>
+<rect x="1696" y="212" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="231"  transform="rotate(0,275,231)" class="title-left">pgxbs-kftvhabo (ncit:c27720)</text>
+<rect x="1696" y="222" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="241"  transform="rotate(0,275,241)" class="title-left">pgxbs-kftvhabt (ncit:c27720)</text>
+<rect x="1696" y="232" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="251"  transform="rotate(0,275,251)" class="title-left">pgxbs-kftvl1qq (ncit:c27720)</text>
+<rect x="1696" y="242" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="261"  transform="rotate(0,275,261)" class="title-left">pgxbs-kftvl79n (ncit:c27720)</text>
+<rect x="1696" y="252" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="271"  transform="rotate(0,275,271)" class="title-left">pgxbs-kftvl6t0 (ncit:c27720)</text>
+<rect x="1696" y="262" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="281"  transform="rotate(0,275,281)" class="title-left">pgxbs-kftvl17j (ncit:c27720)</text>
+<rect x="1696" y="272" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="291"  transform="rotate(0,275,291)" class="title-left">pgxbs-kftvkz88 (ncit:c27720)</text>
+<rect x="1696" y="282" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="301"  transform="rotate(0,275,301)" class="title-left">pgxbs-kftvl4fw (ncit:c27720)</text>
+<rect x="1696" y="292" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="311"  transform="rotate(0,275,311)" class="title-left">pgxbs-kftvhabn (ncit:c27720)</text>
+<rect x="1696" y="302" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="321"  transform="rotate(0,275,321)" class="title-left">pgxbs-kftvkyb4 (ncit:c27720)</text>
+<rect x="1696" y="312" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="331"  transform="rotate(0,275,331)" class="title-left">pgxbs-kftvl1j5 (ncit:c27720)</text>
+<rect x="1696" y="322" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="341"  transform="rotate(0,275,341)" class="title-left">pgxbs-kftvip7x (ncit:c27884)</text>
+<rect x="1696" y="332" width="5.0" height="10" style="fill: #ec36d3; " />
+<text x="275" y="351"  transform="rotate(0,275,351)" class="title-left">pgxbs-kftvkz1c (ncit:c105556)</text>
+<rect x="1696" y="342" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="361"  transform="rotate(0,275,361)" class="title-left">pgxbs-kftvl9es (ncit:c27720)</text>
+<rect x="1696" y="352" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="371"  transform="rotate(0,275,371)" class="title-left">pgxbs-kftvl4ts (ncit:c105556)</text>
+<rect x="1696" y="362" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="381"  transform="rotate(0,275,381)" class="title-left">pgxbs-kftvhaay (ncit:c27720)</text>
+<rect x="1696" y="372" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="391"  transform="rotate(0,275,391)" class="title-left">pgxbs-kftvheas (ncit:c27720)</text>
+<rect x="1696" y="382" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="401"  transform="rotate(0,275,401)" class="title-left">pgxbs-kftvl2cd (ncit:c105556)</text>
+<rect x="1696" y="392" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="411"  transform="rotate(0,275,411)" class="title-left">pgxbs-kftvl0ki (ncit:c105556)</text>
+<rect x="1696" y="402" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="421"  transform="rotate(0,275,421)" class="title-left">pgxbs-kftvl2c8 (ncit:c105556)</text>
+<rect x="1696" y="412" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="431"  transform="rotate(0,275,431)" class="title-left">pgxbs-kftvl1t9 (ncit:c27720)</text>
+<rect x="1696" y="422" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="441"  transform="rotate(0,275,441)" class="title-left">pgxbs-kftvl5u1 (ncit:c105556)</text>
+<rect x="1696" y="432" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="451"  transform="rotate(0,275,451)" class="title-left">pgxbs-kftvkz9t (ncit:c105556)</text>
+<rect x="1696" y="442" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="461"  transform="rotate(0,275,461)" class="title-left">pgxbs-kftvhabf (ncit:c27720)</text>
+<rect x="1696" y="452" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="471"  transform="rotate(0,275,471)" class="title-left">pgxbs-kftvkwmk (ncit:c105556)</text>
+<rect x="1696" y="462" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="481"  transform="rotate(0,275,481)" class="title-left">pgxbs-kftvl7ox (ncit:c105556)</text>
+<rect x="1696" y="472" width="5.0" height="10" style="fill: #e8759a; " />
+<text x="275" y="491"  transform="rotate(0,275,491)" class="title-left">pgxbs-kftvhab6 (ncit:c27720)</text>
+<rect x="1696" y="482" width="5.0" height="10" style="fill: #827dd0; " />
+<text x="275" y="501"  transform="rotate(0,275,501)" class="title-left">pgxbs-kftvhac0 (ncit:c27720)</text>
+<rect x="1696" y="492" width="5.0" height="10" style="fill: #827dd0; " />
+<image
+  x="550"
+  y="202"
+  width="1143"
+  height="300"
+  xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABHcAAAEsCAIAAADGvMjfAAAABnRSTlMA/wD/AP83WBt9AAAACXBI
+WXMAAA7EAAAOxAGVKw4bAAATkUlEQVR4nO3dPXabztsG4Ml7fFJpHdoANO60DVXZ2ptK21CXBm3A
+2whN0uRf4B9RZAkheBhAvq7KcSzmYb7gPirmy89ff3aHtATH/dwV/GvzNaWU6t8ppTRpF7U3vjmV
+EzYT6LVKKdW/p+2WkY77UeU1g9LMgfL7Y1cb2XQ21beUUko/VjLrenqtUnqKm/pvla1mWzi3hi2i
+tfyFUBfV+fNogdqtcpmO+/cKlzvK/y2Zq/JsAnVRpX/ffGYpo7srJpV7kmR5WrW7x0TL8/xlKeZe
+Qrtl/OY5ckX838BmAQAAuEbKAgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIWAABAJCkLAAAg
+kpQFAAAQ6cvPX39GXmJ3CKnk/QDp5Vj4YfYzqr6l9Al65rjPfhJ8Zq9VGnEg+jI9zbJtVtla596q
+plYzZwZXuzllGaNld+nIPszgoQozjem5x8c36tXrQrPzzDiUHSM10S23Mt/73Tk5fh7WRdU2NNHT
+5LyJkK7rc6n+PVMX1dgdftzHfZcFAAAQScoCAACIJGUBAABEkrIAAAAiSVkAAACRpCwAAIBIUhYA
+AEAkKQsAACCSlAUAABDpZfwljvvx11iubHc39aHmzKI5Fn2ZNnMXMJ2QZWtJwueUf99+4t040HO/
+bfKUfJcFAAAQScoCAACIJGUBAABEkrIAAAAiSVkAAACRpCwAAIBIUhYAAEAkKQsAACCSlAUAABDp
+Ze4Cstod+v5l/iPGHWq+WHVRzV0Cj+m/0hdupXNvM3cBOeUZo6ZLFzuxq28pLbi89F+Fz8Q7w/J1
+r4hmTm5OZZ5iVvo0mUj/zWrk1uG7LAAAgEhSFgAAQCQpCwAAIJKUBQAAEEnKAgAAiCRlAQAARJKy
+AAAAIklZAAAAkaQsAACASC/p7Ajkh44Svzivunyb9lTpaltO3USHJR9pn19zEvZx/8zdcr4WdofH
+lsa6NINYbTMdPz+p8q166Jj25q7rYuDGsjnl2JR2hyGjU75VTzxpV6F9RH6cYBdPz6t/M51qWw5r
+LtuG/9Dj/qHb+djz/ZVvVcg+2Vwn54hHGdN7D3i93zNRU/F8QNsRCZznOV+T6qJqBujW1Jpo+M6b
+25yuTOyrv7yo59Hl0Px9c+X2EXlxkabnj8X1K2R7PvouCwAAIJKUBQAAEEnKAgAAiCRlAQAARJKy
+AAAAIklZAAAAkaQsAACASFIWAABAJCkLAAAg0sv5P/qfUX1+anL/M9pHunq6MzMadnj2+4Hc/T67
+O+Q7Pb3allcnc9QZ4bdOXr84cr6Z58OW1a1buP7H3/7+PGYVNwUvzdVRa6ZTMxDtLbfjMuT4+bdR
+RQ7Tc7Curpqeg1UX1a3p2svrP1N64ZqF0L/U8RN+3qdY+dY1by/u7qGd4eOiu9urV9dpnapj0Xfz
+776djlbS2d21d10XVdNu+rBjH/cpne401EfT1uX6eu3q51GLsbds0/KiofO7q4tqk6eIlNK/0/tY
+xF8/2wZ43qXnT7TNqWz/q89aPl/+H+fD3Ze3WyN7dwL/8wevVersuraA87XfZx94SFNS96LoM76+
+ywIAAIgkZQEAAESSsgAAACJJWQAAAJGkLAAAgEhSFgAAQCQpCwAAIJKUBQAAEEnKAgAAiPQy7GO7
+Q0op6+n1f0+tDj3d+ZaOw62X47jPd7J4uP6VZ7vHWyej3z22fKT2+tX27y/Pj2B/yCMfjFnCfU6U
+X4hmXbcFX1aeZW8Z79YQ10W1O7z/760T6+uzQW9W1q29rvvM+6umXimTutUPu8Plf9V5n32ZjVnO
+A/bqeR9hH5fS5lRW25ROV/541dN7UTp6cnMq0+szr6+JXO3Si18++lLx8Zrvryj/ro7zJ8XmVNZF
+NWal1EW1eW/r9kX+K+DuK1P3U+ze5lOllI5F11/0SQq+ywIAAIgkZQEAAESSsgAAACJJWQAAAJGk
+LAAAgEhSFgAAQCQpCwAAIJKUBQAAEEnKAgAAiPQydwEMd+/g6qx6nvZdvjnWfVkePQ9+Xv3nz6JW
+xxj9B2hzKqvt3597XDmllNJpWF3P5laPVduBXRS41x33UVdamadZxSGmfnoei0kvvwgd22mdvJwE
+6Pkq2PXx17CB2JzKuphwWPtsUL7LAgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIWAABAJCkL
+AAAgkpQFAAAQScoCAACI9DJ3AX992uPt1+vfc6/vH7B93Kf0Nlk1LED5NuE566zOZ97Vq20Zdam6
+x+7K0wucUVd9hmnW8YQ6FjkL4bq6qDa52srzePJdFgAAQCQpCwAAIJKUBQAAEEnKAgAAiCRlAQAA
+RJKyAAAAIklZAAAAkaQsAACASFIWAABApJe5C/hrd8jdYrUtbx0EnudM6I8N5e+EnFZ6d3Vx87T4
+VZvihPVqW05w1b6edaTWaxVLvvqWUkq3ngUp4+MA4DPbnMr0muk5vjndf10Z/1LhuywAAIBIUhYA
+AEAkKQsAACCSlAUAABBJygIAAIgkZQEAAESSsgAAACJJWQAAAJGkLAAAgEgvu8PcJcynfLt/qPPU
+/bPe/l9v5X3sDum4f/+5zwHhq5TrhPVsch4bn8eq5966tohqe7urTxnruOW5JnZmu0Oqvs1dxCA5
+d4D3tm7MtCXsRZNuKe0kaR/9edTFzaU9vs87Lj6FkOY24y/Rz/hq+0wV32UBAABEkrIAAAAiSVkA
+AACRpCwAAIBIUhYAAEAkKQsAACCSlAUAABBJygIAAIgkZQEAAER6Oe6nPU57CaptWb4NPOO5Odr5
+6btogOeeOZlPf4er6qLanMrBHy/fqmo7/OMjPfcWkVNdVJu5a1i19e7ndVGllMZsAg+3dft/85TR
+oR3HKTaWSS9+VfUtpYkHd3Mqm2HNI+ZeXjMV3Gegu7eOPlfwXRYAAEAkKQsAACCSlAUAABBJygIA
+AIgkZQEAAESSsgAAACJJWQAAAJGkLAAAgEhSFgAAQKSXuQvIoXzLd/R1Tsd9vkPKgdWptuXcJQAE
+q7ZlXVTef26piyqltDn9s/9P9CZ8LKa4ag7HfY5WfJcFAAAQScoCAACIJGUBAABEkrIAAAAiSVkA
+AACRpCwAAIBIUhYAAEAkKQsAACCSlAUAABDpS/H/f1LvI5A3p7I5Uvrj79N/p01P5OIQ6/4GH3dd
+fUsppfL7jf/ddtXTNNr8zfnPA4z8+IW7Y9TnMPWmZ9KPmJIWqy6qzdeUUiq/vy+QW/N/pZq7GzaO
+dVH1mSr5nS/bPCe7t3aHrha7//ejZnTq32OralvPqRmFqOJvaW7quP/7wzD9uzrbDtDOlnbgzif2
+1cfBxyXZ9kwGV0e8T3cNfrI/7LVKg+bk+crtWMWPLvCLSdsxCe920flLTsCrwoMdNXL1fRS79X2c
+hF39OXSSPKrptO6XzMbHjn3/bI+Bbm/87rO+fKua7aLaXlmzze8/XvZc+7L0seZ2afRd7L1Hob1g
+XVTnF28rPO/nwWv/7tpsW78aN3yXBQAAEEnKAgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIW
+AABAJCkLAAAgkpQFAAAQ6cvPX3+anx49JL7allfPOR4m4MDyUHVRjTmAvM+Z99lcnLc9vrCRR7Mv
+qnO6xR5CvzR3z4NfpdcqpVR+T81J9st3ayO9OK5+RasmnS2ci81noV6rlHeZn4/m3ZFt/iB2tdZF
+NXJoLmruv1U+1G6fOd9zaSx8M5+xvHZEmm7sqCTDjnrcx3fFxQ12/eXXlFIqv4c13a3Z5GObO+7f
+f2gHq+3Sie6rabHdoEbmgrbajr3ufPO8e8GOl/k+87l7Qva5gu+yAAAAIklZAAAAkaQsAACASFIW
+AABAJCkLAAAgkpQFAAAQScoCAACIJGUBAABEkrIAAAAiffn560+G87z7aI+s/ujRU+qbw6fbCw44
+5L7juOiF2B26emxSC++ZQJlPgs+sOXj+ycbxaYasHZ0B29f8Xqu0nqnVzJn0Y7n9vPzn0cLX3XE/
+/LGV51HbXV6el7TmNmefaTMWkLnpbM1laKh7F62L6uMvb83q8DeTkbc/8uO+ywIAAIgkZQEAAESS
+sgAAACJJWQAAAJGkLAAAgEhSFgAAQCQpCwAAIJKUBQAAEEnKAgAAiPQydwGTqLZlSimd5q5jShlO
+o+9vcyqvnu09/o+X4H06pVQX1a3TylmXZkxnn4ebU1m+9a1h9mr728xdwACr6N7NqZy7hBteV9B7
+wyzhUdtdw+oeqeNN8SBuOznbU7769s8/+4zjgB0g59xo27qo82PZdVHdndWxJc3Fd1kAAACRpCwA
+AIBIUhYAAEAkKQsAACCSlAUAABBJygIAAIgkZQEAAESSsgAAACJJWQAAAJG+/Pz1Z+4aFmrzNaWU
+6t9z17E8n6dnmjtNP2LOIF+c1yqlp7u71yo9xeRc9SpbV/GrqHbhRS68vLT4CpdT3t1KNqeuR0Zd
+VFMXMJ3MTWdrbtI3mWbEA+8lvFtGXvDjx3eHBz7uuywAAIBIUhYAAEAkKQsAACCSlAUAABBJygIA
+AIgkZQEAAESSsgAAACJJWQAAAJGkLAAAgEgv3cd49zT+tO9bOsqbrlE496wzbZNSerq7a24qZFu7
+8FBHBRTw+lTjAt0eXTJPtnENsDsEX/C47/Vnej7WFE+r1vlg3Rq4kRPpWPz9OeZeFv/s67lSGr7L
+AgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIWAABAJCkLAAAgkpQFAAAQScoCAACI9OXnrz/h
+J4gPUG0nPP16gLqoNl9TSqn+PXcpy/N5eibwTptV9tCR4VN7ynHsc1ObU1kXMafL7w43x7Tjv/q4
+uJHAmjNY19Rqqi2/z13Hbcf9e5Hpx7IelH+9VmmOEe+/yhY+J5dT3uyVzFhA5qazNTfpFtcswMB7
+CdzrmofmyNpGftx3WQAAAJGkLAAAgEhSFgAAQCQpCwAAIJKUBQAAEEnKAgAAiCRlAQAARJKyAAAA
+IklZAAAAkV7mLuBd+VZ1n+C+OS31zPuZ9D/zfmnWW/kYn/CWF6t8q9JbzIh0XKTn9TensjmfnhXp
+M7gXz6zmGdcO9+4wpK3FTpXNTO0+uoqfcrk95U0Rbl0vIauY0n22cd9lAQAARJKyAAAAIklZAAAA
+kaQsAACASFIWAABAJCkLAAAgkpQFAAAQScoCAACIJGUBAABE+vLz15/+h9BPp9qWc5fwj7qoNl9T
+Sqn+PXcpy/N5eqa50/L73HVMo/qW0tON49NMzlXfyLqKX0W1Cy9y4eWlxVe4nPJmr2TGAjI3na25
+DA0FNhFe7cgLjvy477IAAAAiSVkAAACRpCwAAIBIUhYAAEAkKQsAACCSlAUAABBJygIAAIgkZQEA
+AESSsgAAACK9zF1ASilV27Iuqu6/2ZzKi9/c/Qh57A7BFzzugy840ph6wjuHPp6g26tvc1fwyTw0
+Z5a2R/HcPr7/TME7FSONn6jPNwl9lwUAABBJygIAAIgkZQEAAESSsgAAACJJWQAAAJGkLAAAgEhS
+FgAAQCQpCwAAIJKUBQAAEOklLeAY+zrdP+z5+Q6Efhqzz5+p7Q5zV8CDuufk7pCqbbmELeXpp9bm
+VKaUyrfrXV1ty7zl3PBapdtzZnd4/i2OhVvCZsUqbE5zPtrKt+rjrt7W0zwOerr6cBzwyJh97fgu
+CwAAIJKUBQAAEEnKAgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIWAABAJCkLAAAg0pefv/6M
+vESeo6ZHtnL1zOnyrUopHfc3PvI1pZTq34PbfFrje2be48n7e+450Nxd+T2l26tgOXrOmT5D1uwG
+7Sn1mafiozeyO7z/5qEx2h3mHNN1LZxHqx3ft+2YppSq7c35cD5Vorq0mfzNZa9OxWGb8/l07e6c
+qM3//JketTPMqH95Uz89Z++oWQpoejVz0xfNtWuze4gHTIAM99U0kX488Eg9v5Hzx1zIWhh2wavX
+HNl7vssCAACIJGUBAABEkrIAAAAiSVkAAACRpCwAAIBIUhYAAEAkKQsAACCSlAUAABBJygIAAIj0
+5eevP3PXsFCzn4C+WJ+nZ577Tp/y7p7mplZ9I4OL3x3Ca7mv+pbS4rt64fNh4eWlxVe4nPJmr2TG
+AjI3fbe5zakc2URdVH0aGi+wifBqR15w5Md9lwUAABBJygIAAIgkZQEAAESSsgAAACJJWQAAAJGk
+LAAAgEhSFgAAQCQpCwAAIJKUBQAAEOll/CU2p7I5XnpSeVoBCLE7pJTScT93HauiuxhswEuC9wqW
+zOR8Ar7LAgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIWAABAJCkLAAAgkpQFAAAQScoCAACI
+FJCy8pxO7Qxs1mhzKucugUu7Q9odJm/luE/H/eStAI0BLwneK3gyS3vlWFo9+fkuCwAAIJKUBQAA
+EEnKAgAAiCRlAQAARJKyAAAAIklZAAAAkaQsAACASFIWAABAJCkLAAAg0svcBcAzq4tq7hK4dNzP
+XQEARFvaK8fS6snPd1kAAACRpCwAAIBIUhYAAEAkKQsAACCSlAUAABBJygIAAIgkZQEAAESSsgAA
+ACJJWQAAAJGkLAAAgEhSFgAAQCQpCwAAIJKUBQAAEEnKAgAAiCRlAQAARJKyAAAAIklZAAAAkaQs
+AACASFIWAABApP8BGHYD4Om4rdwAAAAASUVORK5CYII=
+"
+/>
+<line x1="1855.9" y1="349.3" x2="1901.0" y2="349.3" stroke="#666666" />
+<line x1="1848.2" y1="229.1" x2="1901.0" y2="229.1" stroke="#666666" />
+<line x1="1901.0" y1="349.3" x2="1901.0" y2="229.1" stroke="#666666" />
+<line x1="1701.0" y1="207.0" x2="1848.2" y2="207.0" stroke="#666666" />
+<line x1="1813.0" y1="251.3" x2="1848.2" y2="251.3" stroke="#666666" />
+<line x1="1848.2" y1="207.0" x2="1848.2" y2="251.3" stroke="#666666" />
+<line x1="1701.0" y1="337.0" x2="1855.9" y2="337.0" stroke="#666666" />
+<line x1="1823.2" y1="361.6" x2="1855.9" y2="361.6" stroke="#666666" />
+<line x1="1855.9" y1="337.0" x2="1855.9" y2="361.6" stroke="#666666" />
+<line x1="1782.1" y1="270.6" x2="1813.0" y2="270.6" stroke="#666666" />
+<line x1="1741.3" y1="232.0" x2="1813.0" y2="232.0" stroke="#666666" />
+<line x1="1813.0" y1="270.6" x2="1813.0" y2="232.0" stroke="#666666" />
+<line x1="1701.0" y1="347.0" x2="1823.2" y2="347.0" stroke="#666666" />
+<line x1="1797.1" y1="376.2" x2="1823.2" y2="376.2" stroke="#666666" />
+<line x1="1823.2" y1="347.0" x2="1823.2" y2="376.2" stroke="#666666" />
+<line x1="1701.0" y1="257.0" x2="1782.1" y2="257.0" stroke="#666666" />
+<line x1="1756.9" y1="284.2" x2="1782.1" y2="284.2" stroke="#666666" />
+<line x1="1782.1" y1="257.0" x2="1782.1" y2="284.2" stroke="#666666" />
+<line x1="1714.2" y1="362.0" x2="1797.1" y2="362.0" stroke="#666666" />
+<line x1="1773.8" y1="390.4" x2="1797.1" y2="390.4" stroke="#666666" />
+<line x1="1797.1" y1="362.0" x2="1797.1" y2="390.4" stroke="#666666" />
+<line x1="1719.0" y1="242.0" x2="1741.3" y2="242.0" stroke="#666666" />
+<line x1="1708.4" y1="222.0" x2="1741.3" y2="222.0" stroke="#666666" />
+<line x1="1741.3" y1="242.0" x2="1741.3" y2="222.0" stroke="#666666" />
+<line x1="1738.6" y1="296.4" x2="1756.9" y2="296.4" stroke="#666666" />
+<line x1="1713.5" y1="272.0" x2="1756.9" y2="272.0" stroke="#666666" />
+<line x1="1756.9" y1="296.4" x2="1756.9" y2="272.0" stroke="#666666" />
+<line x1="1701.0" y1="247.0" x2="1719.0" y2="247.0" stroke="#666666" />
+<line x1="1701.0" y1="237.0" x2="1719.0" y2="237.0" stroke="#666666" />
+<line x1="1719.0" y1="247.0" x2="1719.0" y2="237.0" stroke="#666666" />
+<line x1="1701.0" y1="377.0" x2="1773.8" y2="377.0" stroke="#666666" />
+<line x1="1756.5" y1="403.9" x2="1773.8" y2="403.9" stroke="#666666" />
+<line x1="1773.8" y1="377.0" x2="1773.8" y2="403.9" stroke="#666666" />
+<line x1="1701.0" y1="387.0" x2="1756.5" y2="387.0" stroke="#666666" />
+<line x1="1741.9" y1="420.7" x2="1756.5" y2="420.7" stroke="#666666" />
+<line x1="1756.5" y1="387.0" x2="1756.5" y2="420.7" stroke="#666666" />
+<line x1="1701.0" y1="287.0" x2="1738.6" y2="287.0" stroke="#666666" />
+<line x1="1724.2" y1="305.8" x2="1738.6" y2="305.8" stroke="#666666" />
+<line x1="1738.6" y1="287.0" x2="1738.6" y2="305.8" stroke="#666666" />
+<line x1="1715.5" y1="404.5" x2="1741.9" y2="404.5" stroke="#666666" />
+<line x1="1727.9" y1="436.9" x2="1741.9" y2="436.9" stroke="#666666" />
+<line x1="1741.9" y1="404.5" x2="1741.9" y2="436.9" stroke="#666666" />
+<line x1="1701.0" y1="367.0" x2="1714.2" y2="367.0" stroke="#666666" />
+<line x1="1701.0" y1="357.0" x2="1714.2" y2="357.0" stroke="#666666" />
+<line x1="1714.2" y1="367.0" x2="1714.2" y2="357.0" stroke="#666666" />
+<line x1="1701.0" y1="277.0" x2="1713.5" y2="277.0" stroke="#666666" />
+<line x1="1701.0" y1="267.0" x2="1713.5" y2="267.0" stroke="#666666" />
+<line x1="1713.5" y1="277.0" x2="1713.5" y2="267.0" stroke="#666666" />
+<line x1="1701.0" y1="427.0" x2="1727.9" y2="427.0" stroke="#666666" />
+<line x1="1716.2" y1="446.8" x2="1727.9" y2="446.8" stroke="#666666" />
+<line x1="1727.9" y1="427.0" x2="1727.9" y2="446.8" stroke="#666666" />
+<line x1="1701.0" y1="297.0" x2="1724.2" y2="297.0" stroke="#666666" />
+<line x1="1712.7" y1="314.5" x2="1724.2" y2="314.5" stroke="#666666" />
+<line x1="1724.2" y1="297.0" x2="1724.2" y2="314.5" stroke="#666666" />
+<line x1="1701.0" y1="307.0" x2="1712.7" y2="307.0" stroke="#666666" />
+<line x1="1703.9" y1="322.0" x2="1712.7" y2="322.0" stroke="#666666" />
+<line x1="1712.7" y1="307.0" x2="1712.7" y2="322.0" stroke="#666666" />
+<line x1="1701.0" y1="437.0" x2="1716.2" y2="437.0" stroke="#666666" />
+<line x1="1707.8" y1="456.7" x2="1716.2" y2="456.7" stroke="#666666" />
+<line x1="1716.2" y1="437.0" x2="1716.2" y2="456.7" stroke="#666666" />
+<line x1="1701.0" y1="397.0" x2="1715.5" y2="397.0" stroke="#666666" />
+<line x1="1707.4" y1="412.0" x2="1715.5" y2="412.0" stroke="#666666" />
+<line x1="1715.5" y1="397.0" x2="1715.5" y2="412.0" stroke="#666666" />
+<line x1="1701.0" y1="227.0" x2="1708.4" y2="227.0" stroke="#666666" />
+<line x1="1701.0" y1="217.0" x2="1708.4" y2="217.0" stroke="#666666" />
+<line x1="1708.4" y1="227.0" x2="1708.4" y2="217.0" stroke="#666666" />
+<line x1="1701.0" y1="417.0" x2="1707.4" y2="417.0" stroke="#666666" />
+<line x1="1701.0" y1="407.0" x2="1707.4" y2="407.0" stroke="#666666" />
+<line x1="1707.4" y1="417.0" x2="1707.4" y2="407.0" stroke="#666666" />
+<line x1="1701.0" y1="447.0" x2="1707.8" y2="447.0" stroke="#666666" />
+<line x1="1703.3" y1="466.4" x2="1707.8" y2="466.4" stroke="#666666" />
+<line x1="1707.8" y1="447.0" x2="1707.8" y2="466.4" stroke="#666666" />
+<line x1="1701.0" y1="327.0" x2="1703.9" y2="327.0" stroke="#666666" />
+<line x1="1701.0" y1="317.0" x2="1703.9" y2="317.0" stroke="#666666" />
+<line x1="1703.9" y1="327.0" x2="1703.9" y2="317.0" stroke="#666666" />
+<line x1="1701.0" y1="457.0" x2="1703.3" y2="457.0" stroke="#666666" />
+<line x1="1701.1" y1="475.8" x2="1703.3" y2="475.8" stroke="#666666" />
+<line x1="1703.3" y1="457.0" x2="1703.3" y2="475.8" stroke="#666666" />
+<line x1="1701.0" y1="467.0" x2="1701.1" y2="467.0" stroke="#666666" />
+<line x1="1701.0" y1="484.5" x2="1701.1" y2="484.5" stroke="#666666" />
+<line x1="1701.1" y1="467.0" x2="1701.1" y2="484.5" stroke="#666666" />
+<line x1="1701.0" y1="477.0" x2="1701.0" y2="477.0" stroke="#666666" />
+<line x1="1701.0" y1="492.0" x2="1701.0" y2="492.0" stroke="#666666" />
+<line x1="1701.0" y1="477.0" x2="1701.0" y2="492.0" stroke="#666666" />
+<line x1="1701.0" y1="497.0" x2="1701.0" y2="497.0" stroke="#666666" />
+<line x1="1701.0" y1="487.0" x2="1701.0" y2="487.0" stroke="#666666" />
+<line x1="1701.0" y1="497.0" x2="1701.0" y2="487.0" stroke="#666666" />
+<text x="50" y="517" style="text-anchor: start; font-size: 12px; fill: #999999">30 samples</text>
+<text x="1693" y="517" style="text-anchor: end; font-size: 12px; fill: #999999">cc-by 2021 progenetix.org</text>
+</svg>

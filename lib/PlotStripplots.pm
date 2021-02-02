@@ -1,9 +1,9 @@
-package GenomePlots::StripPlotter;
+package lib::PlotStripplots;
 
 use GD::Simple;
 use Data::Dumper;
-use GenomePlots::CytobandsPlotter;
-use GenomePlots::PlotParameters;
+use lib::PlotCytobands;
+use lib::PlotMakeParameters;
 
 require Exporter;
 @ISA = qw(Exporter);

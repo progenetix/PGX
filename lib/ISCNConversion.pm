@@ -1,8 +1,8 @@
-package GenomeIntervals::ISCNConversion;
+package lib::ISCNConversion;
 
 use Data::Dumper;
 
-use GenomeIntervals::CytobandReader;
+use lib::CytobandReader;
 
 require Exporter;
 @ISA    =   qw(Exporter);

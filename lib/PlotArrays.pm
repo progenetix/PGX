@@ -1,10 +1,10 @@
-package GenomePlots::ArrayPlotter;
+package lib::PlotArrays;
 
 use Data::Dumper;
 use GD::Simple;
 use MIME::Base64 qw(encode_base64);
-use GenomePlots::CytobandsPlotter;
-use GenomePlots::PlotParameters;
+use lib::PlotCytobands;
+use lib::PlotMakeParameters;
 
 require Exporter;
 @ISA = qw(Exporter);

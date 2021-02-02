@@ -1,8 +1,8 @@
-package GenomePlots::HistoPlotter;
+package lib::PlotHistoplots;
 
 use Data::Dumper;
-use GenomePlots::CytobandsPlotter;
-use GenomePlots::StripPlotter;
+use lib::PlotCytobands;
+use lib::PlotStripplots;
 
 require Exporter;
 @ISA = qw(Exporter);

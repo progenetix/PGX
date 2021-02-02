@@ -1,11 +1,11 @@
-package MapPlots::Mapplot;
+package lib::PlotGeomaps;
 
 use Data::Dumper;
 
-use GenomePlots::PlotParameters;
-use IOUtilities::PGXfileReader;
-use IOUtilities::PGXfileWriter;
-use IOUtilities::PGXdataAggregation;
+use lib::PlotMakeParameters;
+use lib::ReadFiles;
+use lib::WriteFiles;
+use lib::AggregateData;
 require Exporter;
 @ISA    =   qw(Exporter);
 @EXPORT =   qw(

@@ -1,4 +1,4 @@
-package GenomeIntervals::CytobandReader;
+package lib::CytobandReader;
 
 use Data::Dumper;
 

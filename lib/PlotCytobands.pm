@@ -1,4 +1,4 @@
-package GenomePlots::CytobandsPlotter;
+package lib::PlotCytobands;
 
 use Data::Dumper;
 
@@ -386,8 +386,8 @@ Returns:
   $pgx->{Y}    += $pgx->{parameters}->{size_chromosome_padding_px};
 
   if ($pgx->{parameters}->{text_bottom_right} =~ /copy/i) {
-    $pgx->{parameters}->{text_bottom_right} = '&#x24B8; '.(localtime->strftime('%Y')).' progenetix.org'
-}
+    $pgx->{parameters}->{text_bottom_right} = 'cc-by '.(localtime->strftime('%Y')).' progenetix.org' } #  &#x24B8;
+    
   $pgx->{Y}    += $pgx->{parameters}->{size_text_px};
   $pgx->{svg}  .= '
 <text x="'.$pgx->{parameters}->{size_plotmargin_px}.'" y="'.$pgx->{Y}.'" style="text-anchor: start; font-size: '.$pgx->{parameters}->{size_text_px}.'px; fill: '.$pgx->{parameters}->{color_label_bottom_hex}.'">'.$pgx->{parameters}->{text_bottom_left}.'</text>

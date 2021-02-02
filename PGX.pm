@@ -2,21 +2,21 @@ package PGX;
 
 use File::Basename;
 use YAML::XS qw(LoadFile DumpFile);
+use Data::Dumper;
 
-use lib '.';
-use GenomeIntervals::CytobandReader;
-use GenomeIntervals::GenomeIntervals;
-use GenomeIntervals::IntervalStatistics;
-use GenomePlots::Genomeplot;
-use GenomePlots::PlotParameters;
-use GenomePlots::HistoPlotter;
-use GenomePlots::ArrayPlotter;
-use GenomePlots::StripPlotter;
-use GenomePlots::CytobandsPlotter;
-use Helpers::UtilityLibs;
-use IOUtilities::PGXfileReader;
-use IOUtilities::PGXfileWriter;
-use IOUtilities::PGXdataAggregation;
+use lib::CytobandReader;
+use lib::GenomeIntervals;
+use lib::GenomeIntervalStatistics;
+use lib::PlotPrepareData;
+use lib::PlotMakeParameters;
+use lib::PlotHistoplots;
+use lib::PlotArrays;
+use lib::PlotStripplots;
+use lib::PlotCytobands;
+use lib::Helpers;
+use lib::ReadFiles;
+use lib::WriteFiles;
+use lib::AggregateData;
 
 require Exporter;
 @ISA = qw(Exporter);

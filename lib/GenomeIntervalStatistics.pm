@@ -1,6 +1,6 @@
-package GenomeIntervals::IntervalStatistics;
+package lib::GenomeIntervalStatistics;
 
-use GenomeIntervals::ClusterTree;
+use lib::ClusterTree;
 
 use Data::Dumper;
 

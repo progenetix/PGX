@@ -1,4 +1,4 @@
-package GenomeIntervals::ClusterTree;
+package lib::ClusterTree;
 
 use Data::Dumper;
 

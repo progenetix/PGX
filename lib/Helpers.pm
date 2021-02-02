@@ -1,4 +1,4 @@
-package Helpers::UtilityLibs;
+package lib::Helpers;
 
 require Exporter;
 @ISA    =   qw(Exporter);

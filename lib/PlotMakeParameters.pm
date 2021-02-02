@@ -1,4 +1,4 @@
-package GenomePlots::PlotParameters;
+package lib::PlotMakeParameters;
 
 use Data::Dumper;
 use YAML::XS qw(LoadFile DumpFile);

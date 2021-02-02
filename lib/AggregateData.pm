@@ -1,11 +1,11 @@
-package IOUtilities::PGXdataAggregation;
+package lib::AggregateData;
 
 use Data::Dumper;
 use Math::Random qw(random_normal);
-use GenomePlots::PlotParameters;
-use Helpers::UtilityLibs;
+use lib::PlotMakeParameters;
+use lib::Helpers;
 
-use IOUtilities::PGXfileReader;
+use lib::ReadFiles;
 
 require Exporter;
 @ISA = qw(Exporter);

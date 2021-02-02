@@ -1,17 +1,17 @@
-package GenomePlots::Genomeplot;
+package lib::PlotPrepareData;
 
 use Data::Dumper;
-use GenomeIntervals::CytobandReader;
-use GenomeIntervals::GenomeIntervals;
-use GenomeIntervals::IntervalStatistics;
-use GenomePlots::PlotParameters;
-use GenomePlots::HistoPlotter;
-use GenomePlots::ArrayPlotter;
-use GenomePlots::StripPlotter;
-use GenomePlots::CytobandsPlotter;
-use IOUtilities::PGXfileReader;
-use IOUtilities::PGXfileWriter;
-use IOUtilities::PGXdataAggregation;
+use lib::CytobandReader;
+use lib::GenomeIntervals;
+use lib::GenomeIntervalStatistics;
+use lib::PlotMakeParameters;
+use lib::PlotHistoplots;
+use lib::PlotArrays;
+use lib::PlotStripplots;
+use lib::PlotCytobands;
+use lib::ReadFiles;
+use lib::WriteFiles;
+use lib::AggregateData;
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -87,7 +87,6 @@ sub pgx_add_frequencymaps {
 
 
 #### Returns:
-
 
 =cut
 

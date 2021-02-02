@@ -30,8 +30,8 @@ BEGIN {
 }
 
 use PGX;
-use GenomePlots::PlotParameters;
-use Helpers::UtilityLibs;
+use lib::PlotMakeParameters;
+use lib::Helpers;
 
 ################################################################################
 # data import & pre-parsing ####################################################
