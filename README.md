@@ -21,6 +21,6 @@ Current implementations (in `bin`):
 * download `PGX` to whichever location (`___my_path___`)
 
 ```
-cd `___my_path___/PGX/bin/
+cd ___my_path___/PGX/bin/
 perl segfilePlotter.pl -outdir ./out -f ./data/testfile_segments.tab  -sf ./data/testfile_labels.tab -min_group_no 1
 ```
