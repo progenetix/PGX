@@ -1,18 +1,26 @@
 ## PGX - Genome visualisation from the arrayMap and Progenetix projects
 
-This repository contains code and resources for visualizing different types of genome data, focussed on copy number variants (CNV).
+This repository contains code and resources for visualizing different types of genome data, focussed on copy number variants (CNV). The software is mostly used for the <progenetix.org> visualizations; however, users can just download the package & use with their own data (though documentatuion is ... sparse).
 
-Current implementations exist for:
+Current implementations (in `bin`):
 
-### Genome arrays
+#### Genome arrays
 
 * example implementations
-  - [arrayplotter.pl](Scripts/arrayplotter.pl)
+  - [arrayplotter.pl](bin/arrayplotter.pl)
   
-### Copy number histograms
+#### Copy number histograms & (clustered) samples
 
 * example implementations
-  - [histogramplotter.pl](Scripts/histogramplotter.pl)
+  - [segfilePlotter.pl](bin/segfilePlotter.pl)
   - for progenetix and TCGA style segmentation & probe files
-  - can use simulated probe data if no existing probe values file (currently limited to SNP6 only, used for TCGA)
   
+
+### Example use
+  
+* download `PGX` to whichever location (`___my_path___`)
+
+```
+cd `___my_path___/PGX/bin/
+perl segfilePlotter.pl -outdir ./out -f ./data/testfile_segments.tab  -sf ./data/testfile_labels.tab -min_group_no 1
+```
