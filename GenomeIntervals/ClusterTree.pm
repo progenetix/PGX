@@ -135,6 +135,8 @@ sub _addNode {
 
 sub _checkNode {
 
+	no warnings;
+
 	my $nodeID = shift;
 	my $cTree = shift;
 	my $nodes = shift;

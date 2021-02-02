@@ -49,7 +49,7 @@ Segment file name cannot contain ".", group_key has to be longer than 3 characte
   ...  
  
 Examples:
-  - perl pgx_plot_from_files.pl -f segments.tab -sf sortfile.ods
+  - perl CNVsegfilePlotter.pl -f segments.tab -sf sortfile.ods
 
 =cut
 
