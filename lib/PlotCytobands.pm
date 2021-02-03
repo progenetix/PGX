@@ -386,7 +386,7 @@ Returns:
   $pgx->{Y}    += $pgx->{parameters}->{size_chromosome_padding_px};
 
   if ($pgx->{parameters}->{text_bottom_right} =~ /copy/i) {
-    $pgx->{parameters}->{text_bottom_right} = 'cc-by '.(localtime->strftime('%Y')).' progenetix.org' } #  &#x24B8;
+    $pgx->{parameters}->{text_bottom_right} = 'CC BY 4.0  progenetix.org ('.(localtime->strftime('%Y')).')' } #  &#x24B8;
     
   $pgx->{Y}    += $pgx->{parameters}->{size_text_px};
   $pgx->{svg}  .= '
