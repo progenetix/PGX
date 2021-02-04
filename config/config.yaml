@@ -7,11 +7,12 @@ paths:
   dir_tmp_base_path: '/Library/WebServer/Documents/tmp'
   web_tmp_base_path: '/tmp'
   dir_ontology_maps: 'ICDOntologies/current'
+cgi:
+  google_tid: UA-572981-2
+  google_dt: Progenetix cancer genome profiling resource
 dataset_names:
   - arraymap
   - progenetix
-#  - tcga
-  - dipg
 collection_names:
   - variants
   - callsets

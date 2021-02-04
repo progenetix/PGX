@@ -17,12 +17,9 @@ $| = 1;
 
 ### Examples
 
-* <https://progenetix.org/cgi/PGX/cgi/samplePlots.cgi?accessid=0fab5ffb-6d1b-45e6-8149-7a5ae9a67286&group_by=PMID>
+* <https://progenetix.org/cgi/PGX/cgi/deliveries.cgi?accessid=0fab5ffb-6d1b-45e6-8149-7a5ae9a67286&group_by=PMID>
   - obv. real accessid neeeded ...
-
 =cut
-
-BEGIN { unshift @INC, ('..') };
 
 use strict;
 use CGI::Simple;
@@ -30,15 +27,16 @@ use CGI::Carp qw(fatalsToBrowser);
 
 use File::Basename;
 use MongoDB;
+$MongoDB::Cursor::timeout = 120000;
+
 use JSON::XS;
 
 use Data::Dumper;
 
-# local packages
+BEGIN { unshift @INC, ('..') };
 use PGX;
 use lib::CGItools;
 
-$MongoDB::Cursor::timeout = 120000;
 my $config = PGX::read_config();
 my $params = lib::CGItools::deparse_query_string();
 
@@ -99,7 +97,15 @@ $api->_add_samplecollections();
 $api->_return_multihistogram();
 $api->_return_samplematrix();
 
+send_Google_tracking_no_log(
+	$config->{cgi},
+	"/cgi/PGX/cgi/collationPlots.cgi"
+);
+
 $api->_return_json();
+
+
+
 
 ################################################################################
 

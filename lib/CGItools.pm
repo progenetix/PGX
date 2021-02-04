@@ -1,11 +1,14 @@
 package lib::CGItools;
 
 use CGI::Simple;
+use Net::Google::Analytics::MeasurementProtocol;
+use UUID::Tiny;
 
 require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(
 	deparse_query_string
+	send_Google_tracking_no_log
 );
 
 ################################################################################
@@ -41,6 +44,41 @@ have to be addressed as (first) array element.
 	}}}
 
 	return $params;
+
+}
+
+################################################################################
+
+sub send_Google_tracking_no_log {
+
+	my $conf_cgi = shift;
+	my $web_root = shift;
+	
+	my $userAgent = $ENV{ HTTP_USER_AGENT };
+	my $userIP = ( $ENV{ HTTP_CF_CONNECTING_IP } =~ /\d\d\d/ ? $ENV{ HTTP_CF_CONNECTING_IP } : $ENV{ REMOTE_ADDR } );
+	my $lang = $ENV{ HTTP_ACCEPT_LANGUAGE };
+	my $query = $ENV{ QUERY_STRING };
+
+	my %googleParams = (
+	tid => $conf_cgi->{google_tid},
+	ua  => $userAgent,
+	cid => create_UUID_as_string(UUID_V3, $userIP.'_'.$userAgent),
+	uip => $userIP,
+	);
+
+	if ($lang =~ /^[^\,]*?(\w\w(\-\w\w)?)/) { $googleParams{ul} = lc($1) }
+
+	my $ga =  Net::Google::Analytics::MeasurementProtocol->new( %googleParams );
+	$ga->send(
+		'pageview',
+		{
+			dr => $ENV{ HTTP_REFERER },
+			dt => $conf_cgi->{google_dt},
+			dp => $api_path.'?'.$query,
+			dh => $web_root,
+			ds => 'web',
+		}
+	);
 
 }
 
