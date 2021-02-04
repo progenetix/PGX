@@ -19,8 +19,10 @@ collection_names:
   - individuals
   - biosubsets
   - datacollections
+handover_db: progenetix
+handover_coll: querybuffer
 
-biosubsets:
+datacollections:
   NCIT:
     label: 'NCIt Neoplasm Code'
     prefix: NCIT
@@ -45,8 +47,6 @@ biosubsets:
     pattern: '^seer\:\d{5}$'
     greedymatch: '^seer\:\d{1,5}$'
     samplefield: biocharacteristics
-
-datacollections:
   PMID:
     label: 'Pubmed Publication'
     prefix: PMID

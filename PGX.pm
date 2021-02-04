@@ -20,7 +20,10 @@ use lib::AggregateData;
 
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw(new read_plot_defaults);
+@EXPORT = qw(
+	new
+	read_plot_defaults
+);
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
@@ -78,6 +81,6 @@ sub read_plot_defaults {
 
 }
 
-########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+################################################################################
 
 1;
