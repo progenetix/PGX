@@ -153,11 +153,11 @@ sub read_segmentfile {
 ```
 # sample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
 # sample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
-sample_id	chro	start	stop	mean	probes	variantType
+sample_id	chro	start	stop	mean	probes	variant_type
 GSM481286	1	742429	7883881	-0.1594	699	DEL
 GSM481286	2	115673158	115705254	-0.3829	8	DEL
 GSM481286	3	115722621	119771659	0.167	424	DUP
-GSM481286	4	119776776	162617092	0.4168	1587	
+GSM481286	4	119776776	162617092	0.4168	1587	DUP
 GSM481418	5	162621657	165278686	.	.	DUP
 GSM481418	6	165280711	167221337	.	.	DUP
 GSM481418	7	167248788	168289603	0.6784	.	DUP	
@@ -203,6 +203,10 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 
 	if (! -f $segmentsF) { return $pgx }
 
+	my ($header, $table) = read_file_to_split_array($segmentsF);
+	my $headerValues = _objectify_header($header);	
+	$pgx->{segfileheader} = $headerValues;
+
 	my $numfactor = 1;
 	if (
 		$pgx->{parameters}->{'reverse'} =~ /y/i
@@ -228,10 +232,6 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 		$colOrder{probes} = 4;
 	};
 
-	my ($header, $table) = read_file_to_split_array($segmentsF);
-	my $headerValues = _objectify_header($header);
-	
-	$pgx->{segfileheader} = $headerValues;
 	
 	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
 		shift @$table }
@@ -250,7 +250,7 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 			$segVals{$_} =~ s/\s//g;
 		};
 
-		$segVals{callset_id} =~  s/[^\w\-\:]/_/g;
+		$segVals{callset_id} = _norm_sample_id($segVals{callset_id});
 
 		$segVals{reference_name} =~ s/[^\dxXyY]//g;
 		$segVals{reference_name} =~ s/^23$/X/;
@@ -298,9 +298,8 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 
 		$i++;
 		
-		my $info = {
-			svlen => 1 * ($segVals{end} - $segVals{start}),
-		};
+		my $info = { svlen => 1 * ($segVals{end} - $segVals{start}) };
+		
 		if ($segVals{probes} =~ /^\d+?$/) {
 			$info->{probes} = 1* $segVals{probes} }
 		if ($segVals{value} =~ /^\-?\d+?(\.\d+?)?$/) {
@@ -362,6 +361,16 @@ sub _l2t {
 
 ################################################################################
 
+sub _norm_sample_id {
+
+	my $id = shift;
+	$id =~ s/[^\w\-\:]/_/g;
+	return $id;
+
+}
+
+################################################################################
+
 sub _objectify_header {
 
 	no warnings 'uninitialized';
@@ -370,21 +379,27 @@ sub _objectify_header {
 
 	my $oh = { };
 	
-	foreach my $line (grep{/^\#/} @$header) {
+	foreach my $line (@$header) {
 		my %lo = ( );
-		$line =~ s/^\#\s+|\s+$//g;
+		$line =~ s/^\#?\s+|\s+$//g;
 		foreach (split(';', $line)) {
 			my ($par, $val) = split('=', $_);
 			$par =~ s/^\s+|\s+$//g;
 			$val =~ s/^\s+|\s+$//g;
+			if ($par eq 'sample_id') {
+				$val = _norm_sample_id($val) }
 			$lo{$par} = $val;
 		}
+		# `sample_id` containing lines are stored under this sample
 		if (grep{ /^sample_id$/} keys %lo) {
 			foreach (keys %lo) {
-				$oh->{ $lo{sample_id} }->{ $_ } = $lo{ $_ };
+				$oh->{samples}->{ $lo{sample_id} }->{ $_ } = $lo{ $_ };
 			}
-		}
-	}
+		} else {
+			foreach (keys %lo) {
+				$oh->{meta}->{ $_ } = $lo{ $_ };
+
+	}}}
 
 	return $oh;
 

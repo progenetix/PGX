@@ -265,12 +265,11 @@ sub pgx_callset_labels_from_file {
 		my $hv = $pgx->{segfileheader};
 		for my $i (0..$#{ $pgx->{samples} }) {
 			my $csId = $pgx->{samples}->[$i]->{id};
-			if (grep{ /^group_id$/} keys %{ $hv->{ $csId } } ) {
-				$pgx->{samples}->[$i]->{sortkey} = $hv->{ $csId }->{group_id} }
-			if (grep{ /^group_label$/} keys %{ $hv->{ $csId } } ) {
-				$pgx->{samples}->[$i]->{sortlabel} = $hv->{ $csId }->{group_label} }	
-		}
-	}
+			if (grep{ /^group_id$/} keys %{ $hv->{samples}->{ $csId } } ) {
+				$pgx->{samples}->[$i]->{sortkey} = $hv->{samples}->{ $csId }->{group_id} }
+			if (grep{ /^group_label$/} keys %{ $hv->{samples}->{ $csId } } ) {
+				$pgx->{samples}->[$i]->{sortlabel} = $hv->{samples}->{ $csId }->{group_label} }
+	}}
 
 	if (! -f $sortFile)  { return $pgx }
 
