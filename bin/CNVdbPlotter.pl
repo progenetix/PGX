@@ -37,7 +37,7 @@ use lib::Helpers;
 # data import & pre-parsing ####################################################
 ################################################################################
 
-my $config = LoadFile($path_of_this_module.'/rsrc/config.yaml') or die print 'Content-type: text'."\n\n¡No config.yaml file in this path!";
+my $config = LoadFile($path_of_this_module.'/../config/config.yaml') or die print 'Content-type: text'."\n\n¡No config.yaml file in this path!";
 bless $config;
 
 $config->{ERROR} = [];
@@ -84,16 +84,16 @@ my $queryLabel = '';
 my $biosampleQ = {};
 my $qList = [];
 
-my @qInput = split(',', $args{'-query'});
-foreach my $qElement (@qInput) {
-  if (grep{ $qElement =~ /$config->{biosubsets}->{$_}->{greedymatch}/ } keys %{ $config->{biosubsets} }) {
-    push(@$qList, { "biocharacteristics.id" => qr/$qElement/i });
-    $queryLabel = ',select_'.$qElement;
-  } elsif (grep{ $qElement =~ /$config->{biosubsets}->{$_}->{greedymatch}/ } keys %{ $config->{datacollections} }) {
-    push(@$qList, { "external_references.id" => qr/$qElement/i });
+foreach my $qElement (split(',', $args{'-query'})) {
+	$qElement =~ /^(\w+?)([\:\-](.*?))?$/;
+	my ($pre, $other) = ($1, $2);
+  if (grep{ $qElement =~ /$config->{datacollections}->{ $_ }->{greedymatch}/ } keys %{ $config->{datacollections} }) {
+    push(@$qList, { $config->{datacollections}->{ $pre }->{ samplefield }.".id" => qr/$qElement/i });
     $queryLabel = ',select_'.$qElement;
   }
 }
+
+print Dumper(@$qList);
 
 my $sortValuesK;
 my $sortValuesL;
@@ -110,7 +110,6 @@ if (-f $args{'-sortfile'}) {
 my %customSort;
 
 if ($config->{grouping} =~ /custom/i) {
-
   open  FILE, "$args{'-sortfile'}" or die "No file $args{'-sortfile'} $!";
   local   $/;                             # no input separator
   my $fContent = <FILE>;
@@ -130,15 +129,19 @@ if ($config->{grouping} =~ /custom/i) {
       );
     }
   }
-
 }
-print "$config->{grouping}";
-print "@$qList";
+
+print "
+$config->{grouping}
+
+";
+
 if (scalar @$qList == 1) {
   $biosampleQ = $qList->[0] }
 elsif (scalar @$qList > 1) {
   $biosampleQ = { '$or' => $qList } }
-# print "$biosampleQ";
+  
+# print Dumper($biosampleQ);
 
 ################################################################################
 ################################################################################
@@ -161,17 +164,11 @@ if ($config->{grouping} =~ /custom/i) {
   $sortValuesL = 'custom';
   $sortValuesT = 'Custom Groups';
 
-} elsif (grep{ $config->{grouping} eq $_ } keys %{ $config->{biosubsets} }) {
-
-  $sortValuesK = "biocharacteristics.id";
-  $sortValuesL = "biocharacteristics.label";
-  $sortValuesT = 'Cancer Entities by '.$config->{biosubsets}->{ $config->{grouping} }->{ label };
-
 } elsif (grep{ $config->{grouping} eq $_ } keys %{ $config->{datacollections} }) {
 
-  $sortValuesK = "external_references.id";
-  $sortValuesL = "external_references.id";
-  $sortValuesT = 'Sample Collections by '.$config->{datacollections}->{ $config->{grouping} }->{ label };
+  $sortValuesK = $config->{datacollections}->{ $config->{grouping} }->{ samplefield }.".id";
+  $sortValuesL = $config->{datacollections}->{ $config->{grouping} }->{ samplefield }.".label";
+  $sortValuesT = 'Cancer Subsets by '.$config->{datacollections}->{ $config->{grouping} }->{ label };
 
 }
 
@@ -203,7 +200,7 @@ my $samples = [];
 my $progBar;
 
 foreach my $dataset (@{ $config->{ dataset_names } }) {
-#print Dumper($biosampleQ);
+
   my $dbconn = MongoDB::MongoClient->new()->get_database($dataset);
   my $cursor = $dbconn->get_collection( 'biosamples' )->find( $biosampleQ )->fields( { id => 1, biocharacteristics => 1, external_references => 1, "info.cnvstatistics" => 1 } );
   my $bioS = [ $cursor->all ];

@@ -209,12 +209,11 @@ sub pgx_callset_labels_from_biosamples {
 
 	# CAVE: both "$config" (environment) and "$pgx->{config}" used here ...
 	if ($config->{param}->{group_by}->[0] =~ /.../) {
-		for my $gra (qw(biosubsets datacollections)) {
-			for my $grt (keys %{ $pgx->{config}->{$gra} }) {
-				if ($grt eq $config->{param}->{group_by}->[0]) {
-					$groupType = $config->{param}->{group_by}->[0];
-					$groupAttr = $pgx->{config}->{$gra}->{$grt}->{samplefield};			
-	} } } }
+		for my $grt (keys %{ $pgx->{config}->{datacollections} }) {
+			if ($grt eq $config->{param}->{group_by}->[0]) {
+				$groupType = $config->{param}->{group_by}->[0];
+				$groupAttr = $pgx->{config}->{datacollections}->{$grt}->{samplefield};			
+	} } }
 
 	if ($groupAttr !~ /.../)  { $groupAttr = 'biocharacteristics' }
 	if ($groupType !~ /.../)  { $groupType = 'xxxx' }
@@ -261,6 +260,17 @@ sub pgx_callset_labels_from_file {
 		$pgx->{samples}->[$i]->{sortkey} = $fallbackK;
 		$pgx->{samples}->[$i]->{sortlabel} = $fallbackL;
 	}
+	
+	if ( grep {/segfileheader/} keys %$pgx) {
+		my $hv = $pgx->{segfileheader};
+		for my $i (0..$#{ $pgx->{samples} }) {
+			my $csId = $pgx->{samples}->[$i]->{id};
+			if (grep{ /^group_id$/} keys %{ $hv->{ $csId } } ) {
+				$pgx->{samples}->[$i]->{sortkey} = $hv->{ $csId }->{group_id} }
+			if (grep{ /^group_label$/} keys %{ $hv->{ $csId } } ) {
+				$pgx->{samples}->[$i]->{sortlabel} = $hv->{ $csId }->{group_label} }	
+		}
+	}
 
 	if (! -f $sortFile)  { return $pgx }
 
@@ -268,12 +278,12 @@ sub pgx_callset_labels_from_file {
 	# the second then the associated label
 	my $customSort = {};
 
-	my $table = read_file_to_split_array($sortFile);
+	my ($header, $table) = read_file_to_split_array($sortFile);
 	foreach (@$table) {
-	  if ($_->[0] =~ /\w\w/ && $_->[1] =~ /\w/) {
+	  if ($_->[0] =~ /\w/ && $_->[1] =~ /\w/) {
 		$customSort->{$_->[0]} = {
-		  sortkey => $_->[1] =~ /\w\w/ ? $_->[1] : $fallbackK,
-		  sortlabel => $_->[2] =~ /\w\w/ ? $_->[2] : $fallbackL,
+		  sortkey => $_->[1] =~ /\w/ ? $_->[1] : $fallbackK,
+		  sortlabel => $_->[2] =~ /\w/ ? $_->[2] : $fallbackL,
 		};
 	}}
 

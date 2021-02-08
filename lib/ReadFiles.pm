@@ -133,43 +133,63 @@ sub read_segmentfile {
 
 	  no warnings 'uninitialized';
 
-=pod
+=podmd
 
-Expects:
-  - a standard tab-delimited Progenetix segments  file
+#### Expects:
 
-  sample  chro  start stop  mean  probes
-  GSM481286 1 742429  7883881 -0.1594 699
-  GSM481286 1 115673158 115705254 -0.3829 8
-  GSM481286 1 115722621 119771659 0.167 424
-  GSM481286 1 119776776 162617092 0.4168  1587
-  GSM481286 1 162621657 165278686 0.6508  350
-  GSM481286 1 165280711 167221337 0.4056  241
-  GSM481286 1 167248788 168289603 0.6784  130
-  ...
+* a standard tab-delimited Progenetix segments file
+  - an additional header may exist
+  - only first 5 columns are necessary
+  - column 5 (mean) can be empty or dot, if column 7 exists and contains status value
+  - undefined fields in existing columns are replaced with the "." character
+* header (optional)
+  - the `sample_id` parameter is required to assign values (e.g. group labels) to samples
+  - parameter=value pairs are semicolon-separated
+  - supported tags
+    * `sample_id` is required and has to correspond to column 1 values
+    * `group_id`
+    * `group_label`
 
-Returns:
-  - a list reference of genome CNV objects:
-    [
-      {
-        no => __integer__,    # 1 -> n
-        callset_id => __string__,
-        reference_name => __string__,
-        start => __integer__,
-        end => __integer__,
-        variant_type => __string__,       # DUP, DEL
-        info =>  {
-          value => __long__,
-          svlen => __integer__,
-          probes => __integer__,
-          assembly_id => __string__,      # GRCh36 ...
-          experiment_type => __string__,  # aCGH ...
-        },
-      },
-      {
-      ...
-      },
-    ]
+```
+# sample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
+# sample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
+sample_id	chro	start	stop	mean	probes	variantType
+GSM481286	1	742429	7883881	-0.1594	699	DEL
+GSM481286	2	115673158	115705254	-0.3829	8	DEL
+GSM481286	3	115722621	119771659	0.167	424	DUP
+GSM481286	4	119776776	162617092	0.4168	1587	
+GSM481418	5	162621657	165278686	.	.	DUP
+GSM481418	6	165280711	167221337	.	.	DUP
+GSM481418	7	167248788	168289603	0.6784	.	DUP	
+...
+```
+
+#### Returns:
+
+* a list reference of genome CNV objects
+
+```
+[
+	{
+		no : __integer__,    # 1 -> n
+		callset_id : __string__,
+		reference_name : __string__,
+		start : __integer__,
+		end : __integer__,
+		variant_type : __string__,
+		info :  {
+			value : __long__,
+			svlen : __integer__,
+			probes : __integer__,
+			assembly_id : __string__,
+			experiment_type : __string__,
+		},
+	},
+	{
+	...
+	},
+]
+```
 
 =cut
 
@@ -200,6 +220,7 @@ Returns:
 		end => 3,
 		value => 4,
 		probes => 5,
+		variant_type => 6
 	);
 
 	if ($pgx->{parameters}->{format_inputfiles} =~ /tcga/i) {
@@ -207,8 +228,14 @@ Returns:
 		$colOrder{probes} = 4;
 	};
 
-	my $table = read_file_to_split_array($segmentsF);
+	my ($header, $table) = read_file_to_split_array($segmentsF);
+	my $headerValues = _objectify_header($header);
 	
+	$pgx->{segfileheader} = $headerValues;
+	
+	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
+		shift @$table }
+
 	my $segNo = @$table;
 	if ($pgx->{debug}) {
 		print "$segNo segments from $segmentsF\n" }
@@ -216,7 +243,7 @@ Returns:
 	my $i = 0;
 
 	foreach my $segment (@$table) {
-
+	
 		my %segVals =  ();
 		foreach (keys %colOrder) {
 			$segVals{$_} = $segment->[$colOrder{$_}];
@@ -228,26 +255,34 @@ Returns:
 		$segVals{reference_name} =~ s/[^\dxXyY]//g;
 		$segVals{reference_name} =~ s/^23$/X/;
 		$segVals{reference_name} =~ s/^24$/Y/;
-		if ($segVals{reference_name}!~ /^\w\d?$/) { next }
+		if ($segVals{reference_name} !~ /^\w\d?$/) { next }
 
-		$segVals{start} = sprintf "%.0f", $segVals{start};	# sometimes "intermediate" positions
+		$segVals{start} = sprintf "%.0f", $segVals{start};
 		$segVals{end} = sprintf "%.0f", $segVals{end};
 		$segVals{probes} =~ s/[^\d]//g;
 
 		if ($segVals{start} !~ /^\d{1,9}$/)           { next }
 		if ($segVals{end}   !~ /^\d{1,9}$/)           { next }
-		if ($segVals{value} !~ /^\-?\d+?(\.\d+?)?$/)  { next }
+		if (
+			$segVals{value} !~ /^\-?\d+?(\.\d+?)?$/
+			&&
+			$segVals{variant_type} !~ /^(DUP)|(DEL)|(LOH)$/
+		)  { next }
 
-		$segVals{value} = sprintf "%.4f", $segVals{value};
+		if ($segVals{value} =~ /^\-?\d+?(\.\d+?)?$/) {
+			$segVals{value} = sprintf "%.4f", $segVals{value} }
 
 		my $varStatus = '_NS_';
 
 		if ($segmentsT !~ /fracb/i) {
 
 			# baseline adjustment
-			$segVals{value}	+=   $pgx->{parameters}->{segbaseline};
+			if ($segVals{value} =~ /^\-?\d+?(\.\d+?)?$/) {
+				$segVals{value}	+=   $pgx->{parameters}->{segbaseline} }
 
-			if ($segVals{value} >= $pgx->{parameters}->{cna_gain_threshold}) {
+			if ($segVals{variant_type} =~ /^(DUP)|(DEL)|(LOH)$/) {
+				$varStatus = $segVals{variant_type} }
+			elsif ($segVals{value} >= $pgx->{parameters}->{cna_gain_threshold}) {
 				$varStatus = 'DUP' }
 			elsif ($segVals{value} <= $pgx->{parameters}->{cna_loss_threshold}) {
 				$varStatus = 'DEL' }
@@ -256,27 +291,31 @@ Returns:
 		}
 
 		if (
-			$segVals{probes} =~ /\d/
+			$segVals{probes} =~ /^\d+?$/
 			&&
 			$segVals{probes} < $pgx->{parameters}->{segment_probecount_min}
 		) { next }
 
 		$i++;
-
+		
+		my $info = {
+			svlen => 1 * ($segVals{end} - $segVals{start}),
+		};
+		if ($segVals{probes} =~ /^\d+?$/) {
+			$info->{probes} = 1* $segVals{probes} }
+		if ($segVals{value} =~ /^\-?\d+?(\.\d+?)?$/) {
+			$info->{value} = $numfactor * $segVals{value} }
+		
 		push(
 			@{ $pgx->{$segmentsT} },
 			{
-				no =>  $i,
-				callset_id =>  $segVals{callset_id},
-				reference_name =>  $segVals{reference_name},
+				no => $i,
+				callset_id => $segVals{callset_id},
+				reference_name => $segVals{reference_name},
 				variant_type =>	$varStatus,
 				start => 1 * $segVals{start},
 				end => 1 * $segVals{end},
-				info => {
-				  value => $numfactor * $segVals{value},
-				  svlen => 1 * ($segVals{end} - $segVals{start}),
-				  probes => $segVals{probes},
-				},
+				info => $info,
 				digest => join(':',
 					$segVals{reference_name},
 					join(',', $segVals{start}.'-'.$segVals{end} ),
@@ -309,9 +348,45 @@ sub _f2l {
 sub _l2t {
 
 	my $list = shift;
+	my $header = [ ];
 	my $table = [ ];
-	foreach (@$list) { push( @$table, [ split("\t", $_) ] ) }
-	return $table;
+	foreach (@$list) {
+		if (/^\#/) {
+			push( @$header, $_) }
+		else {
+			push( @$table, [ split("\t", $_) ] ) }
+	}
+	return ($header, $table);
+
+}
+
+################################################################################
+
+sub _objectify_header {
+
+	no warnings 'uninitialized';
+
+	my $header = shift;
+
+	my $oh = { };
+	
+	foreach my $line (grep{/^\#/} @$header) {
+		my %lo = ( );
+		$line =~ s/^\#\s+|\s+$//g;
+		foreach (split(';', $line)) {
+			my ($par, $val) = split('=', $_);
+			$par =~ s/^\s+|\s+$//g;
+			$val =~ s/^\s+|\s+$//g;
+			$lo{$par} = $val;
+		}
+		if (grep{ /^sample_id$/} keys %lo) {
+			foreach (keys %lo) {
+				$oh->{ $lo{sample_id} }->{ $_ } = $lo{ $_ };
+			}
+		}
+	}
+
+	return $oh;
 
 }
 
@@ -326,9 +401,13 @@ sub read_file_to_split_array {
 		use	Spreadsheet::XLSX;
 		use Spreadsheet::ReadSXC;
 		my $book = ReadData($file);
-		my $table = [];
+		my $header = [ ];
+		my $table = [ ];
 		foreach my $currentRow (Spreadsheet::Read::rows($book->[1])) {
-		  push( @$table, $currentRow );
+			if ($currentRow->[0] =~ /^\#/) {
+				push( @$header, $currentRow) }
+		else {
+			push( @$table, $currentRow ) }
 		}
 		return $table;
 	}

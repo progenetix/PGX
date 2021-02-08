@@ -132,8 +132,6 @@ $pgx->{parameters}->{path_loc} = $args{'-outdir'};
 # this uses the file reading routine; but multi-segment files have to be
 # deconvoluted first ...
 $pgx->pgx_add_segments_from_file($args{'-f'});
-# print Dumper($pgx->{segmentdata});
-# exit;
 $pgx->pgx_create_samples_from_segments();
 $pgx->pgx_callset_labels_from_file($args{'-sf'});
 $pgx->pgx_create_sample_collections();
