@@ -166,7 +166,8 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 
 #### Returns:
 
-* a list reference of genome CNV objects
+* a list reference of genome CNV objects inside `$pgx->{segmentdata}`
+* header derived information, e.g. group labels per sample in `$pgx->{segfileheader}`
 
 ```
 [
@@ -385,7 +386,7 @@ sub _objectify_header {
 		foreach (split(';', $line)) {
 			my ($par, $val) = split('=', $_);
 			$par =~ s/^\s+|\s+$//g;
-			$val =~ s/^\s+|\s+$//g;
+			$val =~ s/^[\s\"\']+|[\s\"\']+$//g;
 			if ($par eq 'sample_id') {
 				$val = _norm_sample_id($val) }
 			$lo{$par} = $val;

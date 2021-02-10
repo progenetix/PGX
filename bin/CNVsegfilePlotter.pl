@@ -85,7 +85,7 @@ my $plotargs = {
   -size_text_px => 12,
   -size_text_title_px => 48,
   -size_text_subtitle_px => 32,
-  -size_text_title_left_px => 12,
+  -size_text_title_left_px => 10,
   -label_y_m => '-50,0,50',
   -chr2plot => join(',', 1..22),
   -plotregions => q{},
@@ -99,20 +99,26 @@ my $plotargs = {
 my %args = @ARGV;
 $args{-sf} ||= q{};
 
-if (-d $args{-outdir}) {
-  $plotargs->{-path_loc} = $args{-outdir} }
+if (-d $args{-o}) {
+  $plotargs->{-path_loc} = $args{-o} }
+else {
+  print <<END;
+No existing output path was specified:
+  -o ___path_to_my_directory___
+
+END
+	exit;
+}
 
 foreach (keys %$plotargs) {
   if ($args{$_} =~ /\w/) {
     $plotargs->{$_} = $args{$_} }
 }
 
-mkdir $args{'-outdir'};
-
 if (! -f $args{'-f'}) {
   print <<END;
 No input file was specified:
-  -f _path_to_my_file_/segments.tab
+  -f ___path_to_my_file___
 
 END
 	exit;
@@ -121,9 +127,10 @@ END
 # files and paths ##############################################################
 
 my $outFileBase = $args{'-f'};
-$outFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,4}$/$1/;
+$outFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,8}$/$1/;
+print Dumper($outFileBase);
 my $sortFileBase = $args{'-sf'};
-$sortFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,4}$/,$1/;
+$sortFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,8}$/,$1/;
 $outFileBase = $outFileBase.$sortFileBase;
 my $matrixplotF = $outFileBase.',samples_clustered.svg';
 my $histoplotF = $outFileBase.',samples_histoplot.svg';
@@ -132,7 +139,6 @@ my $histoplotmultF = $outFileBase.',samples_histoplot_mult.svg';
 # grouping of samples  #########################################################
 
 my $pgx = new PGX($plotargs);
-$pgx->{parameters}->{path_loc} = $args{'-outdir'};
 
 # this uses the file reading routine; but multi-segment files have to be
 # deconvoluted first ...
