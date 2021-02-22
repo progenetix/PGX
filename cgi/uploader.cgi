@@ -24,18 +24,13 @@ $CGI::Simple::DISABLE_UPLOADS = 0;   # enable uploads
 $CGI::Simple::POST_MAX = 1024 * 5000;
 
 BEGIN { unshift @INC, ('..') };
+
 use PGX;
-use lib::CGItools;
 
+my $upload = CGI::Upload->new;
 my $config = PGX::read_config();
-my $params = lib::CGItools::deparse_query_string();
 
-# my $upload = CGI::Upload->new;
-# $config->{url_base}	=~ s/\/beacon\./\//;
 my $accessid = "$^T"."$$";
-
-print 'Content-type: text/plain'."\n\n";
-print Dumper($upload);
 
 my $response = {
 	error => q{},
@@ -65,9 +60,9 @@ sub _check_file_params {
 	my $f_name = $response->{upload}->file_name('upload_file_name');
 
 	if ($f_name =~ /[^\w\.\,\-]/) {
-    $response->{error}	.=	'The file name may contain incorrect characters (e.g. spaces). Please rename your file using only word characters, dashes, commas and full stops.' }
+    $response->{error}->{error_message}	.=	'The file name may contain incorrect characters (e.g. spaces). Please rename your file using only word characters, dashes, commas and full stops.' }
 	if ($f_name !~ /\w\.\w{2,7}$/) {
-    $response->{error}	.=	"The file name $f_name seems incomplete, e.g. lacking an extension?" }
+    $response->{error}->{error_message}	.=	"The file name $f_name seems incomplete, e.g. lacking an extension?" }
 
 	return $response;
 	
@@ -102,6 +97,10 @@ sub _return_file_path {
 		while ( <$f_handle> ) { 
 			my $in  = $_;
 			chomp $in;
+			if ($in =~ /^\#/) {
+				print UPLOADFILE $in."\n";
+				next;
+			}
 			my @line  =   split("\t", $in);
 			$line[0]  =~  s/[^\w\,\.\-]//g;
 			if ($line[1] =~ /^(chro?)?[\dXY]\d?$/) {

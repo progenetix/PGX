@@ -36,6 +36,7 @@ use Data::Dumper;
 BEGIN { unshift @INC, ('..') };
 use PGX;
 use lib::CGItools;
+use lib::Helpers;
 
 my $config = PGX::read_config();
 my $params = lib::CGItools::deparse_query_string();
@@ -104,9 +105,6 @@ send_Google_tracking_no_log(
 
 $api->_return_json();
 
-
-
-
 ################################################################################
 # subs #########################################################################
 ################################################################################
@@ -116,6 +114,7 @@ sub _retrieve_samples {
 	my $api = shift;
 
 	my $pgx = new PGX($api->{plotargs});
+
 	$pgx->pgx_add_segments_from_file($api->{segfile});
 	$pgx->pgx_create_samples_from_segments();
 	if (! -f $api->{segfile}) {
@@ -125,6 +124,7 @@ sub _retrieve_samples {
 	if ($api->{config}->{param}->{'-randno'}->[0] > 0) {
 		$pgx->{samples} = BeaconPlus::ConfigLoader::RandArr($pgx->{samples}, $api->{config}->{param}->{'-randno'}->[0]) }
 	$pgx->pgx_callset_labels_from_biosamples($api->{config});
+	$pgx->pgx_callset_labels_from_file();
 	$pgx->pgx_add_variants_from_db();
 	
 	$api->{samples}	= $pgx->{samples};
@@ -152,16 +152,17 @@ sub _return_histogram {
 	else {	
 		$plotargs->{-text_bottom_left} = $api->{datasetid}.': '.scalar(@{ $api->{samples} }).' samples' }	
 
-	my $plot = new PGX($plotargs);
-	$plot->{datasetid} = $api->{datasetid};
-	$plot->{parameters}->{plotid} = 'histogram';
-	$plot->pgx_add_frequencymaps( [ { statusmapsets => $api->{samples} } ] );
-	$plot->return_histoplot_svg();
-	$plot->write_svg();
+	my $pgx = new PGX($plotargs);
+
+	$pgx->{datasetid} = $api->{datasetid};
+	$pgx->{parameters}->{plotid} = 'histogram';
+	$pgx->pgx_add_frequencymaps( [ { statusmapsets => $api->{samples} } ] );
+	$pgx->return_histoplot_svg();
+	$pgx->write_svg();
 	
-	if ($plot->{parameters}->{svg_embed} > 0) {
-		$api->{data}->{plots}->{ $plotType }->{svg} = $plot->{svg} }
-	$api->{data}->{plots}->{ $plotType }->{svg_link_tmp} = $plot->{svg_path_web};
+	if ($pgx->{parameters}->{svg_embed} > 0) {
+		$api->{data}->{plots}->{ $plotType }->{svg} = $pgx->{svg} }
+	$api->{data}->{plots}->{ $plotType }->{svg_link_tmp} = $pgx->{svg_path_web};
 	
 	return $api;
 	
@@ -178,7 +179,7 @@ sub _add_samplecollections {
 
 	$pgx->pgx_create_sample_collections();	
 	$api->{samplecollections} = $pgx->{samplecollections};
-
+	
 	return $api;
 	
 }
@@ -204,29 +205,21 @@ sub _return_multihistogram {
 	else {	
 		$plotargs->{-text_bottom_left} = $api->{datasetid}.': '.scalar(@{ $api->{samples} }).' samples' }	
 	
-	my $maxName = PGX::lib::Helpers::MaxTextWidthPix(
-					[ map{ $_->{name} } @{ $api->{samplecollections} } ],
-					$plotargs->{-parameters}->{size_text_title_left_px}
-				);
-								
-	if ($plotargs->{-size_title_left_px} < 10) {
-		$plotargs->{-size_title_left_px} = $maxName }
-	
-	my $plot = new PGX($plotargs);
-	$plot->{samples} = $api->{samples};
+	my $pgx = new PGX($plotargs);
+	$pgx->{samples} = $api->{samples};
 
-	$plot->{datasetid} = $api->{datasetid};
-	$plot->{parameters}->{plotid} = $plotType;
-	$plot->pgx_add_frequencymaps($api->{samplecollections});
-	$plot->cluster_frequencymaps();
-	$plot->return_histoplot_svg();
-	$plot->write_frequency_matrix($api->{plotargs}->{-path_loc}.'/frequencymatrix.tsv');
-	$plot->write_svg();
+	$pgx->{datasetid} = $api->{datasetid};
+	$pgx->{parameters}->{plotid} = $plotType;
+	$pgx->pgx_add_frequencymaps($api->{samplecollections});
+	$pgx->cluster_frequencymaps();
+	$pgx->return_histoplot_svg();
+	$pgx->write_frequency_matrix($api->{plotargs}->{-path_loc}.'/frequencymatrix.tsv');
+	$pgx->write_svg();
 
-	if ($plot->{parameters}->{svg_embed} > 0) {
-		$api->{data}->{plots}->{ $plotType }->{svg} = $plot->{svg} }
+	if ($pgx->{parameters}->{svg_embed} > 0) {
+		$api->{data}->{plots}->{ $plotType }->{svg} = $pgx->{svg} }
 
-	$api->{data}->{plots}->{ $plotType }->{svg_link_tmp} = $plot->{svg_path_web};
+	$api->{data}->{plots}->{ $plotType }->{svg_link_tmp} = $pgx->{svg_path_web};
 	$api->{data}->{data_files}->{frequencymatrix}->{"link"} = $api->{plotargs}->{-path_web}.'/frequencymatrix.tsv';
 
 	return $api;
@@ -250,20 +243,20 @@ sub _return_samplematrix {
 	else {	
 		$plotargs->{-text_bottom_left} = $api->{datasetid}.': '.scalar(@{ $api->{samples} }).' samples' }	
 	
-	my $plot = new PGX($plotargs);
-	$plot->{samples} = $api->{samples};
-	$plot->{datasetid} = $api->{datasetid};
-	$plot->{parameters}->{plotid} = $plotType;
-	$plot->cluster_samples();
-	$plot->return_stripplot_svg();
-	$plot->write_svg();
+	my $pgx = new PGX($plotargs);
+	$pgx->{samples} = $api->{samples};
+	$pgx->{datasetid} = $api->{datasetid};
+	$pgx->{parameters}->{plotid} = $plotType;
+	$pgx->cluster_samples();
+	$pgx->return_stripplot_svg();
+	$pgx->write_svg();
 
-	if ($plot->{parameters}->{svg_embed} > 0) {
-		$api->{data}->{plots}->{ $plotType }->{svg} = $plot->{svg} }
-	$api->{data}->{plots}->{ $plotType }->{svg_link_tmp} = $plot->{svg_path_web};
+	if ($pgx->{parameters}->{svg_embed} > 0) {
+		$api->{data}->{plots}->{ $plotType }->{svg} = $pgx->{svg} }
+	$api->{data}->{plots}->{ $plotType }->{svg_link_tmp} = $pgx->{svg_path_web};
 	
-	$plot->write_status_matrix();
-	$api->{data}->{samplematrix_link_tmp} = $plot->{samplematrix_link_tmp};
+	$pgx->write_status_matrix();
+	$api->{data}->{samplematrix_link_tmp} = $pgx->{samplematrix_link_tmp};
 	
 	return $api;
 

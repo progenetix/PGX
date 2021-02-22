@@ -172,7 +172,7 @@ sub svg_add_title_left {
 
 	my $pgx = shift;
 	my $titeL = shift;
-
+	
 	if ($titeL->{text} !~ /\w+?/) { return $pgx }
 	if ($pgx->{parameters}->{size_title_left_px} < 5) { return $pgx }
 

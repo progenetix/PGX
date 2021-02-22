@@ -15,7 +15,7 @@ sub return_histoplot_svg {
 	no warnings 'uninitialized';
 
 	my $pgx = shift;
-
+	
 	$pgx->{svg} = q{};
 
 	$pgx->{Y} = $pgx->{parameters}->{size_plotmargin_top_px};

@@ -73,6 +73,8 @@ Returns:
 
 	# arguments to parameters
 	foreach my $par (keys %$plotPars) {
+	
+#print Dumper($par, $plotPars->{$par});
 
 		my $formPar = '-'.$par;
 

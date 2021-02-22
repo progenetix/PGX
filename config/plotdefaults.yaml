@@ -39,6 +39,7 @@ size_text_px: 9
 size_text_title_px: 16
 size_text_subtitle_px: 14
 size_text_lab_px: 8
+size_text_title_left_px: 8
 size_plotarea_h_px: 100
 size_strip_h_px: 7
 size_plotarea_padding: 3
@@ -138,6 +139,7 @@ plottype_values:
     label_y_m: [-75,-50,-25,0,25,50,75]
     plot_unit_y: "%"
     size_title_left_px: 150
+    size_text_title_left_px: 8
     title_left_rotation: 0
     size_strip_h_px: 20
     size_plotarea_h_px: 120
