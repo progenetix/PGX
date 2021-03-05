@@ -37,13 +37,13 @@ The function will return 2 objects:
 
 	foreach (@{ $clusterTree }) {
 
-		my $xLpix0	=   sprintf "%.1f", $dendroStart + $_->{LX} * $xPixF;
-		my $xRpix0	=   sprintf "%.1f", $dendroStart + $_->{RX} * $xPixF;
-		my $xNdePix	=	  sprintf "%.1f", $dendroStart + $_->{NODEX} * $xPixF;
-		my $yLpix	=   sprintf "%.1f", $yCorr + $_->{LY} * $yPixF;
-		my $yRpix	=   sprintf "%.1f", $yCorr + $_->{RY} * $yPixF;
+		my $xLpix0	= sprintf "%.1f", $dendroStart + $_->{LX} * $xPixF;
+		my $xRpix0	= sprintf "%.1f", $dendroStart + $_->{RX} * $xPixF;
+		my $xNdePix	= sprintf "%.1f", $dendroStart + $_->{NODEX} * $xPixF;
+		my $yLpix	= sprintf "%.1f", $yCorr + $_->{LY} * $yPixF;
+		my $yRpix	= sprintf "%.1f", $yCorr + $_->{RY} * $yPixF;
 
-		$SVG				.=	'
+		$SVG .=	'
 	<line x1="'.$xStartLpix.'" y1="'.$yLpix.'" x2="'.$xNodePix.'" y2="'.$yLpix.'" stroke="#666666" />
 	<line x1="'.$xStartRpix.'" y1="'.$yRpix.'" x2="'.$xNodePix.'" y2="'.$yRpix.'" stroke="#666666" />
 	<line x1="'.$xNodePix.'" y1="'.$yLpix.'" x2="'.$xNodePix.'" y2="'.$yRpix.'" stroke="#666666" />';

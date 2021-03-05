@@ -88,7 +88,12 @@ $pgx->pgx_add_fracbprobes_from_file($args{'-fracbprobefile'});
 $pgx->pgx_add_fracbsegments_from_file($args{'-fracbsegfile'});
 $pgx->pgx_add_probes_from_file($args{'-probefile'});
 $pgx->pgx_add_segments_from_file($args{'-segfile'});
-
+if (defined $pgx->{segfileheader}->{plotpars}) {
+	foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
+		$args{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+		$pgx->{parameters}->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+	}
+}
 $pgx->plot_adjust_random_probevalues();
 $pgx->return_arrayplot_svg();
 

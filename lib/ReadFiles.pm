@@ -131,7 +131,7 @@ Returns:
 
 sub read_segmentfile {
 
-	  no warnings 'uninitialized';
+	no warnings 'uninitialized';
 
 =podmd
 
@@ -151,6 +151,7 @@ sub read_segmentfile {
     * `group_label`
 
 ```
+# plotpars;color_var_dup_hex=#EE4500;color_var_del_hex=#09F911
 # sample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
 # sample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
 sample_id	chro	start	stop	mean	probes	variant_type
@@ -233,7 +234,6 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 		$colOrder{probes} = 4;
 	};
 
-	
 	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
 		shift @$table }
 
@@ -383,7 +383,7 @@ sub _objectify_header {
 	foreach my $line (@$header) {
 		my %lo = ( );
 		$line =~ s/^\#?\s+|\s+$//g;
-		foreach (split(';', $line)) {
+		foreach (grep{/\=/} split(';', $line)) {
 			my ($par, $val) = split('=', $_);
 			$par =~ s/^\s+|\s+$//g;
 			$val =~ s/^[\s\"\']+|[\s\"\']+$//g;
@@ -396,11 +396,16 @@ sub _objectify_header {
 			foreach (keys %lo) {
 				$oh->{samples}->{ $lo{sample_id} }->{ $_ } = $lo{ $_ };
 			}
+		} elsif	($line =~ /^plotpar/) {
+			foreach (keys %lo) {
+				$oh->{plotpars}->{ $_ } = $lo{ $_ };
+			}	
 		} else {
 			foreach (keys %lo) {
 				$oh->{meta}->{ $_ } = $lo{ $_ };
-
-	}}}
+			}
+		}
+	}
 
 	return $oh;
 
@@ -425,7 +430,7 @@ sub read_file_to_split_array {
 		else {
 			push( @$table, $currentRow ) }
 		}
-		return $table;
+		return ($header, $table);
 	}
 	
 	return _l2t( _f2l( $file ) );
@@ -447,7 +452,7 @@ sub read_webfile_to_split_array {
 	if ($web =~ /dropbox\.com/) {
 	$web =~	s/(\?dl=\w)?$/?dl=1/ }
 
-	$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} 	= 0;
+	$ENV{'PERL_LWP_SSL_VERIFY_HOSTNAME'} = 0;
 
 	my $ua = new LWP::UserAgent;
 	$ua->agent("Mozilla/8.0");

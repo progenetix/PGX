@@ -1,7 +1,6 @@
 package lib::AggregateData;
 
 use Data::Dumper;
-use Math::Random qw(random_normal);
 use lib::PlotMakeParameters;
 use lib::Helpers;
 
@@ -261,7 +260,7 @@ sub pgx_callset_labels_from_file {
 		$pgx->{samples}->[$i]->{sortlabel} = $fallbackL;
 	}
 	
-	if ( grep {/segfileheader/} keys %$pgx) {
+	if ( defined $pgx->{segfileheader}) {
 		my $hv = $pgx->{segfileheader};
 		for my $i (0..$#{ $pgx->{samples} }) {
 			my $csId = $pgx->{samples}->[$i]->{id};

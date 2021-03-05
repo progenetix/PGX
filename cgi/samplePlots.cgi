@@ -116,6 +116,12 @@ sub _retrieve_samples {
 	my $pgx = new PGX($api->{plotargs});
 
 	$pgx->pgx_add_segments_from_file($api->{segfile});
+	if (defined $pgx->{segfileheader}->{plotpars}) {
+		foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
+			$api->{plotargs}->{"-".$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+			$pgx->{parameters}->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+		}
+	}
 	$pgx->pgx_create_samples_from_segments();
 	if (! -f $api->{segfile}) {
 		$pgx->pgx_open_handover($api->{config}, $api->{accessid});

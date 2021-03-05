@@ -143,6 +143,12 @@ my $pgx = new PGX($plotargs);
 # this uses the file reading routine; but multi-segment files have to be
 # deconvoluted first ...
 $pgx->pgx_add_segments_from_file($args{'-f'});
+if (defined $pgx->{segfileheader}->{plotpars}) {
+	foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
+		$plotargs->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+		$pgx->{parameters}->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+	}
+}
 $pgx->pgx_create_samples_from_segments();
 $pgx->pgx_callset_labels_from_file($args{'-sf'});
 $pgx->pgx_create_sample_collections();
