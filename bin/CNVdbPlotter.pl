@@ -16,7 +16,7 @@ use YAML::XS qw(LoadFile);
 
 Examples:
   - perl CNVdbPlotter.pl -datasets arraymap -query icdom-817
-  - perl CNVdbPlotter.pl -query icdom-817 -datasets arraymap -sortfile ./in/testsort817.tsv -plottypes multistrip -size_strip_h_px 30 -size_title_left_px 0
+  - perl CNVdbPlotter.pl -query icdom-817 -datasets arraymap -sortfile ./in/testsort817.tsv -plottypes multistrip -size_strip_h_px 30 -size_title_left_w_px 0
   - perl CNVdbPlotter.pl -datasets arraymap -query icdom-....3 -mingroupno 100
 
 =cut
@@ -61,7 +61,7 @@ $args{'-path_loc'} ||= $args{'-outdir'};
 $args{'-plottypes'} ||= 'multistrip,multihistogram';
 $args{'-size_plotimage_w_px'} ||= 1948;
 $args{'-size_plotmargin_px'} ||= 50;
-$args{'-size_title_left_px'} ||= 500;
+$args{'-size_title_left_w_px'} ||= 500;
 $args{'-size_clustertree_w_px'} ||= 200;
 $args{'-size_plotarea_h_px'} ||= 40;
 $args{'-size_text_px'} ||= 12;
@@ -415,7 +415,7 @@ if (grep{ $_ eq $plotargs->{-plottype} } @plottypes) {
   $plot = new PGX($plotargs);
   $plot->{parameters}->{plotid} = 'multistripplot';
   $plot->{parameters}->{subtitle} = 'Display of CNV Profiles from '.@$samples.' Individual Samples from the '.join(', ', @{ $config->{ dataset_names } }).' Collection';
-  if ($plot->{parameters}->{size_title_left_px} > ($plot->{parameters}->{size_strip_h_px} - 2)) {
+  if ($plot->{parameters}->{size_title_left_w_px} > ($plot->{parameters}->{size_strip_h_px} - 2)) {
     $plot->{parameters}->{size_text_title_left_px} = $plot->{parameters}->{size_strip_h_px} - 2 }
   $plot->{parameters}->{text_bottom_left} = @{ $samples }.' samples';
   $plot->{samples} = $samples;

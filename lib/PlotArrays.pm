@@ -21,7 +21,7 @@ sub return_arrayplot_svg {
 
   $pgx->{Y} = $pgx->{parameters}->{size_plotmargin_top_px};
   my $plotW = $pgx->{parameters}->{size_plotimage_w_px};
-  $pgx->{areastartx} = $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_px};
+  $pgx->{areastartx} = $pgx->{parameters}->{size_plotmargin_px} + $pgx->{parameters}->{size_title_left_w_px};
   $pgx->{areawidth} = $plotW - ($pgx->{areastartx} + $pgx->{parameters}->{size_plotmargin_px});
   if (
     $pgx->{parameters}->{do_chromosomes_proportional} =~ /y/i

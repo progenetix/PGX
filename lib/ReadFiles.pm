@@ -383,6 +383,7 @@ sub _objectify_header {
 	foreach my $line (@$header) {
 		my %lo = ( );
 		$line =~ s/^\#?\s+|\s+$//g;
+		$line =~ s/\:\:/;/g;
 		foreach (grep{/\=/} split(';', $line)) {
 			my ($par, $val) = split('=', $_);
 			$par =~ s/^\s+|\s+$//g;
@@ -419,7 +420,6 @@ sub read_file_to_split_array {
 
 	if ($file =~ /\.(ods)|(xlsx?)$/i) {
 		use	Spreadsheet::Read;
-		use	Spreadsheet::XLSX;
 		use Spreadsheet::ReadSXC;
 		my $book = ReadData($file);
 		my $header = [ ];
@@ -444,7 +444,6 @@ sub read_webfile_to_split_array {
 	use LWP::UserAgent;
 	use LWP::Simple;
 	use	Spreadsheet::Read;
-	use	Spreadsheet::XLSX;
 	use Spreadsheet::ReadSXC;
 
 	my $web = shift;

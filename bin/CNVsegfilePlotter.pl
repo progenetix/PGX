@@ -79,7 +79,7 @@ use PGX;
 my $plotargs = {
   -size_plotimage_w_px => 1024,
   -size_plotmargin_px => 25,
-  -size_title_left_px => 200,
+  -size_title_left_w_px => 200,
   -size_clustertree_w_px => 50,
   -size_plotarea_h_px => 40,
   -size_text_px => 12,

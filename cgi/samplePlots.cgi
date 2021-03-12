@@ -151,7 +151,7 @@ sub _return_histogram {
 	# modifying a copy of the standard plot arguments for the overview plot
 	my $plotargs = bless { %{ $api->{plotargs} } }, ref $api->{plotargs};
 	$plotargs->{'-plottype'} = $plotType;
-	$plotargs->{-size_title_left_px} = 0;
+	$plotargs->{-size_title_left_w_px} = 0;
 	
 	if (-f $api->{segfile}) {
 		$plotargs->{-text_bottom_left} = 'Uploaded: '.scalar(@{ $api->{samples} }).' samples' }

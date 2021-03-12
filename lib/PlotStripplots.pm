@@ -26,7 +26,7 @@ sub return_stripplot_svg {
 	$pgx->{Y} = $pp->{size_plotmargin_top_px};
 
 	my $plotW = $pp->{size_plotimage_w_px};
-	$pgx->{areastartx} = $pp->{size_plotmargin_px} + $pp->{size_title_left_px};
+	$pgx->{areastartx} = $pp->{size_plotmargin_px} + $pp->{size_title_left_w_px};
 
 	if (
 		$pp->{size_clustertree_w_px} < 1

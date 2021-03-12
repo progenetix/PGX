@@ -14,7 +14,6 @@ bin_match_min: 0.0001
 title: ''
 subtitle: ''
 title_left: ''
-text_bottom_right: '&copy; 2020 progenetix.org'
 text_bottom_left: ""
 min_group_no: 2
 
@@ -34,7 +33,7 @@ factor_probedots: 1
 size_plotmargin_px: 30
 size_plotmargin_top_px: 25
 size_plotmargin_bottom_px: 25
-size_title_left_px: 0
+size_title_left_w_px: 0
 size_text_px: 9
 size_text_title_px: 16
 size_text_subtitle_px: 14
@@ -119,7 +118,7 @@ plottype_values:
     size_strip_h_px: 20
     size_plotarea_h_px: 0
     title_left_rotation: 0
-    size_title_left_px: 120
+    size_title_left_w_px: 120
     size_label_right_px: 5
   multistrip:
     label_y_m: []
@@ -128,7 +127,7 @@ plottype_values:
     size_strip_h_px: 10
     size_plotarea_h_px: 0
     title_left_rotation: 0
-    size_title_left_px: 120
+    size_title_left_w_px: 120
     size_label_right_px: 5
   histogram:
     value_plot_y_max: 100
@@ -138,7 +137,7 @@ plottype_values:
     value_plot_y_max: 100
     label_y_m: [-75,-50,-25,0,25,50,75]
     plot_unit_y: "%"
-    size_title_left_px: 150
+    size_title_left_w_px: 150
     size_text_title_left_px: 8
     title_left_rotation: 0
     size_strip_h_px: 20
