@@ -154,7 +154,7 @@ sub read_segmentfile {
 # plotpars;color_var_dup_hex=#EE4500;color_var_del_hex=#09F911
 # sample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
 # sample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
-sample_id	chro	start	stop	mean	probes	variant_type
+sample_id	chro	start	stop	mean	variant_type	probes
 GSM481286	1	742429	7883881	-0.1594	699	DEL
 GSM481286	2	115673158	115705254	-0.3829	8	DEL
 GSM481286	3	115722621	119771659	0.167	424	DUP
@@ -232,6 +232,10 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 	if ($pgx->{parameters}->{format_inputfiles} =~ /tcga/i) {
 		$colOrder{value} = 5;
 		$colOrder{probes} = 4;
+	};
+	if ($pgx->{parameters}->{format_inputfiles} =~ /pgxseg/i) {
+		$colOrder{variant_type} = 5;
+		$colOrder{probes} = 6;
 	};
 
 	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
@@ -383,7 +387,7 @@ sub _objectify_header {
 	foreach my $line (@$header) {
 		my %lo = ( );
 		$line =~ s/^\#?\s+|\s+$//g;
-		$line =~ s/\:\:/;/g;
+		$line =~ s/=>/;/g;
 		foreach (grep{/\=/} split(';', $line)) {
 			my ($par, $val) = split('=', $_);
 			$par =~ s/^\s+|\s+$//g;
