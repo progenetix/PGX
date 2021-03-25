@@ -83,7 +83,7 @@ mkdir $api->{plotargs}->{-path_loc};
 
 $api->_retrieve_samples();
 
-if ($params->{"do"}->[0] eq "cnvhistogram") {
+if ($params->{"method"}->[0] eq "cnvhistogram") {
 
 	$api->{plotargs}->{ '-svg_embed' } = 1;
 	$api->_return_histogram();
