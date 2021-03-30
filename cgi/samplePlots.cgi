@@ -45,6 +45,7 @@ if ($params->{debug}->[0] > 0) {
 	print 'Content-type: text/plain'."\n\n" }
 
 my $accessid = $params->{accessid}->[0];
+my $group_by = $params->{group_by}->[0];
 
 my $api = {
 	config => $config,
@@ -55,6 +56,7 @@ my $api = {
 	handover_db => $config->{handover_db},
 	handover_coll => $config->{handover_coll},
 	accessid => $accessid,
+	group_by => $params->{group_by}->[0],
 	segfile => $config->{paths}->{dir_tmp_base_path}.'/'.$accessid,
 	technology_keys => $config->{technology_keys},
 	server_link => ($ENV{HTTPS} ? 'https://' : 'http://').$ENV{HTTP_HOST},
@@ -77,11 +79,15 @@ if ($accessid =~ /[^\w\-]/) {
 	);
 }
 
-mkdir $api->{plotargs}->{-path_loc};
-
 ################################################################################
 
 $api->_retrieve_samples();
+
+=podmd
+
+A single histogram SVG output can be forced with `&method=cnvhistogram`.
+
+=cut
 
 if ($params->{"method"}->[0] eq "cnvhistogram") {
 
@@ -93,6 +99,9 @@ if ($params->{"method"}->[0] eq "cnvhistogram") {
 	
 }
 
+################################################################################
+
+mkdir $api->{plotargs}->{-path_loc};
 $api->_return_histogram();
 $api->_add_samplecollections();
 $api->_return_multihistogram();
@@ -116,6 +125,7 @@ sub _retrieve_samples {
 	my $pgx = new PGX($api->{plotargs});
 
 	$pgx->pgx_add_segments_from_file($api->{segfile});
+
 	if (defined $pgx->{segfileheader}->{plotpars}) {
 		foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
 			$api->{plotargs}->{"-".$_} = $pgx->{segfileheader}->{plotpars}->{$_};
@@ -130,7 +140,6 @@ sub _retrieve_samples {
 	if ($api->{config}->{param}->{'-randno'}->[0] > 0) {
 		$pgx->{samples} = BeaconPlus::ConfigLoader::RandArr($pgx->{samples}, $api->{config}->{param}->{'-randno'}->[0]) }
 	$pgx->pgx_callset_labels_from_biosamples($api->{config});
-	$pgx->pgx_callset_labels_from_file();
 	$pgx->pgx_add_variants_from_db();
 	
 	$api->{samples}	= $pgx->{samples};

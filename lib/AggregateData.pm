@@ -151,7 +151,6 @@ sub pgx_create_sample_collections {
 
 	my %sortKeys = map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
 
-
 	# creation of the groups
 	foreach my $sortKey (keys %sortKeys) {
 
@@ -206,11 +205,10 @@ sub pgx_callset_labels_from_biosamples {
 
 	my ($groupAttr, $groupType);
 
-	# CAVE: both "$config" (environment) and "$pgx->{config}" used here ...
-	if ($config->{param}->{group_by}->[0] =~ /.../) {
+	if ($pgx->{parameters}->{group_by} =~ /.../) {
 		for my $grt (keys %{ $pgx->{config}->{datacollections} }) {
-			if ($grt eq $config->{param}->{group_by}->[0]) {
-				$groupType = $config->{param}->{group_by}->[0];
+			if ($grt eq $pgx->{parameters}->{group_by}) {
+				$groupType = $pgx->{parameters}->{group_by};
 				$groupAttr = $pgx->{config}->{datacollections}->{$grt}->{samplefield};			
 	} } }
 
@@ -252,6 +250,8 @@ sub pgx_callset_labels_from_file {
 	my $pgx = shift;
 	my $sortFile = shift;
 
+	if (! -f $sortFile)  { return $pgx }
+
 	my $fallbackK = 'NA';
 	my $fallbackL = 'not specified';
 
@@ -270,7 +270,6 @@ sub pgx_callset_labels_from_file {
 				$pgx->{samples}->[$i]->{sortlabel} = $hv->{samples}->{ $csId }->{group_label} }
 	}}
 
-	if (! -f $sortFile)  { return $pgx }
 
 	# this assumes that the first column contains an entry for the selected id (or id)
 	# the second then the associated label

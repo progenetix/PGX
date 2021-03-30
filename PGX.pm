@@ -67,7 +67,7 @@ sub read_config {
 
   my $path_of_this_module = File::Basename::dirname( eval { ( caller() )[1] } );
   my $config = LoadFile($path_of_this_module.'/config/config.yaml');
-  return  $config;
+  return $config;
 
 }
 
@@ -77,7 +77,7 @@ sub read_plot_defaults {
 
   my $path_of_this_module = File::Basename::dirname( eval { ( caller() )[1] } );
   my $plotPars = LoadFile($path_of_this_module.'/config/plotdefaults.yaml');
-  return  $plotPars;
+  return $plotPars;
 
 }
 

@@ -225,18 +225,18 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 		start => 2,
 		end => 3,
 		value => 4,
-		probes => 5,
-		variant_type => 6
+		probes => 6,
+		variant_type => 5
 	);
 
 	if ($pgx->{parameters}->{format_inputfiles} =~ /tcga/i) {
 		$colOrder{value} = 5;
 		$colOrder{probes} = 4;
 	};
-	if ($pgx->{parameters}->{format_inputfiles} =~ /pgxseg/i) {
-		$colOrder{variant_type} = 5;
-		$colOrder{probes} = 6;
-	};
+# 	if ($pgx->{parameters}->{format_inputfiles} =~ /pgxseg/i) {
+# 		$colOrder{variant_type} = 5;
+# 		$colOrder{probes} = 6;
+# 	};
 
 	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
 		shift @$table }
@@ -248,7 +248,7 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 	my $i = 0;
 
 	foreach my $segment (@$table) {
-	
+		
 		my %segVals =  ();
 		foreach (keys %colOrder) {
 			$segVals{$_} = $segment->[$colOrder{$_}];
@@ -276,6 +276,8 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 
 		if ($segVals{value} =~ /^\-?\d+?(\.\d+?)?$/) {
 			$segVals{value} = sprintf "%.4f", $segVals{value} }
+			
+
 
 		my $varStatus = '_NS_';
 
