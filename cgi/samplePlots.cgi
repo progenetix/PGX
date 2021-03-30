@@ -45,7 +45,6 @@ if ($params->{debug}->[0] > 0) {
 	print 'Content-type: text/plain'."\n\n" }
 
 my $accessid = $params->{accessid}->[0];
-my $group_by = $params->{group_by}->[0];
 
 my $api = {
 	config => $config,
@@ -56,7 +55,6 @@ my $api = {
 	handover_db => $config->{handover_db},
 	handover_coll => $config->{handover_coll},
 	accessid => $accessid,
-	group_by => $params->{group_by}->[0],
 	segfile => $config->{paths}->{dir_tmp_base_path}.'/'.$accessid,
 	technology_keys => $config->{technology_keys},
 	server_link => ($ENV{HTTPS} ? 'https://' : 'http://').$ENV{HTTP_HOST},
