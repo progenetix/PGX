@@ -36,8 +36,8 @@ size_plotmargin_top_px: 25
 size_plotmargin_bottom_px: 25
 size_title_left_w_px: 0
 size_text_px: 9
-size_text_title_px: 16
-size_text_subtitle_px: 14
+size_text_title_px: 14
+size_text_subtitle_px: 12
 size_text_lab_px: 8
 size_text_title_left_px: 8
 size_plotarea_h_px: 100
