@@ -33,21 +33,29 @@ Returns:
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx = shift;
+	my $pgx = shift;
 
-  if ($pgx->{parameters}->{title} !~ /\w+?/) { return $pgx }
+	if ($pgx->{parameters}->{title} !~ /\w+?/) { return $pgx }
+	
+	my $title_px = $pgx->{parameters}->{size_text_title_px};
+	my $title_w = $title_px * length($pgx->{parameters}->{title}) * 0.4;
 
-  $pgx->{Y}    += $pgx->{parameters}->{size_text_title_px};
-  $pgx->{svg}  .= '
-<text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$pgx->{parameters}->{size_text_title_px}.'px">'.$pgx->{parameters}->{title}.'</text>';
+	while ( $title_w > $pgx->{areawidth}) {
+		$title_px -= 1;
+		$title_w = $title_px * length($pgx->{parameters}->{title}) * 0.4;
+	}
+
+	$pgx->{Y} += $title_px;
+	$pgx->{svg} .= '
+<text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$title_px.'px">'.$pgx->{parameters}->{title}.'</text>';
 
   if ($pgx->{parameters}->{subtitle} !~ /\w+?/) { 
-    $pgx->{Y}  += $pgx->{parameters}->{size_text_title_px}; 
+    $pgx->{Y} += $title_px; 
     return $pgx;
   }
 
   $pgx->{Y} += sprintf "%.0f", $pgx->{parameters}->{size_text_subtitle_px} * 1.5;
-  $pgx->{svg}  .= '
+  $pgx->{svg} .= '
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$pgx->{parameters}->{size_text_subtitle_px}.'px">'.$pgx->{parameters}->{subtitle}.'</text>';
 
   $pgx->{Y} += $pgx->{parameters}->{size_text_title_px};
