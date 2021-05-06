@@ -42,6 +42,8 @@ if (scalar @{ $params->{id} } != 1) {
 	exit;
 }
 
+if (! $params->{datasetIds}) {
+	$params->{datasetIds} = [ 'progenetix' ] }
 if (scalar @{ $params->{datasetIds} } != 1) {
 	$params->{datasetIds} = [ 'progenetix' ] }
 
