@@ -9,12 +9,12 @@ $| = 1;
 # molecular cytogenetics, Comparative Genomic Hybridization, genomic arrays    #
 # data analysis & visualization                                                #
 #                                                                              #
-# © 2000-2020 Michael Baudis: m@baud.is                                        #
+# © 2000-2021 Michael Baudis: m@baud.is                                        #
 #                                                                              #
 ################################################################################
 
 =pod
-https://progenetix.org/cgi/PGX/cgi/collationPlots.cgi?datasetIds=progenetix&id=NCIT%3AC3262&-size_plotimage_w_px=1084
+https://progenetix.org/cgi/PGX/cgi/collationPlots.cgi?datasetIds=progenetix&id=NCIT:C3262&-size_plotimage_w_px=1084
 =cut
 
 use strict;
@@ -59,7 +59,6 @@ if (! grep{ /id/ } keys %{ $subset }) {
 }
 
 my $plotargs = { map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) };
-# $plotargs->{-title} = $dataset.': '.$subset->{label}.' ('.$subset->{id}.')';
 if ($subset->{label} =~ /.../) {
 	$plotargs->{-title} = $subset->{label}.' ('.$subset->{id}.')' }
 else {
@@ -75,7 +74,6 @@ send_Google_tracking_no_log(
 	$config->{cgi},
 	"/cgi/PGX/cgi/collationPlots.cgi"
 );
-
 
 print 'Content-type: image/svg+xml'."\n\n";
 print $plot->{svg};

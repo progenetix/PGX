@@ -231,8 +231,6 @@ a local context (i.e. run in the terminal, not in web instances).
 
 =cut
 
-	use Term::ProgressBar;
-
 	my $pgx = shift;
 
 	my $parent = `ps -o ppid= -p $$ | xargs ps -o command= -p`;
@@ -241,13 +239,6 @@ a local context (i.e. run in the terminal, not in web instances).
 	if ($pgx->{parameters}->{simulated_probes} =~ /y/i ) {
 
 		my $i = 0;
-
-		if ($parent !~ /httpd/) {
-			$progBar = Term::ProgressBar->new( {
-				name => 'Adjusting Simulated Values',
-				count => scalar @{ $pgx->{segmentdata} }
-			} );
-		}
 
 		foreach my $seg (@{ $pgx->{segmentdata} }) {
 
@@ -265,8 +256,6 @@ a local context (i.e. run in the terminal, not in web instances).
 				$pgx->{probedata}->[$_]->{value} += $seg->{info}->{value};
 			}
 		}
-
-		if ($parent !~ /httpd/) { $progBar->update(scalar @{$pgx->{segmentdata}}) }
 
 	}
 

@@ -4,85 +4,85 @@
 # plotpars;color_var_dup_hex=#EE4500;color_var_del_hex=#09F911
 # plotpars;size_title_left_px=300
 # plotpars;size_text_title_left_px=10
-# sample_id=GSM253303;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254314;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254317;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254331;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254340;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254341;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254342;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254344;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254346;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254347;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254351;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254353;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254354;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254357;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254360;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254361;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254777;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254778;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254779;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254783;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254785;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254786;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254787;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254792;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254793;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM254795;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
-# sample_id=GSM388959;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388961;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388963;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388964;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388965;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388966;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388967;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388968;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388969;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388970;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388971;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388977;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388980;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388981;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388982;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388983;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM388984;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389088;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389089;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389092;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389094;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389096;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389097;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389099;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389103;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389104;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM389107;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
-# sample_id=GSM252886;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM252889;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM276862;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM276880;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM276882;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM326208;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM326215;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM326216;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM326234;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM370557;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM370562;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM370565;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM370567;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM370570;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM370576;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM373542;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM373543;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM373555;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM373556;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM481417;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM827433;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM799389;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM1046348;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM1046352;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-# sample_id=GSM1046356;group_id=NCIT:C6958;group_label=Astrocytic Tumor
-sample_id	reference_name	start	end	value
+# biosample_id=GSM253303;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254314;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254317;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254331;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254340;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254341;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254342;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254344;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254346;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254347;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254351;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254353;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254354;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254357;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254360;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254361;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254777;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254778;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254779;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254783;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254785;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254786;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254787;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254792;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254793;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM254795;group_id=NCIT:C4028;group_label=Cervical Squamous Cell Carcinoma
+# biosample_id=GSM388959;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388961;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388963;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388964;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388965;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388966;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388967;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388968;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388969;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388970;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388971;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388977;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388980;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388981;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388982;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388983;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM388984;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389088;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389089;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389092;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389094;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389096;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389097;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389099;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389103;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389104;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM389107;group_id=NCIT:C4024;group_label=Esophageal Squamous Cell Carcinoma
+# biosample_id=GSM252886;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM252889;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM276862;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM276880;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM276882;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM326208;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM326215;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM326216;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM326234;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM370557;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM370562;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM370565;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM370567;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM370570;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM370576;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM373542;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM373543;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM373555;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM373556;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM481417;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM827433;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM799389;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM1046348;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM1046352;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+# biosample_id=GSM1046356;group_id=NCIT:C6958;group_label=Astrocytic Tumor
+biosample_id	reference_name	start	end	value
 GSM252886	1	911484	11993973	-0.4486
 GSM252886	1	12158755	22246766	0.2859
 GSM252886	1	22346353	24149880	-0.5713

@@ -41,10 +41,34 @@ sub return_histoplot_svg {
 	$pgx->{areaendx} = $pgx->{areastartx} + $pgx->{areawidth};
 	$pgx->{areatreex} = $pgx->{areaendx};
 	if ($pgx->{parameters}->{size_label_right_px} > 0) {
-		$pgx->{areatreex}   += $pgx->{parameters}->{size_chromosome_padding_px} + $pgx->{parameters}->{size_label_right_px} }
+		$pgx->{areatreex} += $pgx->{parameters}->{size_chromosome_padding_px} + $pgx->{parameters}->{size_label_right_px} }
+		
+		
+	# map label left size adjustment	
+	for my $i (0..$#{ $pgx->{frequencymaps} }) {
+		if ($pgx->{frequencymaps}->[$i]->{name} =~ /\w\w/) {
+			my $t_l =  length($pgx->{frequencymaps}->[$i]->{name}) * 0.5 * $pgx->{parameters}->{size_text_title_left_px};
+			if ($t_l > $pgx->{parameters}->{size_title_left_w_px}) {
+				my ($t_text, $t_code) = ( $pgx->{frequencymaps}->[$i]->{name} =~ /^(.*?)( \([^\()]+?\))?$/ );
+				if (length($t_text) > $pgx->{parameters}->{text_labels_left_max_letters}) {		
+					$t_maxl = $pgx->{parameters}->{text_labels_left_max_letters} - length($t_code);
+					$t_text =~ s/^(.{6,$t_maxl}[\w\.]) .*?$/$1.../;
+					$pgx->{frequencymaps}->[$i]->{name} = $t_text.$t_code;
+				}	
+			}
+		}	
+	}
+	
+	$pgx->{parameters}->{size_text_title_left_px} = text_width_from_array(
+		[ map{$_->{name}} @{ $pgx->{frequencymaps} } ],
+		$pgx->{parameters}->{size_text_title_left_px},
+		$pgx->{parameters}->{size_title_left_w_px}
+	);
+	
 	$pgx->svg_add_title();
-
+	
 	if ($pgx->{parameters}->{size_plotarea_h_px} > 0) {
+		
 		$pgx->svg_add_cytobands();
 		$pgx->get_histoplot_background();
 		$pgx->{markerstarty} = $pgx->{areastarty}; # so that markers span the histograms
@@ -56,9 +80,9 @@ sub return_histoplot_svg {
 	}
 
 	if (
-	@{ $pgx->{frequencymaps} } > 1
-	&&
-	$pgx->{parameters}->{size_strip_h_px} > 0
+		@{ $pgx->{frequencymaps} } > 1
+		&&
+		$pgx->{parameters}->{size_strip_h_px} > 0
 	) {
 		$pgx->svg_add_cytobands();
 		$pgx->{markerstarty} = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_padding};
@@ -108,42 +132,42 @@ sub get_histoplot_background {
 
 	# preview of the first histogram area Y start (for use in cluster tree etc.)
 	$pgx->{areastarty} = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_padding};
-
+	
 	foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
 
-	my $is_single = 0;  
-	my $p_a_h = $pgx->{parameters}->{size_plotarea_h_px};
-	if (grep{ /count/ } keys %$frequencymapsSet) {
-		if ($frequencymapsSet->{count} == 1) {
-			$is_single = 1 } }	
-	if ($is_single ==1) { $p_a_h = $pgx->{parameters}->{size_chromosome_w_px} }
+		my $is_single = 0;  
+		my $p_a_h = $pgx->{parameters}->{size_plotarea_h_px};
+		if (grep{ /count/ } keys %$frequencymapsSet) {
+			if ($frequencymapsSet->{count} == 1) {
+				$is_single = 1 } }	
+		if ($is_single ==1) { $p_a_h = $pgx->{parameters}->{size_chromosome_w_px} }
 
-	$pgx->{Y} += $pgx->{parameters}->{size_plotarea_padding};
+		$pgx->{Y} += $pgx->{parameters}->{size_plotarea_padding};
 
-	my $area_x0 = $pgx->{areastartx};
-	my $area_ycen = $pgx->{Y} + $p_a_h / 2;
+		my $area_x0 = $pgx->{areastartx};
+		my $area_ycen = $pgx->{Y} + $p_a_h / 2;
 
-	if ($frequencymapsSet->{name} =~ /\w\w/) {
-	  my $titeL = {
-		text => $frequencymapsSet->{name},
-		pos_y => $area_ycen,
-		linkout => q{},
-	  };
-	  $pgx->svg_add_title_left($titeL);
-	}
+		if ($frequencymapsSet->{name} =~ /\w\w/) {
+		  my $titeL = {
+			text => $frequencymapsSet->{name},
+			pos_y => $area_ycen,
+			linkout => q{},
+		  };
+		  $pgx->svg_add_title_left($titeL);
+		}
 
-	foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
+		foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
-	  my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
+		  my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 
-	  $pgx->{svg}  .= '
+		  $pgx->{svg}  .= '
 <rect x="'.$area_x0.'" y="'.$pgx->{Y}.'" width="'.$areaW.'" height="'.$p_a_h.'" style="fill: '.$pgx->{parameters}->{color_plotarea_hex}.'; fill-opacity: 0.8; " />';
 
-	  $area_x0  += $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
+		  $area_x0  += $areaW + $pgx->{parameters}->{size_chromosome_padding_px};
 
-	}
+		}
 
-	$pgx->{Y} += $p_a_h;
+		$pgx->{Y} += $p_a_h;
 
 	}
 

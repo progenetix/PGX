@@ -48,7 +48,6 @@ my $accessid = $params->{accessid}->[0];
 if (! $params->{datasetIds}) {
 	$params->{datasetIds} = [ 'progenetix' ] }
 
-
 my $api = {
 	config => $config,
 	datasetid => '',

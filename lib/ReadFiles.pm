@@ -143,18 +143,18 @@ sub read_segmentfile {
   - column 5 (mean) can be empty or dot, if column 7 exists and contains status value
   - undefined fields in existing columns are replaced with the "." character
 * header (optional)
-  - the `sample_id` parameter is required to assign values (e.g. group labels) to samples
+  - the `biosample_id` parameter is required to assign values (e.g. group labels) to samples
   - parameter=value pairs are semicolon-separated
   - supported tags
-    * `sample_id` is required and has to correspond to column 1 values
+    * `biosample_id` is required and has to correspond to column 1 values
     * `group_id`
     * `group_label`
 
 ```
 # plotpars;color_var_dup_hex=#EE4500;color_var_del_hex=#09F911
-# sample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
-# sample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
-sample_id	chro	start	stop	mean	variant_type	probes
+# biosample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
+# biosample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
+biosample_id	chro	start	stop	mean	variant_type	probes
 GSM481286	1	742429	7883881	-0.1594	699	DEL
 GSM481286	2	115673158	115705254	-0.3829	8	DEL
 GSM481286	3	115722621	119771659	0.167	424	DUP
@@ -394,14 +394,14 @@ sub _objectify_header {
 			my ($par, $val) = split('=', $_);
 			$par =~ s/^\s+|\s+$//g;
 			$val =~ s/^[\s\"\']+|[\s\"\']+$//g;
-			if ($par eq 'sample_id') {
+			if ($par eq 'biosample_id') {
 				$val = _norm_sample_id($val) }
 			$lo{$par} = $val;
 		}
-		# `sample_id` containing lines are stored under this sample
-		if (grep{ /^sample_id$/} keys %lo) {
+		# `biosample_id` containing lines are stored under this sample
+		if (grep{ /^biosample_id$/} keys %lo) {
 			foreach (keys %lo) {
-				$oh->{samples}->{ $lo{sample_id} }->{ $_ } = $lo{ $_ };
+				$oh->{samples}->{ $lo{biosample_id} }->{ $_ } = $lo{ $_ };
 			}
 		} elsif	($line =~ /^plotpar/) {
 			foreach (keys %lo) {

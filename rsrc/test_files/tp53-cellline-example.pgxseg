@@ -2,50 +2,50 @@
 #meta=>assemblyId=GRCh38
 #meta=>variant_count=22207
 #meta=>biosample_count=44
-#sample=>sample_id=pgxbs-kftvieb9;group_id=NCIT:C7270;group_label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma;NCIT::id=NCIT:C7270;NCIT::label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma
-#sample=>sample_id=pgxbs-kftviebo;group_id=NCIT:C4450;group_label=Large cell lung carcinoma;NCIT::id=NCIT:C4450;NCIT::label=Large cell lung carcinoma
-#sample=>sample_id=pgxbs-kftvieec;group_id=NCIT:C3493;group_label=Squamous Cell Lung Carcinoma;NCIT::id=NCIT:C3493;NCIT::label=Squamous Cell Lung Carcinoma
-#sample=>sample_id=pgxbs-kftviyu1;group_id=NCIT:C6766;group_label=Prostate small cell carcinoma;NCIT::id=NCIT:C6766;NCIT::label=Prostate small cell carcinoma
-#sample=>sample_id=pgxbs-kftvj3ux;group_id=NCIT:C4450;group_label=Large cell lung carcinoma;NCIT::id=NCIT:C4450;NCIT::label=Large cell lung carcinoma
-#sample=>sample_id=pgxbs-kftvj3uz;group_id=NCIT:C7270;group_label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma;NCIT::id=NCIT:C7270;NCIT::label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma
-#sample=>sample_id=pgxbs-kftvj3yn;group_id=NCIT:C4004;group_label=Gastric Adenocarcinoma;NCIT::id=NCIT:C4004;NCIT::label=Gastric Adenocarcinoma
-#sample=>sample_id=pgxbs-kftvjjtl;group_id=NCIT:C3510;group_label=Cutaneous Melanoma;NCIT::id=NCIT:C3510;NCIT::label=Cutaneous Melanoma
-#sample=>sample_id=pgxbs-kftvjszz;group_id=NCIT:C27753;group_label=Acute Myeloid Leukemia Not Otherwise Specified;NCIT::id=NCIT:C27753;NCIT::label=Acute Myeloid Leukemia Not Otherwise Specified
-#sample=>sample_id=pgxbs-kftvjt00;group_id=NCIT:C27753;group_label=Acute Myeloid Leukemia Not Otherwise Specified;NCIT::id=NCIT:C27753;NCIT::label=Acute Myeloid Leukemia Not Otherwise Specified
-#sample=>sample_id=pgxbs-kftvjtd6;group_id=NCIT:C27753;group_label=Acute Myeloid Leukemia Not Otherwise Specified;NCIT::id=NCIT:C27753;NCIT::label=Acute Myeloid Leukemia Not Otherwise Specified
-#sample=>sample_id=pgxbs-kftvjtt0;group_id=NCIT:C4004;group_label=Gastric Adenocarcinoma;NCIT::id=NCIT:C4004;NCIT::label=Gastric Adenocarcinoma
-#sample=>sample_id=pgxbs-kftvjtzv;group_id=NCIT:C4004;group_label=Gastric Adenocarcinoma;NCIT::id=NCIT:C4004;NCIT::label=Gastric Adenocarcinoma
-#sample=>sample_id=pgxbs-kftvju18;group_id=NCIT:C3510;group_label=Cutaneous Melanoma;NCIT::id=NCIT:C3510;NCIT::label=Cutaneous Melanoma
-#sample=>sample_id=pgxbs-kftvjufw;group_id=NCIT:C3270;group_label=Neuroblastoma;NCIT::id=NCIT:C3270;NCIT::label=Neuroblastoma
-#sample=>sample_id=pgxbs-kftvjulk;group_id=NCIT:C9145;group_label=Osteosarcoma;NCIT::id=NCIT:C9145;NCIT::label=Osteosarcoma
-#sample=>sample_id=pgxbs-kftvksc9;group_id=NCIT:C3493;group_label=Lung squamous cell carcinoma;NCIT::id=NCIT:C3493;NCIT::label=Lung squamous cell carcinoma
-#sample=>sample_id=pgxbs-kftvkscb;group_id=NCIT:C3512;group_label=Lung adenocarcinoma;NCIT::id=NCIT:C3512;NCIT::label=Lung adenocarcinoma
-#sample=>sample_id=pgxbs-kftvksdb;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
-#sample=>sample_id=pgxbs-kftvksdd;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
-#sample=>sample_id=pgxbs-kftvksde;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
-#sample=>sample_id=pgxbs-kftvksdo;group_id=NCIT:C3510;group_label=Cutaneous melanoma;NCIT::id=NCIT:C3510;NCIT::label=Cutaneous melanoma
-#sample=>sample_id=pgxbs-kftvksf8;group_id=NCIT:C37193;group_label=Anaplastic large cell lymphoma, ALK-positive;NCIT::id=NCIT:C37193;NCIT::label=Anaplastic large cell lymphoma, ALK-positive
-#sample=>sample_id=pgxbs-kftvksgq;group_id=NCIT:C40078;group_label=Ovarian clear cell adenocarcinoma;NCIT::id=NCIT:C40078;NCIT::label=Ovarian clear cell adenocarcinoma
-#sample=>sample_id=pgxbs-kftvksih;group_id=NCIT:C5214;group_label=Breast adenocarcinoma;NCIT::id=NCIT:C5214;NCIT::label=Breast adenocarcinoma
-#sample=>sample_id=pgxbs-kftvkskb;group_id=NCIT:C7955;group_label=Childhood hepatocellular carcinoma;NCIT::id=NCIT:C7955;NCIT::label=Childhood hepatocellular carcinoma
-#sample=>sample_id=pgxbs-kftvkskh;group_id=NCIT:C3467;group_label=Primary cutaneous T-cell non-Hodgkin lymphoma;NCIT::id=NCIT:C3467;NCIT::label=Primary cutaneous T-cell non-Hodgkin lymphoma
-#sample=>sample_id=pgxbs-kftvkskk;group_id=NCIT:C9154;group_label=Adult acute myeloid leukemia;NCIT::id=NCIT:C9154;NCIT::label=Adult acute myeloid leukemia
-#sample=>sample_id=pgxbs-kftvkslw;group_id=NCIT:C3288;group_label=Oligodendroglioma;NCIT::id=NCIT:C3288;NCIT::label=Oligodendroglioma
-#sample=>sample_id=pgxbs-kftvkso4;group_id=NCIT:C9265;group_label=Mycosis fungoides and Sezary syndrome;NCIT::id=NCIT:C9265;NCIT::label=Mycosis fungoides and Sezary syndrome
-#sample=>sample_id=pgxbs-kftvkso9;group_id=NCIT:C3224;group_label=Melanoma;NCIT::id=NCIT:C3224;NCIT::label=Melanoma
-#sample=>sample_id=pgxbs-kftvkspu;group_id=NCIT:C4753;group_label=B-cell prolymphocytic leukemia;NCIT::id=NCIT:C4753;NCIT::label=B-cell prolymphocytic leukemia
-#sample=>sample_id=pgxbs-kftvksqa;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
-#sample=>sample_id=pgxbs-kftvksqo;group_id=NCIT:C3242;group_label=Plasma cell myeloma;NCIT::id=NCIT:C3242;NCIT::label=Plasma cell myeloma
-#sample=>sample_id=pgxbs-kftvksr8;group_id=NCIT:C3242;group_label=Plasma cell myeloma;NCIT::id=NCIT:C3242;NCIT::label=Plasma cell myeloma
-#sample=>sample_id=pgxbs-kftvkstg;group_id=NCIT:C3493;group_label=Lung squamous cell carcinoma;NCIT::id=NCIT:C3493;NCIT::label=Lung squamous cell carcinoma
-#sample=>sample_id=pgxbs-kftvkstv;group_id=NCIT:C3242;group_label=Plasma cell myeloma;NCIT::id=NCIT:C3242;NCIT::label=Plasma cell myeloma
-#sample=>sample_id=pgxbs-kftvkswx;group_id=NCIT:C45662;group_label=Pleural epithelioid mesothelioma;NCIT::id=NCIT:C45662;NCIT::label=Pleural epithelioid mesothelioma
-#sample=>sample_id=pgxbs-kftvksxn;group_id=NCIT:C4450;group_label=Lung large cell carcinoma;NCIT::id=NCIT:C4450;NCIT::label=Lung large cell carcinoma
-#sample=>sample_id=pgxbs-kftvkt11;group_id=NCIT:C2923;group_label=Minimally invasive lung adenocarcinoma;NCIT::id=NCIT:C2923;NCIT::label=Minimally invasive lung adenocarcinoma
-#sample=>sample_id=pgxbs-kftvkt7h;group_id=NCIT:C4648;group_label=Tongue squamous cell carcinoma;NCIT::id=NCIT:C4648;NCIT::label=Tongue squamous cell carcinoma
-#sample=>sample_id=pgxbs-kftvktc3;group_id=NCIT:C37193;group_label=Anaplastic large cell lymphoma, ALK-positive;NCIT::id=NCIT:C37193;NCIT::label=Anaplastic large cell lymphoma, ALK-positive
-#sample=>sample_id=pgxbs-kftvktc7;group_id=NCIT:C8294;group_label=Pancreatic adenocarcinoma;NCIT::id=NCIT:C8294;NCIT::label=Pancreatic adenocarcinoma
-#sample=>sample_id=pgxbs-kftvktfu;group_id=NCIT:C8263;group_label=Adult acute monocytic leukemia;NCIT::id=NCIT:C8263;NCIT::label=Adult acute monocytic leukemia
+#biosample_id=>biosample_id=pgxbs-kftvieb9;group_id=NCIT:C7270;group_label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma;NCIT::id=NCIT:C7270;NCIT::label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma
+#biosample_id=>biosample_id=pgxbs-kftviebo;group_id=NCIT:C4450;group_label=Large cell lung carcinoma;NCIT::id=NCIT:C4450;NCIT::label=Large cell lung carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvieec;group_id=NCIT:C3493;group_label=Squamous Cell Lung Carcinoma;NCIT::id=NCIT:C3493;NCIT::label=Squamous Cell Lung Carcinoma
+#biosample_id=>biosample_id=pgxbs-kftviyu1;group_id=NCIT:C6766;group_label=Prostate small cell carcinoma;NCIT::id=NCIT:C6766;NCIT::label=Prostate small cell carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvj3ux;group_id=NCIT:C4450;group_label=Large cell lung carcinoma;NCIT::id=NCIT:C4450;NCIT::label=Large cell lung carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvj3uz;group_id=NCIT:C7270;group_label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma;NCIT::id=NCIT:C7270;NCIT::label=Mixed Mucinous and Non-Mucinous Bronchioloalveolar Carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvj3yn;group_id=NCIT:C4004;group_label=Gastric Adenocarcinoma;NCIT::id=NCIT:C4004;NCIT::label=Gastric Adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvjjtl;group_id=NCIT:C3510;group_label=Cutaneous Melanoma;NCIT::id=NCIT:C3510;NCIT::label=Cutaneous Melanoma
+#biosample_id=>biosample_id=pgxbs-kftvjszz;group_id=NCIT:C27753;group_label=Acute Myeloid Leukemia Not Otherwise Specified;NCIT::id=NCIT:C27753;NCIT::label=Acute Myeloid Leukemia Not Otherwise Specified
+#biosample_id=>biosample_id=pgxbs-kftvjt00;group_id=NCIT:C27753;group_label=Acute Myeloid Leukemia Not Otherwise Specified;NCIT::id=NCIT:C27753;NCIT::label=Acute Myeloid Leukemia Not Otherwise Specified
+#biosample_id=>biosample_id=pgxbs-kftvjtd6;group_id=NCIT:C27753;group_label=Acute Myeloid Leukemia Not Otherwise Specified;NCIT::id=NCIT:C27753;NCIT::label=Acute Myeloid Leukemia Not Otherwise Specified
+#biosample_id=>biosample_id=pgxbs-kftvjtt0;group_id=NCIT:C4004;group_label=Gastric Adenocarcinoma;NCIT::id=NCIT:C4004;NCIT::label=Gastric Adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvjtzv;group_id=NCIT:C4004;group_label=Gastric Adenocarcinoma;NCIT::id=NCIT:C4004;NCIT::label=Gastric Adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvju18;group_id=NCIT:C3510;group_label=Cutaneous Melanoma;NCIT::id=NCIT:C3510;NCIT::label=Cutaneous Melanoma
+#biosample_id=>biosample_id=pgxbs-kftvjufw;group_id=NCIT:C3270;group_label=Neuroblastoma;NCIT::id=NCIT:C3270;NCIT::label=Neuroblastoma
+#biosample_id=>biosample_id=pgxbs-kftvjulk;group_id=NCIT:C9145;group_label=Osteosarcoma;NCIT::id=NCIT:C9145;NCIT::label=Osteosarcoma
+#biosample_id=>biosample_id=pgxbs-kftvksc9;group_id=NCIT:C3493;group_label=Lung squamous cell carcinoma;NCIT::id=NCIT:C3493;NCIT::label=Lung squamous cell carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvkscb;group_id=NCIT:C3512;group_label=Lung adenocarcinoma;NCIT::id=NCIT:C3512;NCIT::label=Lung adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvksdb;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
+#biosample_id=>biosample_id=pgxbs-kftvksdd;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
+#biosample_id=>biosample_id=pgxbs-kftvksde;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
+#biosample_id=>biosample_id=pgxbs-kftvksdo;group_id=NCIT:C3510;group_label=Cutaneous melanoma;NCIT::id=NCIT:C3510;NCIT::label=Cutaneous melanoma
+#biosample_id=>biosample_id=pgxbs-kftvksf8;group_id=NCIT:C37193;group_label=Anaplastic large cell lymphoma, ALK-positive;NCIT::id=NCIT:C37193;NCIT::label=Anaplastic large cell lymphoma, ALK-positive
+#biosample_id=>biosample_id=pgxbs-kftvksgq;group_id=NCIT:C40078;group_label=Ovarian clear cell adenocarcinoma;NCIT::id=NCIT:C40078;NCIT::label=Ovarian clear cell adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvksih;group_id=NCIT:C5214;group_label=Breast adenocarcinoma;NCIT::id=NCIT:C5214;NCIT::label=Breast adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvkskb;group_id=NCIT:C7955;group_label=Childhood hepatocellular carcinoma;NCIT::id=NCIT:C7955;NCIT::label=Childhood hepatocellular carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvkskh;group_id=NCIT:C3467;group_label=Primary cutaneous T-cell non-Hodgkin lymphoma;NCIT::id=NCIT:C3467;NCIT::label=Primary cutaneous T-cell non-Hodgkin lymphoma
+#biosample_id=>biosample_id=pgxbs-kftvkskk;group_id=NCIT:C9154;group_label=Adult acute myeloid leukemia;NCIT::id=NCIT:C9154;NCIT::label=Adult acute myeloid leukemia
+#biosample_id=>biosample_id=pgxbs-kftvkslw;group_id=NCIT:C3288;group_label=Oligodendroglioma;NCIT::id=NCIT:C3288;NCIT::label=Oligodendroglioma
+#biosample_id=>biosample_id=pgxbs-kftvkso4;group_id=NCIT:C9265;group_label=Mycosis fungoides and Sezary syndrome;NCIT::id=NCIT:C9265;NCIT::label=Mycosis fungoides and Sezary syndrome
+#biosample_id=>biosample_id=pgxbs-kftvkso9;group_id=NCIT:C3224;group_label=Melanoma;NCIT::id=NCIT:C3224;NCIT::label=Melanoma
+#biosample_id=>biosample_id=pgxbs-kftvkspu;group_id=NCIT:C4753;group_label=B-cell prolymphocytic leukemia;NCIT::id=NCIT:C4753;NCIT::label=B-cell prolymphocytic leukemia
+#biosample_id=>biosample_id=pgxbs-kftvksqa;group_id=NCIT:C43223;group_label=Myeloid Leukemia associated with Down syndrome;NCIT::id=NCIT:C43223;NCIT::label=Myeloid Leukemia associated with Down syndrome
+#biosample_id=>biosample_id=pgxbs-kftvksqo;group_id=NCIT:C3242;group_label=Plasma cell myeloma;NCIT::id=NCIT:C3242;NCIT::label=Plasma cell myeloma
+#biosample_id=>biosample_id=pgxbs-kftvksr8;group_id=NCIT:C3242;group_label=Plasma cell myeloma;NCIT::id=NCIT:C3242;NCIT::label=Plasma cell myeloma
+#biosample_id=>biosample_id=pgxbs-kftvkstg;group_id=NCIT:C3493;group_label=Lung squamous cell carcinoma;NCIT::id=NCIT:C3493;NCIT::label=Lung squamous cell carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvkstv;group_id=NCIT:C3242;group_label=Plasma cell myeloma;NCIT::id=NCIT:C3242;NCIT::label=Plasma cell myeloma
+#biosample_id=>biosample_id=pgxbs-kftvkswx;group_id=NCIT:C45662;group_label=Pleural epithelioid mesothelioma;NCIT::id=NCIT:C45662;NCIT::label=Pleural epithelioid mesothelioma
+#biosample_id=>biosample_id=pgxbs-kftvksxn;group_id=NCIT:C4450;group_label=Lung large cell carcinoma;NCIT::id=NCIT:C4450;NCIT::label=Lung large cell carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvkt11;group_id=NCIT:C2923;group_label=Minimally invasive lung adenocarcinoma;NCIT::id=NCIT:C2923;NCIT::label=Minimally invasive lung adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvkt7h;group_id=NCIT:C4648;group_label=Tongue squamous cell carcinoma;NCIT::id=NCIT:C4648;NCIT::label=Tongue squamous cell carcinoma
+#biosample_id=>biosample_id=pgxbs-kftvktc3;group_id=NCIT:C37193;group_label=Anaplastic large cell lymphoma, ALK-positive;NCIT::id=NCIT:C37193;NCIT::label=Anaplastic large cell lymphoma, ALK-positive
+#biosample_id=>biosample_id=pgxbs-kftvktc7;group_id=NCIT:C8294;group_label=Pancreatic adenocarcinoma;NCIT::id=NCIT:C8294;NCIT::label=Pancreatic adenocarcinoma
+#biosample_id=>biosample_id=pgxbs-kftvktfu;group_id=NCIT:C8263;group_label=Adult acute monocytic leukemia;NCIT::id=NCIT:C8263;NCIT::label=Adult acute monocytic leukemia
 biosample_id	reference_name	start	end	log2	variant_type
 pgxbs-kftvieb9	1	9007601	9322226	0.483	DUP
 pgxbs-kftvieb9	1	87239647	87245937	-0.666	DEL

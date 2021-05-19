@@ -114,6 +114,7 @@ sub pgx_create_samples_from_segments {
 	my $pgx = shift;
 
 	if (! $pgx->{segmentdata}) { return $pgx }
+	
 
 	my %csIds = map{ $_->{callset_id} => 1 } @{ $pgx->{segmentdata} };
 
@@ -150,7 +151,7 @@ sub pgx_create_sample_collections {
 	$pgx->{samplecollections} = [];
 
 	my %sortKeys = map{ $_->{sortkey} => 1 } @{ $pgx->{samples} };
-
+		
 	# creation of the groups
 	foreach my $sortKey (keys %sortKeys) {
 

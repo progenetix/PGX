@@ -7,7 +7,7 @@ use Data::Dumper;
 use File::Basename;
 use POSIX 'strftime';
 use strict;
-use Term::ProgressBar;
+#use Term::ProgressBar;
 use YAML::XS qw(LoadFile);
 
 # use warnings;
@@ -26,9 +26,9 @@ Segment file name cannot contain ".", group_key has to be longer than 3 characte
   * a standard, single or multi-sample, tab-delimited Progenetix segments  file
 
 ```
-# sample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
-# sample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
-sample_id	chro	start	stop	mean	probes	variantType
+# biosample_id=GSM481286;group_id=NCIT:C4017;group_label=Ductal Breast Carcinoma
+# biosample_id=GSM481418;group_id=NCIT:C3059;group_label=Glioma
+biosample_id	chro	start	stop	mean	probes	variantType
 GSM481286	1	742429	7883881	-0.1594	699	DEL
 GSM481286	2	115673158	115705254	-0.3829	8	DEL
 GSM481286	3	115722621	119771659	0.167	424	DUP
@@ -97,7 +97,7 @@ my $plotargs = {
 
 # command line input
 my %args = @ARGV;
-$args{-sf} ||= q{};
+$args{-sf} ||= $args{-f};
 
 if (-d $args{-o}) {
   $plotargs->{-path_loc} = $args{-o} }
@@ -128,7 +128,6 @@ END
 
 my $outFileBase = $args{'-f'};
 $outFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,8}$/$1/;
-print Dumper($outFileBase);
 my $sortFileBase = $args{'-sf'};
 $sortFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,8}$/,$1/;
 $outFileBase = $outFileBase.$sortFileBase;
@@ -143,12 +142,14 @@ my $pgx = new PGX($plotargs);
 # this uses the file reading routine; but multi-segment files have to be
 # deconvoluted first ...
 $pgx->pgx_add_segments_from_file($args{'-f'});
+
 if (defined $pgx->{segfileheader}->{plotpars}) {
 	foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
 		$plotargs->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
 		$pgx->{parameters}->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
 	}
 }
+
 $pgx->pgx_create_samples_from_segments();
 $pgx->pgx_callset_labels_from_file($args{'-sf'});
 $pgx->pgx_create_sample_collections();
@@ -164,6 +165,7 @@ my $plot;
 $plot = new PGX($plotargs);
 $plot->{parameters}->{plottype} = 'histogram';
 $plot->{parameters}->{plotid} = 'histogram';
+$plot->{parameters}->{size_title_left_w_px} = 0;
 $plot->pgx_add_frequencymaps([ { statusmapsets => $pgx->{samples} } ]);
 $plot->return_histoplot_svg();
 $plot->write_svg($histoplotF);

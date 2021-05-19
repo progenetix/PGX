@@ -13,6 +13,7 @@ require Exporter;
   svg_add_bottom_text
   svg_add_labels_right
   svg_add_cluster_tree
+  text_width_from_array
 );
 
 ################################################################################
@@ -37,14 +38,24 @@ Returns:
 
 	if ($pgx->{parameters}->{title} !~ /\w+?/) { return $pgx }
 	
-	my $title_px = $pgx->{parameters}->{size_text_title_px};
-	my $title_w = $title_px * length($pgx->{parameters}->{title}) * 0.4;
-
-	while ( $title_w > $pgx->{areawidth}) {
-		$title_px -= 1;
-		$title_w = $title_px * length($pgx->{parameters}->{title}) * 0.4;
+	my $t_l =  length($pgx->{parameters}->{title}) * 0.45 * $pgx->{parameters}->{size_text_title_px};
+		
+	if ($t_l > $pgx->{areawidth}) {
+		my ($t_text, $t_code) = ( $pgx->{parameters}->{title} =~ /^(.*?)( \([^\()]+?\))?$/ );
+		if (length($t_text) > $pgx->{parameters}->{text_title_max_letters}) {
+		
+			$t_maxl = $pgx->{parameters}->{text_title_max_letters} - length($t_code);
+			$t_text =~ s/^(.{6,$t_maxl}[\w\.] ).*?$/$1.../;
+			$pgx->{parameters}->{title} = $t_text.$t_code;
+		}	
 	}
-
+	
+	my $title_px = text_width_from_array(
+		[$pgx->{parameters}->{title}],
+		$pgx->{parameters}->{size_text_title_px},
+		$pgx->{areawidth}
+	);
+	
 	$pgx->{Y} += $title_px;
 	$pgx->{svg} .= '
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth} / 2).'" y="'.$pgx->{Y}.'" style="text-anchor: middle; font-size: '.$title_px.'px">'.$pgx->{parameters}->{title}.'</text>';
@@ -174,6 +185,37 @@ Returns:
 ################################################################################
 ################################################################################
 
+sub text_width_from_array {
+
+	my $texts = shift;
+	my $text_pix = shift;
+	my $area_w = shift;
+	
+	if (! grep{ /\w+?/ } @$texts) {
+		return $text_pix }
+		
+	my $lengths = [ ];
+	foreach (@$texts) {
+		push(@$lengths, length($_));
+	}
+		
+	my $max_text = [ sort { $a <=> $b} @$lengths ]->[-1];
+
+	my $max_text_width =  $max_text * 0.5 * $text_pix;
+	
+	while ( $max_text_width > $area_w) {
+		$text_pix -= 0.5;
+		$max_text_width = $text_pix * $max_text * 0.5;
+	}
+
+	return $text_pix;
+
+}
+
+################################################################################
+################################################################################
+################################################################################
+
 sub svg_add_title_left {
 
 	no warnings 'uninitialized';
@@ -217,11 +259,11 @@ sub svg_add_labels_y {
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx = shift;
+	my $pgx = shift;
 
-  if (@{ $pgx->{parameters}->{label_y_m} } < 1) { return $pgx }
+	if (@{ $pgx->{parameters}->{label_y_m} } < 1) { return $pgx }
 
-  $pgx->{svg}  .= '
+	$pgx->{svg}  .= '
 <style type="text/css"><![CDATA[
   .cen {stroke-width: '.$pgx->{parameters}->{size_centerline_stroke_px}.'px; stroke: '.$pgx->{parameters}->{color_plotgrid_hex}.'; opacity: 0.8 ; }
   .tick {stroke-width: 1px; stroke: '.$pgx->{parameters}->{color_label_y_hex}.'; opacity: 0.8 ; }
@@ -229,36 +271,36 @@ sub svg_add_labels_y {
   .ylabe {text-anchor: start; font-size: '.$pgx->{parameters}->{size_text_lab_px}.'px; fill: '.$pgx->{parameters}->{color_label_y_hex}.';}
 ]]></style>';
 
-  my $area_x0 = $pgx->{areastartx};
-  my $area_y0 = $pgx->{Y};
-  my $area_ycen = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
-  my $area_yn = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px};
+	my $area_x0 = $pgx->{areastartx};
+	my $area_y0 = $pgx->{Y};
+	my $area_ycen = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px} / 2;
+	my $area_yn = $pgx->{Y} + $pgx->{parameters}->{size_plotarea_h_px};
 
-  foreach my $lab (@{ $pgx->{parameters}->{label_y_m} }) {
+	foreach my $lab (@{ $pgx->{parameters}->{label_y_m} }) {
 
-    my $lab_y = sprintf "%.1f", $area_ycen - $lab * $pgx->{parameters}->{pixyfactor};
+		my $lab_y = sprintf "%.1f", $area_ycen - $lab * $pgx->{parameters}->{pixyfactor};
 
-    # checking area boundaries
-    if ($lab_y < $area_y0 || $lab_y > $area_yn) { next }
+		# checking area boundaries
+		if ($lab_y < $area_y0 || $lab_y > $area_yn) { next }
 
-    $pgx->{svg}        .= '
+		$pgx->{svg}        .= '
 <line x1="'.($area_x0 - 1).'"  y1="'.$lab_y.'"  x2="'.$area_x0.'"  y2="'.$lab_y.'"  class="tick"  />
 <line x1="'.($area_x0 + $pgx->{areawidth}).'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $pgx->{areawidth} + 1).'"  y2="'.$lab_y.'"  class="tick"  />
 <line x1="'.$area_x0.'"  y1="'.$lab_y.'"  x2="'.($area_x0 + $pgx->{areawidth}).'"  y2="'.$lab_y.'"  class="cen"  />';
 
-    # avoiding too dense labels
-    if (@{ $pgx->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
-    # positioning the label text
-    $lab_y              += ($pgx->{parameters}->{size_text_lab_px} / 2) - 1;
-    $pgx->{svg}        .= '
+		# avoiding too dense labels
+		if (@{ $pgx->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
+		# positioning the label text
+		$lab_y              += ($pgx->{parameters}->{size_text_lab_px} / 2) - 1;
+		$pgx->{svg}        .= '
 <text x="'.($area_x0 - 2).'" y="'.$lab_y.'" class="ylabs">'.$lab.$pgx->{parameters}->{plot_unit_y}.'</text>';
-    if ($pgx->{parameters}->{size_clustertree_w_px} < 1) {
-      $pgx->{svg}      .= '
+		if ($pgx->{parameters}->{size_clustertree_w_px} < 1) {
+			$pgx->{svg}      .= '
 <text x="'.($area_x0 + $pgx->{areawidth} + 2).'" y="'.$lab_y.'" class="ylabe">'.$lab.$pgx->{parameters}->{plot_unit_y}.'</text>';
-    }
-  }
+		}
+	}
 
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -391,17 +433,17 @@ Returns:
     $pgx->{parameters}->{text_bottom_right} !~ /\w+?/
   ) { return $pgx }
 
-  $pgx->{Y}    += $pgx->{parameters}->{size_chromosome_padding_px};
+  $pgx->{Y} += $pgx->{parameters}->{size_chromosome_padding_px};
 
-  if ($pgx->{parameters}->{text_bottom_right} =~ /copy/i) {
+  if ($pgx->{parameters}->{text_bottom_right} =~ /progenetix/i) {
     $pgx->{parameters}->{text_bottom_right} = 'CC BY 4.0  progenetix.org ('.(localtime->strftime('%Y')).')' } #  &#x24B8;
     
-  $pgx->{Y}    += $pgx->{parameters}->{size_text_px};
-  $pgx->{svg}  .= '
+  $pgx->{Y} += $pgx->{parameters}->{size_text_px};
+  $pgx->{svg} .= '
 <text x="'.$pgx->{parameters}->{size_plotmargin_px}.'" y="'.$pgx->{Y}.'" style="text-anchor: start; font-size: '.$pgx->{parameters}->{size_text_px}.'px; fill: '.$pgx->{parameters}->{color_label_bottom_hex}.'">'.$pgx->{parameters}->{text_bottom_left}.'</text>
 <text x="'.($pgx->{areastartx} + $pgx->{areawidth}).'" y="'.$pgx->{Y}.'" style="text-anchor: end; font-size: '.$pgx->{parameters}->{size_text_px}.'px; fill: '.$pgx->{parameters}->{color_label_bottom_hex}.'">'.$pgx->{parameters}->{text_bottom_right}.'</text>';
 
-  $pgx->{Y}    += $pgx->{parameters}->{size_chromosome_padding_px};
+  $pgx->{Y} += $pgx->{parameters}->{size_chromosome_padding_px};
   return $pgx;
 
 }
