@@ -34,7 +34,7 @@ reverse: 'n'
 factor_probedots: 1
 
 # sizes
-size_plotmargin_px: 30
+size_plotmargin_px: 25
 size_plotmargin_top_px: 25
 size_plotmargin_bottom_px: 25
 size_title_left_w_px: 0
@@ -46,7 +46,7 @@ size_text_title_left_px: 8
 size_plotarea_h_px: 100
 size_strip_h_px: 7
 size_plotarea_padding: 3
-size_plotimage_w_px: 800
+size_plotimage_w_px: 1024
 size_plotimage_h_px: 480
 size_fracbarea_h_px: 100
 size_label_y_w_px: 25

@@ -39,22 +39,8 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 ...
 ```
 
--sf
-  * an optional tab-delimited file for labeling different sample groups
-  
-  sample  group_key group_label
-  GSM481286 icdom-85003 breast cancer, NOS
-  GSM481287 icdom-85003 breast cancer, NOS
-  GSM533241 icdom-81403 gastric adenocarcinoma
-  GSM533242 icdom-81403 gastric adenocarcinoma
-  GSM533243 icdom-81403 gastric adenocarcinoma
-  GSM126632 icdom-85003 breast cancer, NOS
-  GSM126633 icdom-85003 breast cancer, NOS
-  GSM126634 icdom-85003 breast cancer, NOS
-  ...  
- 
 Examples:
-  - perl CNVsegfilePlotter.pl -f segments.tab -sf sortfile.ods
+  - perl CNVsegfilePlotter.pl -f segments.pgxseg
 
 =cut
 
@@ -77,27 +63,17 @@ use PGX;
 # but can be overridden again from command line input
 
 my $plotargs = {
-  -size_plotimage_w_px => 1024,
-  -size_plotmargin_px => 25,
   -size_title_left_w_px => 200,
   -size_clustertree_w_px => 50,
-  -size_plotarea_h_px => 40,
   -size_text_px => 12,
-  -size_text_title_px => 48,
-  -size_text_subtitle_px => 32,
+  -size_text_title_px => 16,
+  -size_text_subtitle_px => 14,
   -size_text_title_left_px => 10,
-  -label_y_m => '-50,0,50',
-  -chr2plot => join(',', 1..22),
-  -plotregions => q{},
-  -genome => 'grch38',
-  -plottype => 'histogram',
-  -min_group_no => 3,
   -path_loc => $path_of_this_module.'/out',
 };
 
 # command line input
 my %args = @ARGV;
-$args{-sf} ||= $args{-f};
 
 if (-d $args{-o}) {
   $plotargs->{-path_loc} = $args{-o} }
@@ -128,9 +104,6 @@ END
 
 my $outFileBase = $args{'-f'};
 $outFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,8}$/$1/;
-my $sortFileBase = $args{'-sf'};
-$sortFileBase =~ s/^.*?\/([^\/]+?)\.\w{2,8}$/,$1/;
-$outFileBase = $outFileBase.$sortFileBase;
 my $matrixplotF = $outFileBase.',samples_clustered.svg';
 my $histoplotF = $outFileBase.',samples_histoplot.svg';
 my $histoplotmultF = $outFileBase.',samples_histoplot_mult.svg';
@@ -151,7 +124,7 @@ if (defined $pgx->{segfileheader}->{plotpars}) {
 }
 
 $pgx->pgx_create_samples_from_segments();
-$pgx->pgx_callset_labels_from_file($args{'-sf'});
+$pgx->pgx_callset_labels_from_file($args{'-f'});
 $pgx->pgx_create_sample_collections();
 
 ################################################################################
