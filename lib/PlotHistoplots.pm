@@ -42,8 +42,7 @@ sub return_histoplot_svg {
 	$pgx->{areatreex} = $pgx->{areaendx};
 	if ($pgx->{parameters}->{size_label_right_px} > 0) {
 		$pgx->{areatreex} += $pgx->{parameters}->{size_chromosome_padding_px} + $pgx->{parameters}->{size_label_right_px} }
-		
-		
+	
 	# map label left size adjustment	
 	for my $i (0..$#{ $pgx->{frequencymaps} }) {
 		if ($pgx->{frequencymaps}->[$i]->{name} =~ /\w\w/) {
@@ -58,7 +57,7 @@ sub return_histoplot_svg {
 			}
 		}	
 	}
-	
+
 	$pgx->{parameters}->{size_text_title_left_px} = text_width_from_array(
 		[ map{$_->{name}} @{ $pgx->{frequencymaps} } ],
 		$pgx->{parameters}->{size_text_title_left_px},
@@ -67,8 +66,7 @@ sub return_histoplot_svg {
 	
 	$pgx->svg_add_title();
 	
-	if ($pgx->{parameters}->{size_plotarea_h_px} > 0) {
-		
+	if ($pgx->{parameters}->{size_plotarea_h_px} > 0) {		
 		$pgx->svg_add_cytobands();
 		$pgx->get_histoplot_background();
 		$pgx->{markerstarty} = $pgx->{areastarty}; # so that markers span the histograms
@@ -137,8 +135,8 @@ sub get_histoplot_background {
 
 		my $is_single = 0;  
 		my $p_a_h = $pgx->{parameters}->{size_plotarea_h_px};
-		if (grep{ /count/ } keys %$frequencymapsSet) {
-			if ($frequencymapsSet->{count} == 1) {
+		if (grep{ /sample_count/ } keys %$frequencymapsSet) {
+			if ($frequencymapsSet->{sample_count} == 1) {
 				$is_single = 1 } }	
 		if ($is_single ==1) { $p_a_h = $pgx->{parameters}->{size_chromosome_w_px} }
 
@@ -206,8 +204,8 @@ Returns:
 
   	my $is_single = 0;  
   	my $p_a_h = $pgx->{parameters}->{size_plotarea_h_px};
-  	if (grep{ /count/ } keys %$frequencymapsSet) {
-  		if ($frequencymapsSet->{count} == 1) {
+  	if (grep{ /sample_count/ } keys %$frequencymapsSet) {
+  		if ($frequencymapsSet->{sample_count} == 1) {
   			$is_single = 1 } }	
 	if ($is_single == 1) { $p_a_h = $pgx->{parameters}->{size_chromosome_w_px} }
 
@@ -224,7 +222,7 @@ Returns:
     }
 
     if ($is_single != 1) { $pgx->svg_add_labels_y() }
-
+    
     foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 
       my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
@@ -234,8 +232,8 @@ Returns:
       @ind = grep{ $pgx->{genomeintervals}->[$_]->{start} <= $pgx->{referencebounds}->{$refName}->[1]  } @ind;
       @ind = grep{ $pgx->{genomeintervals}->[$_]->{end} >= $pgx->{referencebounds}->{$refName}->[0]  } @ind;
 
-      foreach my $GL (qw(dupfrequencies delfrequencies)) {
-        $pgx->{svg}      .= '
+      foreach my $GL (qw(gain_frequency loss_frequency)) {
+        $pgx->{svg} .= '
 	<polygon points="
 		'.$area_x0.' '.$area_ycen;
 
@@ -250,19 +248,19 @@ Returns:
 			$end = $pgx->{referencebounds}->{$refName}->[1] }
 
 			my $X = sprintf "%.1f", $area_x0 - $x_corr + $pgx->{basepixfrac} * ($end - ($end - $start) / 2);
-			my $H = sprintf "%.1f", $frequencymapsSet->{$GL}->[$i] * $pgx->{parameters}->{pixyfactor};
+			my $H = sprintf "%.1f", $frequencymapsSet->{intervals}->[$i]->{$GL} * $pgx->{parameters}->{pixyfactor};
 			
 			if ($is_single == 1) {
-				$H = $frequencymapsSet->{$GL}->[$i] * $p_a_h / 200 }
+				$H = $frequencymapsSet->{intervals}->[$i]->{$GL} * $p_a_h / 200 }
 				
 			$pgx->{svg}  .= '
-		'.$X.' '.(sprintf "%.1f", ( $GL eq 'delfrequencies' ? $area_ycen + $H : $area_ycen - $H) );
+		'.$X.' '.(sprintf "%.1f", ( $GL eq 'loss_frequency' ? $area_ycen + $H : $area_ycen - $H) );
 
         }
 
 		$pgx->{svg} .= '
 		'.(sprintf "%.1f", $area_x0 + $areaW ).' '.$area_ycen.'"
-		fill="'.($GL =~ /del/i ? $pgx->{parameters}->{color_var_del_hex} : $pgx->{parameters}->{color_var_dup_hex}).'"
+		fill="'.($GL =~ /loss/i ? $pgx->{parameters}->{color_var_del_hex} : $pgx->{parameters}->{color_var_dup_hex}).'"
 		stroke-width="0px"
 	/>';
  

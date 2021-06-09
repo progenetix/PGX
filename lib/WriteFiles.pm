@@ -161,7 +161,6 @@ Returns:
   open  FILE, '>'."$file";
   print FILE join("\t", @columnKs)."\n";
   foreach my $seg (@{ $pgx->{segmentdata} }) {
-#print Dumper($seg).'<hr/>';
     print FILE join("\t",
       $seg->{callset_id},
       $seg->{reference_name},
@@ -244,8 +243,8 @@ Returns:
     else {
       print FILE 'subset_'.$i."\t" }
     print FILE join("\t",
-      (map{ $frequencymapsSet->{dupfrequencies}->[$_] + 0 } @{ $pgx->{matrixindex} }),
-      (map{ $frequencymapsSet->{delfrequencies}->[$_] + 0 } @{ $pgx->{matrixindex} }),
+      (map{ $frequencymapsSet->{intervals}->[$_]->{gain_frequency} + 0 } @{ $pgx->{matrixindex} }),
+      (map{ $frequencymapsSet->{intervals}->[$_]->{gain_frequency} + 0 } @{ $pgx->{matrixindex} }),
     )."\n";
   }
   close FILE;
@@ -354,8 +353,8 @@ Returns:
     else {
       print FILE 'sample_'.$i."\t" }
     print FILE join("\t",
-      (map{ $sample->{statusmaps}->{dupmax}->[$_] + 0 } @{ $pgx->{matrixindex} }),
-      (map{ $sample->{statusmaps}->{delmin}->[$_] + 0 } @{ $pgx->{matrixindex} }),
+      (map{ $sample->{statusmaps}->{max}->[$_] + 0 } @{ $pgx->{matrixindex} }),
+      (map{ $sample->{statusmaps}->{min}->[$_] + 0 } @{ $pgx->{matrixindex} }),
     )."\n";
   }
   close FILE;

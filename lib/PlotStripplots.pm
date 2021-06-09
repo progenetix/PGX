@@ -288,8 +288,6 @@ Returns:
   my $gdArea = GD::Image->new($pgx->{areawidth}, $areaH, 1);
   my $gdBgCol = $gdArea->colorAllocate( @{ hex2rgb($pp->{color_plotarea_hex}) } );
   $gdArea->filledRectangle(0, 0, $pgx->{areawidth}, $areaH, $gdBgCol);
-#   my $gdAreaCol = $gdArea->colorAllocate( @{ hex2rgb($pp->{color_plotarea_hex}) } );
-#   $gdArea->transparent($gdBgCol);
 
   my $gd_y0 = 0;
   my $gd_yn;
@@ -301,9 +299,9 @@ Returns:
 
     if ($frequencymapsSet->{name} =~ /\w\w/) {
       my $titeL = {
-        text =>  $frequencymapsSet->{name},
-        pos_y =>  $pgx->{Y} + $pp->{size_strip_h_px} * 0.5,
-        linkout =>  q{},
+        text => $frequencymapsSet->{name},
+        pos_y => $pgx->{Y} + $pp->{size_strip_h_px} * 0.5,
+        linkout => q{},
       };
       $pgx->svg_add_title_left($titeL);
     }
@@ -311,7 +309,7 @@ Returns:
     $gd_yn = $gd_y0 + $pp->{size_strip_h_px};
     $area_x0 = 0;
 
-    my $maxF = (sort {$a <=> $b} (@{ $frequencymapsSet->{dupfrequencies} }, @{ $frequencymapsSet->{delfrequencies} }) )[-1];
+    my $maxF = (sort {$a <=> $b} (map{ $_->{gain_frequency}, $_->{loss_frequency} } @{ $frequencymapsSet->{intervals} }) )[-1];
 
     foreach my $chro (@{ $pp->{chr2plot} }) {
 
@@ -334,13 +332,15 @@ Returns:
           $end = $pgx->{referencebounds}->{$chro}->[1] }
 
         my $seg_x0 = sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($start - $pgx->{referencebounds}->{$chro}->[0]);
-        my $segPixEnd = sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($end - $start));
+        my $segPixEnd = sprintf "%.1f", ($seg_x0 + $pgx->{basepixfrac} * ($end - $start));
         # providing a minimum sub-pixel segment plot length
+        if ($segPixEnd - $seg_x0 < 0.2) {
+        	$segPixEnd = $seg_x0 + 0.2 }
 
         my $fill = frequencies2rgb(
 			$pp,
-			$frequencymapsSet->{dupfrequencies}->[$i],
-			$frequencymapsSet->{delfrequencies}->[$i],
+			$frequencymapsSet->{intervals}->[$i]->{gain_frequency},
+			$frequencymapsSet->{intervals}->[$i]->{loss_frequency},
 			$maxF,
 		);
 

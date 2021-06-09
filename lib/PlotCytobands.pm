@@ -42,8 +42,7 @@ Returns:
 		
 	if ($t_l > $pgx->{areawidth}) {
 		my ($t_text, $t_code) = ( $pgx->{parameters}->{title} =~ /^(.*?)( \([^\()]+?\))?$/ );
-		if (length($t_text) > $pgx->{parameters}->{text_title_max_letters}) {
-		
+		if (length($t_text) > $pgx->{parameters}->{text_title_max_letters}) {		
 			$t_maxl = $pgx->{parameters}->{text_title_max_letters} - length($t_code);
 			$t_text =~ s/^(.{6,$t_maxl}[\w\.] ).*?$/$1.../;
 			$pgx->{parameters}->{title} = $t_text.$t_code;

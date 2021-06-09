@@ -233,10 +233,6 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 		$colOrder{value} = 5;
 		$colOrder{probes} = 4;
 	};
-# 	if ($pgx->{parameters}->{format_inputfiles} =~ /pgxseg/i) {
-# 		$colOrder{variant_type} = 5;
-# 		$colOrder{probes} = 6;
-# 	};
 
 	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
 		shift @$table }
@@ -276,8 +272,6 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 
 		if ($segVals{value} =~ /^\-?\d+?(\.\d+?)?$/) {
 			$segVals{value} = sprintf "%.4f", $segVals{value} }
-			
-
 
 		my $varStatus = '_NS_';
 

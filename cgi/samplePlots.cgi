@@ -47,7 +47,13 @@ if ($params->{debug}->[0] > 0) {
 my $accessid = $params->{accessid}->[0];
 if (! $params->{datasetIds}) {
 	$params->{datasetIds} = [ 'progenetix' ] }
-
+if (
+	$params->{datasetIds}->[0] =~ /undefined/
+	||
+	$params->{datasetIds}->[0] =~ /null/
+) {
+	$params->{datasetIds} = [ 'progenetix' ] }
+	
 my $api = {
 	config => $config,
 	datasetid => '',
@@ -137,9 +143,10 @@ sub _retrieve_samples {
 		$pgx->pgx_open_handover($api->{config}, $api->{accessid});
 		$pgx->pgx_samples_from_handover();
 	}
-	if ($api->{config}->{param}->{'-randno'}->[0] > 0) {
-		$pgx->{samples} = BeaconPlus::ConfigLoader::RandArr($pgx->{samples}, $api->{config}->{param}->{'-randno'}->[0]) }
+	if ($api->{plotargs}->{'-randno'} > 0) {
+		$pgx->{samples} = RandArr($pgx->{samples}, $api->{plotargs}->{'-randno'}) }
 	$pgx->pgx_callset_labels_from_biosamples($api->{config});
+	$pgx->pgx_callset_labels_from_header();
 	$pgx->pgx_add_variants_from_db();
 	
 	$api->{samples}	= $pgx->{samples};

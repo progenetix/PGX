@@ -31,13 +31,13 @@ The subroutine returns an object containing maps for
 Structure:
 
 maps:
-  dupmax:
+  max:
     - 0 or pos. value x genomeintervals
-  delmin:
+  min:
     - 0 or neg. value x genomeintervals
-  dupcoverage:
+  dup:
     - 0 or pos. value x genomeintervals
-  delcoverage:
+  del:
     - 0 or neg. value x genomeintervals
 
 =cut
@@ -56,8 +56,8 @@ maps:
 		binning => $pgx->{genomeintervals}->[0]->{end} - $pgx->{genomeintervals}->[0]->{start},
 	};
 
-	my %intCovLabs = ( DUP => 'dupcoverage', DEL => 'delcoverage' );
-	my %intValLabs = ( DUP => 'dupmax', DEL => 'delmin' );
+	my %intCovLabs = ( DUP => 'dup', DEL => 'del' );
+	my %intValLabs = ( DUP => 'max', DEL => 'min' );
 
 	my $cnvStats = {
 		cnvcoverage => 0,
@@ -109,11 +109,11 @@ maps:
 
 	# the last of the sorted values is assigned iF > 0
 	foreach my $ind (grep{ $valueMap->[$_]->[-1] > 0 } 0..$#{ $pgx->{genomeintervals} }) {
-		$maps->{dupmax}->[$ind] = 1 * (sprintf "%.4f", $valueMap->[$ind]->[-1]) }
+		$maps->{max}->[$ind] = 1 * (sprintf "%.4f", $valueMap->[$ind]->[-1]) }
 
 	# the first of the sorted values is assigned iF < 0
 	foreach my $ind (grep{ $valueMap->[$_]->[0] < 0 } 0..$#{ $pgx->{genomeintervals} }) {
-		$maps->{delmin}->[$ind] = 1 * (sprintf "%.4f", $valueMap->[$ind]->[0]) }
+		$maps->{min}->[$ind] = 1 * (sprintf "%.4f", $valueMap->[$ind]->[0]) }
 
 	$pgx->{statusmaps} = $maps;
 	$pgx->{cnvstatistics} = $cnvStats;
@@ -149,31 +149,36 @@ Returns:
 	my $cnvmaps = shift;
 	my $name = shift;
 	my $labels = shift;
+	
+	my $sample_count = @{ $cnvmaps };
 
 	my $maps = {
-		intervals => scalar(@{ $pgx->{genomeintervals} }),
+		interval_count => scalar(@{ $pgx->{genomeintervals} }),
 		binning => $pgx->{genomeintervals}->[0]->{end} - $pgx->{genomeintervals}->[0]->{start},
 		name => ($name =~ /\w/ ? $name : q{}),
 		labels => (@$labels > 0 ? $labels : []),
-		count => scalar @{ $cnvmaps },
+		sample_count => $sample_count,
+		intervals => [ ]
 	};
 
-	my %intLabs = ( DUP => 'dupcoverage', DEL => 'delcoverage' );
-	my %freqLabs = ( DUP => 'dupfrequencies', DEL => 'delfrequencies' );
+	my %intLabs = ( DUP => 'dup', DEL => 'del' );
+	my %freqLabs = ( DUP => 'gain_frequency', DEL => 'loss_frequency' );
 
 	# avoiding division by 0 errors if improperly called
 	my $fFactor = 100;
 	if (@{ $cnvmaps } > 1) { $fFactor = 100 / @{ $cnvmaps } }
 		
 	$pgx->{parameters}->{bin_match_min} *= 1;
-	foreach my $type (keys %intLabs) {
-		for my $i (0..$#{ $pgx->{genomeintervals} }) {
-			$maps->{ $freqLabs{ $type } }->[$i] = sprintf "%.3f", ( $fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] >= $pgx->{parameters}->{bin_match_min} } @{ $cnvmaps } ));
+	for my $i (0..$#{ $pgx->{genomeintervals} }) {
+		my $int = { "index" => $i };
+		foreach my $type (keys %intLabs) {
+			$int->{ $freqLabs{ $type } } = sprintf "%.3f", ( $fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] >= $pgx->{parameters}->{bin_match_min} } @{ $cnvmaps } ));
 		}
+		push(@{$maps->{intervals}},  $int);
 	}
-
+	
 	push(@{ $pgx->{frequencymaps} }, $maps);
-
+	
 	return $pgx;
 
 }
@@ -219,16 +224,16 @@ sub cluster_frequencymaps {
 		push(
 			@matrix,
 			[
-			  (map{ $frequencymapsSet->{dupfrequencies}->[$_] + 0 } @{ $pgx->{matrixindex} }),
-			  (map{ $frequencymapsSet->{delfrequencies}->[$_] + 0 } @{ $pgx->{matrixindex} })
+			  (map{ $frequencymapsSet->{intervals}->[$_]->{gain_frequency} + 0 } @{ $pgx->{matrixindex} }),
+			  (map{ $frequencymapsSet->{intervals}->[$_]->{loss_frequency} + 0 } @{ $pgx->{matrixindex} })
 			]
-		  );
+		);
 	}
-
+	
 	if (scalar(@{ $labels }) < 3) { return $pgx }
 
 	($pgx->{clustertree}, $order) = $pgx->use_Eisen_tree(\@matrix);
-
+	
 	$pgx->{frequencymaps} = [ map{ $pgx->{frequencymaps}->[$_] } reverse(@{ $order }) ];
 
 	return $pgx;
@@ -266,8 +271,8 @@ sub cluster_samples {
 		push(
 		  @matrix,
 		  [
- 			(map{ $sample->{statusmaps}->{dupcoverage}->[$_] >= $covThresh ? $sample->{statusmaps}->{dupcoverage}->[$_] : 0 } @{ $pgx->{matrixindex} }),
- 			(map{ $sample->{statusmaps}->{delcoverage}->[$_] >= $covThresh ? $sample->{statusmaps}->{delcoverage}->[$_] : 0 } @{ $pgx->{matrixindex} })
+ 			(map{ $sample->{statusmaps}->{dup}->[$_] >= $covThresh ? $sample->{statusmaps}->{dup}->[$_] : 0 } @{ $pgx->{matrixindex} }),
+ 			(map{ $sample->{statusmaps}->{del}->[$_] >= $covThresh ? $sample->{statusmaps}->{del}->[$_] : 0 } @{ $pgx->{matrixindex} })
 		  ]
 		);
 	}

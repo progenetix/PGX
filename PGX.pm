@@ -3,7 +3,7 @@ package PGX;
 use File::Basename;
 use YAML::XS qw(LoadFile DumpFile);
 use Data::Dumper;
-
+use lib::CGItools;
 use lib::CytobandReader;
 use lib::GenomeIntervals;
 use lib::GenomeIntervalStatistics;
@@ -11,6 +11,7 @@ use lib::PlotPrepareData;
 use lib::PlotMakeParameters;
 use lib::PlotHistoplots;
 use lib::PlotArrays;
+use lib::PlotErrorSVG;
 use lib::PlotStripplots;
 use lib::PlotCytobands;
 use lib::Helpers;

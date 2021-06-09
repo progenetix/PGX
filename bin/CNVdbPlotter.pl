@@ -93,8 +93,6 @@ foreach my $qElement (split(',', $args{'-query'})) {
   }
 }
 
-print Dumper(@$qList);
-
 my $sortValuesK;
 my $sortValuesL;
 my $sortValuesT;
@@ -140,8 +138,6 @@ if (scalar @$qList == 1) {
   $biosampleQ = $qList->[0] }
 elsif (scalar @$qList > 1) {
   $biosampleQ = { '$or' => $qList } }
-  
-# print Dumper($biosampleQ);
 
 ################################################################################
 ################################################################################

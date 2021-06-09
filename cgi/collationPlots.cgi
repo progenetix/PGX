@@ -25,7 +25,6 @@ use MongoDB;
 
 BEGIN { unshift @INC, ('..') };
 use PGX;
-use lib::CGItools;
 
 my $config = PGX::read_config();
 my $params = lib::CGItools::deparse_query_string();
@@ -46,19 +45,27 @@ if (! $params->{datasetIds}) {
 	$params->{datasetIds} = [ 'progenetix' ] }
 if (scalar @{ $params->{datasetIds} } != 1) {
 	$params->{datasetIds} = [ 'progenetix' ] }
+if (
+	$params->{datasetIds}->[0] =~ /undefined/
+	||
+	$params->{datasetIds}->[0] =~ /null/
+) {
+	$params->{datasetIds} = [ 'progenetix' ] }
 
 my $id = $params->{id}->[0];
 my $dataset = $params->{datasetIds}->[0];
 my $subset = MongoDB::MongoClient->new()->get_database( $dataset )->get_collection( "frequencymaps" )->find_one( { id => $id } );
 
+my $plotargs = { map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) };
+
 if (! grep{ /id/ } keys %{ $subset }) {
-	print 'Content-type: text'."\n";
-	print 'status: 422'."\n\n";
-	print 'No match for histogram with id "'.$id.'" in dataset "'.$dataset.'" ...';
+	my $plot = new PGX($plotargs);
+	$plot->return_error_svg('No match for histogram with id "'.$id.'" in dataset "'.$dataset.'" ...');
+	print 'Content-type: image/svg+xml'."\n\n";
+	print $plot->{svg};
 	exit;
 }
 
-my $plotargs = { map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) };
 if ($subset->{label} =~ /.../) {
 	$plotargs->{-title} = $subset->{label}.' ('.$subset->{id}.')' }
 else {
@@ -66,11 +73,13 @@ else {
 
 my $plot = new PGX($plotargs);
 $plot->{parameters}->{plotid} = 'histoplot';
-$plot->{parameters}->{text_bottom_left} =   $subset->{counts}->{biosamples}.' samples';
-$plot->{frequencymaps} = [ $subset->{ frequencymaps } ];
+$plot->{parameters}->{text_bottom_left} = $subset->{counts}->{biosamples}.' samples';
+
+
+$plot->{frequencymaps} = [ $subset->{ frequencymap } ];
 $plot->return_histoplot_svg();
 
-send_Google_tracking_no_log(
+lib::CGItools::send_Google_tracking_no_log(
 	$config->{cgi},
 	"/cgi/PGX/cgi/collationPlots.cgi"
 );

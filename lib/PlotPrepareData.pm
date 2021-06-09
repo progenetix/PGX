@@ -96,7 +96,7 @@ sub pgx_add_frequencymaps {
 	$pgx->{frequencymaps} = [];
 
 	foreach my $csColl (@$csColls) {
-		$pgx->interval_cnv_frequencies(
+			$pgx->interval_cnv_frequencies(
 			[ map{$_->{statusmaps}} @{ $csColl->{statusmapsets} } ],
 			$csColl->{name},
 			$csColl->{labels},

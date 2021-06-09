@@ -14,6 +14,7 @@ require Exporter;
   pgx_segmentdata_from_sample_0
   pgx_add_variants_from_db
   pgx_create_samples_from_segments
+  pgx_callset_labels_from_header
   pgx_callset_labels_from_biosamples
   pgx_callset_labels_from_file
   pgx_create_sample_collections
@@ -201,11 +202,10 @@ sub pgx_callset_labels_from_biosamples {
 
 	my $pgx = shift;
 	my $config = shift;
-
+	
 	if (! $pgx->{dataconn}) { return $pgx }
 
 	my ($groupAttr, $groupType);
-
 	if ($pgx->{parameters}->{group_by} =~ /.../) {
 		for my $grt (keys %{ $pgx->{config}->{datacollections} }) {
 			if ($grt eq $pgx->{parameters}->{group_by}) {
@@ -238,6 +238,35 @@ sub pgx_callset_labels_from_biosamples {
 		$pgx->{samples}->[$i]->{sortlabel} = ( $thisbioc->{label} =~ /.../ ? $thisbioc->{label} : $thisbioc->{id} );
 		$pgx->{samples}->[$i]->{sortlabel} =~ s/^.+?\:\:?//;
 
+	}
+
+	return $pgx;
+
+}
+
+################################################################################
+
+sub pgx_callset_labels_from_header {
+
+	my $pgx = shift;
+
+	if (! defined $pgx->{segfileheader}) { 
+		return $pgx }
+
+	my $fallbackK = 'NA';
+	my $fallbackL = 'not specified';
+
+	my $hv = $pgx->{segfileheader};
+	for my $i (0..$#{ $pgx->{samples} }) {
+		my $csId = $pgx->{samples}->[$i]->{id};
+		if (grep{ /^group_id$/} keys %{ $hv->{samples}->{ $csId } } ) {
+			$pgx->{samples}->[$i]->{sortkey} = $hv->{samples}->{ $csId }->{group_id} }
+		if (grep{ /^group_label$/} keys %{ $hv->{samples}->{ $csId } } ) {
+			$pgx->{samples}->[$i]->{sortlabel} = $hv->{samples}->{ $csId }->{group_label} }
+		if (! defined $pgx->{samples}->[$i]->{sortkey}) {
+			$pgx->{samples}->[$i]->{sortlabel} = $fallbackK }
+		if (! defined $pgx->{samples}->[$i]->{sortlabel}) {
+			$pgx->{samples}->[$i]->{sortlabel} = $fallbackL }	
 	}
 
 	return $pgx;
