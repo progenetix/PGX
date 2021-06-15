@@ -132,10 +132,10 @@ sub _retrieve_samples {
 
 	$pgx->pgx_add_segments_from_file($api->{segfile});
 
-	if (defined $pgx->{segfileheader}->{plotpars}) {
-		foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
-			$api->{plotargs}->{"-".$_} = $pgx->{segfileheader}->{plotpars}->{$_};
-			$pgx->{parameters}->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+	if (defined $pgx->{pgxfileheader}->{plotpars}) {
+		foreach (keys %{ $pgx->{pgxfileheader}->{plotpars} }) {
+			$api->{plotargs}->{"-".$_} = $pgx->{pgxfileheader}->{plotpars}->{$_};
+			$pgx->{parameters}->{$_} = $pgx->{pgxfileheader}->{plotpars}->{$_};
 		}
 	}
 	$pgx->pgx_create_samples_from_segments();

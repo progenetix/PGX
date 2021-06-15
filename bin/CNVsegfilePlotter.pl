@@ -116,10 +116,10 @@ my $pgx = new PGX($plotargs);
 # deconvoluted first ...
 $pgx->pgx_add_segments_from_file($args{'-f'});
 
-if (defined $pgx->{segfileheader}->{plotpars}) {
-	foreach (keys %{ $pgx->{segfileheader}->{plotpars} }) {
-		$plotargs->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
-		$pgx->{parameters}->{$_} = $pgx->{segfileheader}->{plotpars}->{$_};
+if (defined $pgx->{pgxfileheader}->{plotpars}) {
+	foreach (keys %{ $pgx->{pgxfileheader}->{plotpars} }) {
+		$plotargs->{$_} = $pgx->{pgxfileheader}->{plotpars}->{$_};
+		$pgx->{parameters}->{$_} = $pgx->{pgxfileheader}->{plotpars}->{$_};
 	}
 }
 

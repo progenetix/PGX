@@ -17,6 +17,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(
   pgx_add_frequencymaps
+  pgx_add_frequencymaps_from_file
   pgx_add_probes_from_file
   pgx_add_segments_from_file
   pgx_add_segmentsets_from_samples
@@ -155,6 +156,19 @@ sub pgx_add_segments_from_file {
   my $segfile = shift;
 
   $pgx->read_segmentfile($segfile);
+  return $pgx;
+
+}
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+sub pgx_add_frequencymaps_from_file {
+
+  my $pgx = shift;
+  my $f_map_file = shift;
+
+  $pgx->read_frequencyfile($f_map_file);
+  
   return $pgx;
 
 }

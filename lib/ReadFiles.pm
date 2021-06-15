@@ -8,10 +8,11 @@ use lib::Helpers;
 require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(
-  read_probefile
-  read_segmentfile
-  read_file_to_split_array
-  read_webfile_to_split_array
+	read_probefile
+	read_frequencyfile
+	read_segmentfile
+	read_file_to_split_array
+	read_webfile_to_split_array
 );
 
 ################################################################################
@@ -129,6 +130,142 @@ Returns:
 
 ################################################################################
 
+sub read_frequencyfile {
+
+	no warnings 'uninitialized';
+
+=podmd
+
+#### Expects:
+
+* a standard tab-delimited .pgxseg frequency file
+  - an additional header may exist
+* header (optional)
+
+```
+# plotpars;color_var_dup_hex=#EE4500;color_var_del_hex=#09F911
+...
+```
+
+#### Returns:
+
+* a pgx "frequencysets" list of objects
+
+```
+...
+{
+	"index" : 2840,
+	"id" : "22:4000000-5000000",
+	"reference_name" : "22",
+	"start" : 4000000,
+	"end" : 5000000,
+	"size" : 1000000,
+	"gain_frequency" : 13.208,
+	"loss_frequency" : 33.962
+},
+...
+```
+
+=cut
+
+########    ####    ####    ####    ####    ####    ####    ####    ####    ####
+
+	my $pgx = shift;
+	my $fF = shift;
+	
+	if (! -f $fF) { return $pgx }
+	
+	$pgx->{frequencymaps} = [];
+	
+	my ($header, $table) = read_file_to_split_array($fF);
+	my $headerValues = _objectify_header($header);	
+	$pgx->{pgxfileheader} = $headerValues;
+	
+	my %colOrder = (
+		group_id => 0,
+		reference_name => 1,
+		start => 2,
+		end => 3,
+		gain_frequency => 4,
+		loss_frequency => 5,
+		"index" => 6
+	);
+	
+	if ($table->[0]->[ $colOrder{reference_name} ] !~ /^([12]\d?)|X|Y/i) {
+		shift @$table }
+
+	#first get the collation_id values
+	my $f_maps_keyed = {};
+	
+	foreach my $segment (@$table) {
+		if ($segment->[ $colOrder{start} ] =~ /\w/) {
+			$f_maps_keyed->{ $segment->[ $colOrder{group_id} ] } =  {
+				name => $segment->[ $colOrder{group_id} ],
+				id => $segment->[ $colOrder{group_id} ],
+				interval_count => 0,
+				labels => [ ],
+				intervals => [ ]			
+			}
+		}	
+	}
+	
+	foreach my $segment (@$table) {		
+		my %segVals =  ();
+		foreach (keys %colOrder) {
+			$segVals{$_} = $segment->[$colOrder{$_}];
+			$segVals{$_} =~ s/\s//g;
+		};
+		
+		$segVals{ size } = $segVals{ end } - $segVals{ start };
+		$segVals{ id } = $segVals{ reference_name }.":".$segVals{ start }."-".$segVals{ end };
+		
+		push(@{ $f_maps_keyed->{ $segment->[ $colOrder{collation_id} ] }->{ intervals } }, \%segVals);
+	}
+	
+	foreach my $f_map_k (keys %$f_maps_keyed) {
+	
+		if ($pgx->{parameters}->{min_group_no} > 0) {
+			if ($headerValues->{groups}->{$f_map_k}->{sample_count} < $pgx->{parameters}->{min_group_no}) {
+				next;			
+			}
+		}
+
+		$f_maps_keyed->{ $f_map_k }->{ interval_count } = scalar @{ $f_maps_keyed->{ $f_map_k }->{ intervals } };
+				
+		my $label = $f_map_k;
+		
+		if ($headerValues->{groups}->{$f_map_k}->{label} =~ /.../) {
+			$label = $headerValues->{groups}->{$f_map_k}->{label};
+			$f_maps_keyed->{ $f_map_k }->{name} = $headerValues->{groups}->{$f_map_k}->{label};
+		}
+		if ($headerValues->{groups}->{$f_map_k}->{sample_count} > 0) {
+			$label .= ' ('.$headerValues->{groups}->{$f_map_k}->{sample_count}.')';		
+		}
+		
+		push(
+			@{ $f_maps_keyed->{ $f_map_k }->{labels} },
+			{
+			  label_text => $label,
+			  label_link => q{},
+			  label_color => random_hexcolor(),
+			}		
+		);
+		
+		push(
+			@{ $pgx->{frequencymaps} },
+			$f_maps_keyed->{ $f_map_k }		
+		);
+	}
+		
+	return $pgx;
+
+}
+
+
+
+
+################################################################################
+
 sub read_segmentfile {
 
 	no warnings 'uninitialized';
@@ -168,7 +305,7 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 #### Returns:
 
 * a list reference of genome CNV objects inside `$pgx->{segmentdata}`
-* header derived information, e.g. group labels per sample in `$pgx->{segfileheader}`
+* header derived information, e.g. group labels per sample in `$pgx->{pgxfileheader}`
 
 ```
 [
@@ -207,7 +344,7 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 
 	my ($header, $table) = read_file_to_split_array($segmentsF);
 	my $headerValues = _objectify_header($header);	
-	$pgx->{segfileheader} = $headerValues;
+	$pgx->{pgxfileheader} = $headerValues;
 
 	my $numfactor = 1;
 	if (
@@ -396,6 +533,10 @@ sub _objectify_header {
 		if (grep{ /^biosample_id$/} keys %lo) {
 			foreach (keys %lo) {
 				$oh->{samples}->{ $lo{biosample_id} }->{ $_ } = $lo{ $_ };
+			}
+		} elsif (grep{ /^group_id$/} keys %lo) {
+			foreach (keys %lo) {
+				$oh->{groups}->{ $lo{group_id} }->{ $_ } = $lo{ $_ };
 			}
 		} elsif	($line =~ /^plotpar/) {
 			foreach (keys %lo) {

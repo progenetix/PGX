@@ -261,6 +261,7 @@ sub svg_add_labels_y {
 	my $pgx = shift;
 
 	if (@{ $pgx->{parameters}->{label_y_m} } < 1) { return $pgx }
+	if (@{ $pgx->{parameters}->{size_text_lab_px} } < 1) { return $pgx }
 
 	$pgx->{svg}  .= '
 <style type="text/css"><![CDATA[
@@ -290,11 +291,11 @@ sub svg_add_labels_y {
 		# avoiding too dense labels
 		if (@{ $pgx->{parameters}->{label_y_m} } > 9 && $lab !~ /^\-?\d\d?\d?\%?$/ ) { next }
 		# positioning the label text
-		$lab_y              += ($pgx->{parameters}->{size_text_lab_px} / 2) - 1;
-		$pgx->{svg}        .= '
+		$lab_y += ($pgx->{parameters}->{size_text_lab_px} / 2) - 1;
+		$pgx->{svg} .= '
 <text x="'.($area_x0 - 2).'" y="'.$lab_y.'" class="ylabs">'.$lab.$pgx->{parameters}->{plot_unit_y}.'</text>';
 		if ($pgx->{parameters}->{size_clustertree_w_px} < 1) {
-			$pgx->{svg}      .= '
+			$pgx->{svg} .= '
 <text x="'.($area_x0 + $pgx->{areawidth} + 2).'" y="'.$lab_y.'" class="ylabe">'.$lab.$pgx->{parameters}->{plot_unit_y}.'</text>';
 		}
 	}
@@ -491,18 +492,18 @@ sub svg_add_labels_right {
 
 sub svg_add_cluster_tree {
 
-  my $pgx = shift;
+	my $pgx = shift;
 
-  if (! defined($pgx->{clustertree})) { return $pgx }
+	if (! defined($pgx->{clustertree})) { return $pgx }
 
-  if (
-    $pgx->{parameters}->{size_clustertree_w_px} < 1
-     ||
-     (scalar @{$pgx->{clustertree}} < 2)
-  ) { return $pgx }
+	if (
+	$pgx->{parameters}->{size_clustertree_w_px} < 1
+	 ||
+	 (scalar @{$pgx->{clustertree}} < 2)
+	) { return $pgx }
 
-  my $nodeN = scalar @{ $pgx->{clustertree} } + 1;
-  my $treePixH = $pgx->{Y} - $pgx->{areastarty};
+	my $nodeN = scalar @{ $pgx->{clustertree} } + 1;
+	my $treePixH = $pgx->{Y} - $pgx->{areastarty};
 	my $yPixF = $treePixH	/ $nodeN;
 	my $yCorr = $pgx->{areastarty} + ($treePixH / $nodeN / 2);
 	my $maxTreeX = (sort {$a <=> $b } ( map{ $_->{NODEX} } @{ $pgx->{clustertree} } ) )[-1];

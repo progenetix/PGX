@@ -250,13 +250,13 @@ sub pgx_callset_labels_from_header {
 
 	my $pgx = shift;
 
-	if (! defined $pgx->{segfileheader}) { 
+	if (! defined $pgx->{pgxfileheader}) { 
 		return $pgx }
 
 	my $fallbackK = 'NA';
 	my $fallbackL = 'not specified';
 
-	my $hv = $pgx->{segfileheader};
+	my $hv = $pgx->{pgxfileheader};
 	for my $i (0..$#{ $pgx->{samples} }) {
 		my $csId = $pgx->{samples}->[$i]->{id};
 		if (grep{ /^group_id$/} keys %{ $hv->{samples}->{ $csId } } ) {
@@ -290,8 +290,8 @@ sub pgx_callset_labels_from_file {
 		$pgx->{samples}->[$i]->{sortlabel} = $fallbackL;
 	}
 	
-	if ( defined $pgx->{segfileheader}) {
-		my $hv = $pgx->{segfileheader};
+	if ( defined $pgx->{pgxfileheader}) {
+		my $hv = $pgx->{pgxfileheader};
 		for my $i (0..$#{ $pgx->{samples} }) {
 			my $csId = $pgx->{samples}->[$i]->{id};
 			if (grep{ /^group_id$/} keys %{ $hv->{samples}->{ $csId } } ) {

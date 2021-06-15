@@ -230,6 +230,7 @@ sub cluster_frequencymaps {
 		);
 	}
 	
+	
 	if (scalar(@{ $labels }) < 3) { return $pgx }
 
 	($pgx->{clustertree}, $order) = $pgx->use_Eisen_tree(\@matrix);
