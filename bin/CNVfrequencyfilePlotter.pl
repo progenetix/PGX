@@ -19,7 +19,7 @@ no warnings 'uninitialized';
 Examples:
   - perl CNVfrequencyfilePlotter.pl -f frequencies.pgxseg
   - perl CNVfrequencyfilePlotter.pl -f ../rsrc/test_files/testfile_interval_frequencies.pgxseg -o ~/Desktop
-
+  - perl CNVfrequencyfilePlotter.pl -f NCIt_with_samples.pgxseg  -o ~/Desktop -min_group_no 100 -size_text_title_left_px 14 -size_plotimage_w_px 2000 -size_plotarea_h_px 20 -value_plot_y_max 80 -size_text_lab_px 0
 =cut
 
 # local packages

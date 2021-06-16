@@ -91,11 +91,11 @@ $api->_retrieve_samples();
 
 =podmd
 
-A single histogram SVG output can be forced with `&method=cnvhistogram`.
+A single histogram SVG output can be forced with `&output=cnvhistogram`.
 
 =cut
 
-if ($params->{"method"}->[0] eq "cnvhistogram") {
+if ($params->{output}->[0] eq "cnvhistogram") {
 
 	$api->{plotargs}->{ '-svg_embed' } = 1;
 	$api->_return_histogram();
