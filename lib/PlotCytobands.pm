@@ -261,7 +261,7 @@ sub svg_add_labels_y {
 	my $pgx = shift;
 
 	if (@{ $pgx->{parameters}->{label_y_m} } < 1) { return $pgx }
-	if (@{ $pgx->{parameters}->{size_text_lab_px} } < 1) { return $pgx }
+	if ($pgx->{parameters}->{size_text_lab_px} < 1) { return $pgx }
 
 	$pgx->{svg}  .= '
 <style type="text/css"><![CDATA[

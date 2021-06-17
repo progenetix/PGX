@@ -95,7 +95,7 @@ A single histogram SVG output can be forced with `&output=cnvhistogram`.
 
 =cut
 
-if ($params->{output}->[0] eq "cnvhistogram") {
+if (grep{ $params->{output}->[0] eq "cnvhistogram" } qw(output method)) {
 
 	$api->{plotargs}->{ '-svg_embed' } = 1;
 	$api->_return_histogram();

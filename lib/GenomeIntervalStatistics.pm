@@ -187,6 +187,27 @@ Returns:
 
 sub use_Eisen_tree {
 
+=podmd
+#### Distances
+
+* ‘c’ Pearson correlation coefficient
+* ‘a’ Absolute value of the Pearson correlation coefficient;
+* ‘u’ Uncentered Pearson correlation (equivalent to the cosine of the angle between two data vectors)
+* ‘x’ Absolute uncentered Pearson correlation
+* ‘s’ Spearman’s rank correlation
+* ‘k’ Kendall’s rank correlation τ
+* ‘e’ Euclidean distance
+* ‘b’ City-block distance
+
+#### Type
+
+* ’s’: pairwise single-linkage clustering
+* ’m’: pairwise complete-linkage clustering
+* ’a’: pairwise average-linkage clustering
+* ’c’: pairwise centroid-linkage clustering
+=cut
+
+
 	use Algorithm::Cluster;
 	no warnings;
 	
@@ -196,7 +217,7 @@ sub use_Eisen_tree {
 	if ($pgx->{parameters}->{cluster_linkage_method} !~ /^[ascm]$/) {
 		$pgx->{parameters}->{cluster_linkage_method} = 'm' }
 	if ($pgx->{parameters}->{cluster_distance_metric} !~ /^[ecauxskb]$/) {
-		$pgx->{parameters}->{cluster_distance_metric} = 'e' }
+		$pgx->{parameters}->{cluster_distance_metric} = 'e' } # Euclidian
 
 	my $EisenTree = Algorithm::Cluster::treecluster(
 		transpose => 0,
