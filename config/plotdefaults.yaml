@@ -160,7 +160,7 @@ do_label_y: y
 plottype: histogram
 titlepos: top
 title_left_rotation: none
-do_chromosomes_proportional: y
+do_chromosomes_proportional: n
 svg_embed: 0
 
 colorschemas:
