@@ -198,7 +198,7 @@ my $progBar;
 foreach my $dataset (@{ $config->{ dataset_names } }) {
 
   my $dbconn = MongoDB::MongoClient->new()->get_database($dataset);
-  my $cursor = $dbconn->get_collection( 'biosamples' )->find( $biosampleQ )->fields( { id => 1, biocharacteristics => 1, external_references => 1, "info.cnvstatistics" => 1 } );
+  my $cursor = $dbconn->get_collection( 'biosamples' )->find( $biosampleQ )->fields( { id => 1, histological_diagnosis => 1, icdo_morphology => 1, icdo_topography => 1, external_references => 1, "info.cnvstatistics" => 1 } );
   my $bioS = [ $cursor->all ];
 
   if ($args{'-randno'} > 0) {
@@ -217,16 +217,9 @@ foreach my $dataset (@{ $config->{ dataset_names } }) {
         $bioByID->{ $id }->{id} =~  s/\s/_/g;
       }
     }
-    elsif ($sortValuesK =~ /biocharacteristics/) {
-      foreach my $thisbioc (@{ $thissample->{biocharacteristics}} ) {
-        if ($thisbioc->{id} =~  /$config->{grouping}/) {
-          $bioByID->{$id} = {
-            id => $thisbioc->{id},
-            label => $thisbioc->{label},
-          };
-        }
-      }
-    } elsif ($sortValuesK =~ /external_references/) {
+    elsif ($sortValuesK =~ /histological_diagnosis/) {
+    	$bioByID->{$id} = $thissample->{histological_diagnosis} }
+    elsif ($sortValuesK =~ /external_references/) {
       foreach my $thisbioc (@{ $thissample->{external_references}} ) {
         if ($thisbioc->{id} =~  /$config->{grouping}/) {
           $bioByID->{$id} = {

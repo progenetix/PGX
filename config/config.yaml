@@ -29,25 +29,25 @@ datacollections:
     prefix: NCIT
     pattern: '^(NCIT\:)?C\d+?$'
     greedymatch: '^(NCIT\:)?C\d+?$'
-    samplefield: biocharacteristics
+    samplefield: histological_diagnosis
   icdom:
     label: 'ICD-O 3 Morphology Code'
     prefix: icdom
     pattern: '^icdom\-\d{5}$'
     greedymatch: '^icdom\-\d{1,5}$'
-    samplefield: biocharacteristics
+    samplefield: icdo_morphology
   icdot:
     label: 'ICD-O 3 Organ Site Code'
     prefix: icdot
     pattern: '^icdot\-C\d{1,2}\.\d$'
     greedymatch: '^icdot\-?C\d\d?(\.\d)?$'
-    samplefield: biocharacteristics
-  seer:
-    label: 'SEER Code'
-    prefix: seer
-    pattern: '^seer\:\d{5}$'
-    greedymatch: '^seer\:\d{1,5}$'
-    samplefield: biocharacteristics
+    samplefield: icdo_topography
+  UBERON:
+    label: 'Uberon cross-species anatomical structures ontology'
+    prefix: UBERON
+    pattern: '^UBERON([_\:]\d*?\-?)?$'
+    greedymatch: '^UBERON([_\:]\d*?\-?)?$'
+    samplefield: sampled_tissue
   PMID:
     label: 'Pubmed Publication'
     prefix: PMID

@@ -213,7 +213,7 @@ sub pgx_callset_labels_from_biosamples {
 				$groupAttr = $pgx->{config}->{datacollections}->{$grt}->{samplefield};			
 	} } }
 
-	if ($groupAttr !~ /.../)  { $groupAttr = 'biocharacteristics' }
+	if ($groupAttr !~ /.../)  { $groupAttr = 'histological_diagnosis' }
 	if ($groupType !~ /.../)  { $groupType = 'xxxx' }
 
 	my %biosIds = map{ $_->{biosample_id} => 1 } @{ $pgx->{samples} };
@@ -231,7 +231,11 @@ sub pgx_callset_labels_from_biosamples {
 
 		if ($bsId !~ /.../) { next }
 		my ($thisBios) = grep{ $_->{id} eq $bsId } @$bioS;
-		my ($thisbioc) = grep{ $_->{id} =~ /$groupType/ } @{ $thisBios->{$groupAttr} };
+		my $thisbioc = {};
+		if (ref $thisBios->{$groupAttr} eq 'ARRAY') {  
+			($thisbioc) = grep{ $_->{id} =~ /$groupType/ } @{ $thisBios->{$groupAttr} } }
+		else {
+			$thisbioc = $thisBios->{$groupAttr} }
 		if ($thisbioc->{id} !~ /.../) { next }
 
 		$pgx->{samples}->[$i]->{sortkey} = $thisbioc->{id};
