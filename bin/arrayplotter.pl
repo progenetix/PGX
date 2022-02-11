@@ -275,22 +275,22 @@ END
   }
 
   # adjusting for special cases
-  opendir DIR, $args{'-arraypath'};
-  my @arrayDirF = grep{ /^\w[\w\.\,\-]+?\.\w\w\w\w?\w?\w?$/ } -f, readdir(DIR);
-  close DIR;
-
-  # TCGA
-  if ($args{'-format_inputfiles'} =~ /tcga/i) {
-    if (! -f $args{'-segfile'} ) {
-      my @segGuess = grep{ /seg\.txt/ } @arrayDirF;
-      if (@segGuess == 1) { $args{'-segfile'} = $args{'-arraypath'}.'/'.$segGuess[0] }
-    }
-    $args{'-probefile'} = $path_of_this_module.'/../rsrc/probemaps/'.genome_names_to_hg($args{'-genome'}).'/GPL6801,probes,cn.tsv';
-    $args{'-simulated_probes'} = 'y';
-    $args{'-text_bottom_left'} = 'TCGA (simulated probes)';
-  }
-
-  # / TCGA
+#   opendir DIR, $args{'-arraypath'};
+#   my @arrayDirF = grep{ /^\w[\w\.\,\-]+?\.\w\w\w\w?\w?\w?$/ } -f, readdir(DIR);
+#   close DIR;
+# 
+#   # TCGA
+#   if ($args{'-format_inputfiles'} =~ /tcga/i) {
+#     if (! -f $args{'-segfile'} ) {
+#       my @segGuess = grep{ /seg\.txt/ } @arrayDirF;
+#       if (@segGuess == 1) { $args{'-segfile'} = $args{'-arraypath'}.'/'.$segGuess[0] }
+#     }
+#     $args{'-probefile'} = $path_of_this_module.'/../rsrc/probemaps/'.genome_names_to_hg($args{'-genome'}).'/GPL6801,probes,cn.tsv';
+#     $args{'-simulated_probes'} = 'y';
+#     $args{'-text_bottom_left'} = 'TCGA (simulated probes)';
+#   }
+# 
+#   # / TCGA
 
   # / adjusting for special cases
 

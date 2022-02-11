@@ -75,6 +75,7 @@ Returns:
         start   =>  1 * $start,
         end     =>  1 * $end,
         stain   =>  $staining,
+        band	=>	$band,
         label   =>  $chro.$band,
       }
     );

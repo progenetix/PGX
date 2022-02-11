@@ -75,7 +75,6 @@ my $plot = new PGX($plotargs);
 $plot->{parameters}->{plotid} = 'histoplot';
 $plot->{parameters}->{text_bottom_left} = $subset->{counts}->{biosamples}.' samples';
 
-
 $plot->{frequencymaps} = [ $subset->{ frequencymap } ];
 $plot->return_histoplot_svg();
 

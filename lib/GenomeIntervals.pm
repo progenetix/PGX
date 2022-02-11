@@ -56,6 +56,8 @@ Returns:
 
 	my $cytobands = shift;
 	my $intSize = shift;
+	
+	my $last_interval_soft_expansion = 100000;
 
 	my $refLims = get_reference_base_limits($cytobands);
 	my $gi = [];
@@ -67,30 +69,50 @@ Returns:
 	for my $i (0..$#refNames) {
 
 		my $refName = $refNames[$i];
-		my $start = $refLims->{ $refName }->[0];
-		my $end = $intSize;
+		my $rbl = $refLims->{$refName};
+		
+		my $p_max = $rbl->{"p"}->[1];
+        my $arm = "p";
+		
+		my $start = $rbl->{"chro"}->[0];
+		my $end = $start + $intSize;
 
-		while ($start < $refLims->{ $refName }->[1]) {
+		while ($start < $rbl->{"chro"}->[1]) {
+				
+			my $int_p = $intSize;
 
 			# adjusting the end of the last interval
-			if ($end > $refLims->{ $refName }->[1]) {
-				$end = $refLims->{ $refName }->[1] };
+			if ($end > $rbl->{"size"}) {
+				$end = $rbl->{"size"};
+			} elsif ($rbl->{"size"} < ($end + $last_interval_soft_expansion) ){
+				$end = $rbl->{"size"};
+				$int_p += $last_interval_soft_expansion;
+			} elsif ($p_max > 0) {
+				if ($end >= $p_max) {
+					$end = $p_max;
+					$int_p = $end - $start;
+					$p_max = 0;
+					$arm = "q";
+				}
+			}
 
 			my $thisSize = $end - $start;
+			
 			push(
 				@$gi,
 				{
 					no =>  $intI,
 					reference_name => $refName,
+					arm => $arm,
 					start => $start,
 					end => $end,
-					length => $thisSize,
-					label => $refName.':'.$start.'-'.$end,
+					"length" => $thisSize,
+					label => $refName.$arm.':'.$start.'-'.$end,
 				}
 			);
 
 			$start += $thisSize;
-			$end += $thisSize;
+			$end += $intSize;
 			$intI++;
 
 		}
@@ -136,10 +158,17 @@ Returns:
 
 	my $refLims = {};
 
-	foreach my $ref (map{ $_->{reference_name} } @$allRefs) {
-		my @refRefs = grep{ $_->{reference_name} =~ /^$ref$/i } @$allRefs;
+	foreach my $ref (map{ $_->{"reference_name"} } @$allRefs) {
+		my @refRefs = grep{ $_->{"reference_name"} =~ /^$ref$/i } @$allRefs;
+		my @pRefs = grep{ $_->{"band"} =~ /^p/i } @refRefs;
+		my @qRefs = grep{ $_->{"band"} =~ /^q/i } @refRefs;
 		my @bases = sort { $a <=> $b } ((map{ $_->{start} } @refRefs), (map{ $_->{end} } @refRefs));
-		$refLims->{$ref} = [ $bases[0], $bases[-1] ];
+		$refLims->{$ref}->{"chro"} = [ $bases[0], $bases[-1] ];
+		$refLims->{$ref}->{"size"} = $bases[-1] - $bases[0];
+		@bases = sort { $a <=> $b } ((map{ $_->{start} } @pRefs), (map{ $_->{end} } @pRefs));
+		$refLims->{$ref}->{"p"} = [ $bases[0], $bases[-1] ];
+		@bases = sort { $a <=> $b } ((map{ $_->{start} } @qRefs), (map{ $_->{end} } @qRefs));
+		$refLims->{$ref}->{"q"} = [ $bases[0], $bases[-1] ];
 	}
 
 	return $refLims;

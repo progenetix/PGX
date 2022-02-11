@@ -50,7 +50,8 @@ sub new {
 		$self->{cytobands},
 		$self->{parameters}->{binning},
 	);
-	$self->{referencebounds} = get_reference_base_limits($self->{cytobands});
+	my $rbl = get_reference_base_limits($self->{cytobands});
+	$self->{referencebounds} = _remap_referencebounds($rbl);
 	$self->{genomesize} =  get_genome_basecount(
 		$self->{cytobands},
 		$self->{parameters}->{chr2plot},
@@ -59,6 +60,20 @@ sub new {
 	$self = pgx_get_genome_regions($self);
 
 	return $self;
+
+}
+
+################################################################################
+
+sub _remap_referencebounds {
+
+	my $refLims = shift;
+	my $rb = {};
+	for my $rn (keys %$refLims) {
+		$rb->{$rn} = $refLims->{$rn}->{"chro"};
+	}
+	
+	return $rb;
 
 }
 

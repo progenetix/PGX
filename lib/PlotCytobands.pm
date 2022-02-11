@@ -114,6 +114,7 @@ Returns:
 	my $chroBandY = $chrolabY + $pgx->{parameters}->{size_plotarea_padding};
 
 	foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
+	
 
 		my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 		my $chroX = sprintf "%.1f", $areaX_0 + $areaW / 2;

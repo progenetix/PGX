@@ -371,6 +371,11 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 		$colOrder{probes} = 4;
 	};
 
+	if ($pgx->{parameters}->{format_inputfiles} =~ /dgv/i) {
+		$colOrder{value} = 4;
+		$colOrder{probes} = 5;
+	};
+
 	if ($table->[0]->[1] !~ /^([12]\d?)|X|Y/i) {
 		shift @$table }
 
@@ -427,6 +432,7 @@ GSM481418	7	167248788	168289603	0.6784	.	DUP
 			else {
 				next }
 		}
+		
 
 		if (
 			$segVals{probes} =~ /^\d+?$/
