@@ -170,7 +170,7 @@ Returns:
 		
 	$pgx->{parameters}->{bin_match_min} *= 1;
 	for my $i (0..$#{ $pgx->{genomeintervals} }) {
-		my $int = { "index" => $i };
+		my $int = { "no" => ($i + 1) };
 		foreach my $type (keys %intLabs) {
 			$int->{ $freqLabs{ $type } } = sprintf "%.3f", ( $fFactor * ( grep{ $_->{ $intLabs{ $type } }->[$i] >= $pgx->{parameters}->{bin_match_min} } @{ $cnvmaps } ));
 		}

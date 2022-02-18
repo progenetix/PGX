@@ -154,7 +154,7 @@ sub read_frequencyfile {
 ```
 ...
 {
-	"index" : 2840,
+	"no" : 2841,
 	"id" : "22:4000000-5000000",
 	"reference_name" : "22",
 	"start" : 4000000,

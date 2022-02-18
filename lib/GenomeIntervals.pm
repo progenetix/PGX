@@ -57,7 +57,7 @@ Returns:
 	my $cytobands = shift;
 	my $intSize = shift;
 	
-	my $last_interval_soft_expansion = 100000;
+	my $terminal_intervals_soft_expansion = 100000;
 
 	my $refLims = get_reference_base_limits($cytobands);
 	my $gi = [];
@@ -65,55 +65,55 @@ Returns:
 	# references are sorted with numerical ones first, then others (e.g. 1 -> 22, X, Y)
 	my @refNames = ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %$refLims), (sort grep{ ! /\d/ } keys %$refLims));
 
-	my $intI = 1;
-	for my $i (0..$#refNames) {
+	my $i = 1;
+	for my $chro (@refNames) {
 
-		my $refName = $refNames[$i];
-		my $rbl = $refLims->{$refName};
+		my $rbl = $refLims->{$chro};
 		
 		my $p_max = $rbl->{"p"}->[1];
-        my $arm = "p";
+		my $q_max = $rbl->{"size"};
+        my $arm = "p";		
+		my $start = 0;
 		
-		my $start = $rbl->{"chro"}->[0];
-		my $end = $start + $intSize;
+        # calculate first interval to end p-arm with a full sized one
+        my $p_first = $p_max;
+        while ($p_first >= ($intSize + $terminal_intervals_soft_expansion)) {
+            $p_first -= $intSize }
+		
+		my $end = $start + $p_first;
 
-		while ($start < $rbl->{"chro"}->[1]) {
-				
+		while ($start < $q_max) {
+		
 			my $int_p = $intSize;
 
 			# adjusting the end of the last interval
-			if ($end > $rbl->{"size"}) {
-				$end = $rbl->{"size"};
-			} elsif ($rbl->{"size"} < ($end + $last_interval_soft_expansion) ){
-				$end = $rbl->{"size"};
-				$int_p += $last_interval_soft_expansion;
-			} elsif ($p_max > 0) {
-				if ($end >= $p_max) {
-					$end = $p_max;
-					$int_p = $end - $start;
-					$p_max = 0;
-					$arm = "q";
-				}
-			}
+			if ($end > $q_max) {
+				$end = $q_max }
+			elsif ($q_max < ($end + $terminal_intervals_soft_expansion) ){
+				$end = $q_max;
+				$int_p += $terminal_intervals_soft_expansion;
+			} 
+			if ($end >= $p_max) {
+				$arm = "q" }
 
 			my $thisSize = $end - $start;
 			
 			push(
 				@$gi,
 				{
-					no =>  $intI,
-					reference_name => $refName,
+					no =>  $i,
+					reference_name => $chro,
 					arm => $arm,
 					start => $start,
 					end => $end,
-					"length" => $thisSize,
-					label => $refName.$arm.':'.$start.'-'.$end,
+					size => $thisSize,
+					label => $chro.$arm.':'.$start.'-'.$end,
 				}
 			);
 
-			$start += $thisSize;
+			$start = $end;
 			$end += $intSize;
-			$intI++;
+			$i += 1;
 
 		}
 	}
