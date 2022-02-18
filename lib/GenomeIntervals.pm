@@ -96,7 +96,7 @@ Returns:
 			if ($end >= $p_max) {
 				$arm = "q" }
 
-			my $thisSize = $end - $start;
+			my $size = $end - $start;
 			
 			push(
 				@$gi,
@@ -106,13 +106,13 @@ Returns:
 					arm => $arm,
 					start => $start,
 					end => $end,
-					size => $thisSize,
+					size => $size,
 					label => $chro.$arm.':'.$start.'-'.$end,
 				}
 			);
 
 			$start = $end;
-			$end += $intSize;
+			$end += $int_p;
 			$i += 1;
 
 		}
