@@ -18,37 +18,37 @@ sub make_genome_intervals {
 
 Expects:
   - a list reference of genome interval objects, usually representing cytobands:
-    [
-      {
-        no =>  __integer__,            # not used
-        reference_name  =>  __string__,
-        start =>  __integer__,
-        end   =>  __integer__,
-        stain =>  __string__,            # not used
-        label =>  __string__,            # not used
-      },
-      {
-      ...
-      },
-    ]
+	[
+	  {
+		no =>  __integer__,            # not used
+		reference_name  =>  __string__,
+		start =>  __integer__,
+		end   =>  __integer__,
+		stain =>  __string__,            # not used
+		label =>  __string__,            # not used
+	  },
+	  {
+	  ...
+	  },
+	]
   - the binning size in bases (optional; defaults to 1000000)
 
 Returns:
   - a list of genome intervals in a similar structure, based on the binning size
   - the intervals are per reference, i.e. each reference starts with a new interval,
-    leading to the last interval < binning size
-    [
-      {
-        no    =>  __integer__,          # 1 -> n
-        reference_name  =>  __string__,
-        start =>  __integer__,
-        end   =>  __integer__,
-        label =>  __string__,
-      },
-      {
-      ...
-      },
-    ]
+	leading to the last interval < binning size
+	[
+	  {
+		no    =>  __integer__,          # 1 -> n
+		reference_name  =>  __string__,
+		start =>  __integer__,
+		end   =>  __integer__,
+		label =>  __string__,
+	  },
+	  {
+	  ...
+	  },
+	]
 
 =cut
 
@@ -72,13 +72,13 @@ Returns:
 		my $rbl = $refLims->{$chro};		
 		my $p_max = $rbl->{"p"}->[1];
 		my $q_max = $rbl->{"size"};
-    	my $arm = "p";		
+		my $arm = "p";		
 		my $start = 0;
 		
-    # calculate first interval to end p-arm with a full sized one
-    my $p_first = $p_max;
-    while ($p_first >= ($intSize + $terminal_intervals_soft_expansion)) {
-        $p_first -= $intSize }
+		# calculate first interval to end p-arm with a full sized one
+		my $p_first = $p_max;
+		while ($p_first >= ($intSize + $terminal_intervals_soft_expansion)) {
+			$p_first -= $intSize }
 		
 		my $end = $start + $p_first;
 
@@ -131,33 +131,33 @@ sub get_reference_base_limits {
 
 Expects:
   - a list reference of genome interval objects:
-    [
-      {
-        reference_name  =>  __string__,
-        start           =>  __integer__,
-        end             =>  __integer__,
-        (others)...
-      },
-      {
-        ...
-      },
-    ]
+	[
+	  {
+		reference_name  =>  __string__,
+		start           =>  __integer__,
+		end             =>  __integer__,
+		(others)...
+	  },
+	  {
+		...
+	  },
+	]
 
 Returns:
   - a hash reference with keys for each chromosome and various [ start, end ]
-  	arrays of integers representing the reference's (or arm's) min and max bases:
-  	
-    {
-    	__chro__ : {
-    		"size": __integer__,
-    		"chro": [  __integer__,  __integer__ ],
-    		"p": [  __integer__,  __integer__ ],
-    		"q": [  __integer__,  __integer__ ],
-    	}
+	arrays of integers representing the reference's (or arm's) min and max bases:
+	
+	{
+		__chro__ : {
+			"size": __integer__,
+			"chro": [  __integer__,  __integer__ ],
+			"p": [  __integer__,  __integer__ ],
+			"q": [  __integer__,  __integer__ ],
+		}
 
-      { __string__  =>  [  __integer__,  __integer__ ] }
-     },
-     { ... },
+	  { __string__  =>  [  __integer__,  __integer__ ] }
+	 },
+	 { ... },
 =cut
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
