@@ -77,7 +77,7 @@ $api->{plotargs}->{-path_loc} = $api->{config}->{paths}->{dir_tmp_base_path}.$ap
 $api->{server_link} =~ s/^(https?\:\/\/)\w+?\.(\w+?\.\w+?(\/.*?)?)$/$1$2/;
 $api->{plotargs}->{-path_web} = $api->{server_link}.$api->{config}->{paths}->{web_tmp_base_path}.$api->{path_var};
 
-if ($accessid =~ /[^\w\-]/) {
+if ($accessid !~ /[^\w\-]/) {
 	push(
   		@{ $api->{errors} },
 		"Wrong or missing accessid parameter $api->{accessid}.",
@@ -115,7 +115,7 @@ $api->_return_samplematrix();
 
 send_Google_tracking_no_log(
 	$config->{cgi},
-	"/cgi/PGX/cgi/collationPlots.cgi"
+	"/cgi/PGX/cgi/samplePlots.cgi"
 );
 
 $api->_return_json();

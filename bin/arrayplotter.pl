@@ -58,10 +58,10 @@ $args{'-arraypath'} ||= $args{'-in'} ||= q{};
 $args{'-arraypath'} =~ s/\/$//;
 
 foreach (grep{ /filename$/} keys %args) {
-  my $file = $args{'-arraypath'}.'/'.$args{$_};
-  my $pathK = $_;
-  $pathK =~ s/name//;
-  $args{$pathK} = $file;
+    my $file = $args{'-arraypath'}.'/'.$args{$_};
+    my $pathK = $_;
+    $pathK =~ s/name//;
+    $args{$pathK} = $file;
 }
 
 # the output files will be named later, if not given here as a single SVG
@@ -99,18 +99,18 @@ $pgx->return_arrayplot_svg();
 
 my $plotfile;
 if ($args{'-plotregions'} =~ /\w\:\d+?\-\d+?(?:\,|$)/) {
-  $plotfile = 'arrayplot,chr'.$args{'-plotregions'}.'.svg';
-  $plotfile =~ s/[\:]/_/g;
-  $args{'-do_allchros'} = 'n';
+    $plotfile = 'arrayplot,chr'.$args{'-plotregions'}.'.svg';
+    $plotfile =~ s/[\:]/_/g;
+    $args{'-do_allchros'} = 'n';
 }
 elsif (scalar(@{$pgx->{parameters}->{chr2plot}}) < 22) {
-  $plotfile = 'arrayplot,chr'.$args{'-chr2plot'}.'.svg' }
+    $plotfile = 'arrayplot,chr'.$args{'-chr2plot'}.'.svg' }
 else {
-  $plotfile = 'arrayplot.svg' }
+    $plotfile = 'arrayplot.svg' }
 
 if ($args{'-svgfilename'} =~ /^[\w\,\-]+?\.svg/i) {
-  $plotfile = $args{'-svgfilename'};
-  $args{'-do_allchros'} = 'n';
+    $plotfile = $args{'-svgfilename'};
+    $args{'-do_allchros'} = 'n';
 }
 
 print "\nFiles are written to $outdir:\n\n";
@@ -129,39 +129,38 @@ my $chr2plot = $pgx->{parameters}->{chr2plot};
 
 foreach my $chro (@$chr2plot) {
 
-  # re-initializing some values for multiple plots ...
-  $pgx->{parameters}->{chr2plot} = [$chro];
-  $pgx->{svg} = q{};
-  $pgx->{genomesize} = get_genome_basecount(
-	$pgx->{cytobands},
-	$pgx->{parameters}->{chr2plot},
-  );
-  $pgx = return_arrayplot_svg($pgx);
-  $plotfile = 'arrayplot,chr'.$chro.'.svg';
-  open (FILE, ">", $outdir.'/'.$plotfile);
-  binmode(FILE, ":utf8");
-  print FILE  $pgx->{svg};
-  close FILE;
-  print "$plotfile\n";
+    # re-initializing some values for multiple plots ...
+    $pgx->{parameters}->{chr2plot} = [$chro];
+    $pgx->{svg} = q{};
+    $pgx->{genomesize} = get_genome_basecount(
+        $pgx->{cytobands},
+        $pgx->{parameters}->{chr2plot},
+    );
+    $pgx = return_arrayplot_svg($pgx);
+    $plotfile = 'arrayplot,chr'.$chro.'.svg';
+    open (FILE, ">", $outdir.'/'.$plotfile);
+    binmode(FILE, ":utf8");
+    print FILE  $pgx->{svg};
+    close FILE;
+    print "$plotfile\n";
 
+    $pgx->segments_add_statusmaps();
 
-  $pgx->segments_add_statusmaps();
+    # TODO: This just assumes that the last part of the file pathe is the array ID
+    my $arrayName = $args{'-out'};
+    $arrayName =~ s/^.*\/?//;
+    my $callset = {
+        id => $arrayName,
+        variants => [ grep{ $_->{variant_type} =~ /^D(?:UP)|(?:EL)$/ } @{ $pgx->{segmentdata} }],
+        statusmaps => $pgx->{statusmaps},
+    };
 
-  # TODO: This just assumes that the last part of the file pathe is the array ID
-  my $arrayName = $args{'-out'};
-  $arrayName =~ s/^.*\/?//;
-  my $callset = {
-    id => $arrayName,
-    variants => [ grep{ $_->{variant_type} =~ /^D(?:UP)|(?:EL)$/ } @{ $pgx->{segmentdata} }],
-    statusmaps => $pgx->{statusmaps},
-  };
+    open (FILE, ">", $outdir.'/'.$args{'-callsetfilename'});
+    print FILE  JSON::XS->new->encode($callset);
+    close FILE;
 
-  open (FILE, ">", $outdir.'/'.$args{'-callsetfilename'});
-  print FILE  JSON::XS->new->encode($callset);
-  close FILE;
+    # $progBar->update($i++);
 
-#   $progBar->update($i++);
-  
 }
 
 # $progBar->update(scalar @$chr2plot);
@@ -176,91 +175,91 @@ foreach my $chro (@$chr2plot) {
 
 sub _checkArgs {
 
-  # terminating if arraypath doesn't exist
-  if (
-(! -d $args{'-arraypath'})
-||
-(! -d $args{'-out'})
-) {
+    # terminating if arraypath doesn't exist
+    if (
+        (! -d $args{'-arraypath'})
+        ||
+        (! -d $args{'-out'})
+    ) {
 
     print <<END;
 
 Script parameters:
 
--arraypath      Path to the directory containging probe nad segment files.
-(or -in)        Required
+-arraypath  Path to the directory containging probe nad segment files.
+(or -in)    Required
 
--out            Path to the output directory for the SVG files.
-                Defaults to -arraypath value if not specified
+-out        Path to the output directory for the SVG files.
+            Defaults to -arraypath value if not specified
 
 -format_inputfiles
-                Allows modification for different column order and file
-                content. The only alternative option to the "progenetix"
-                default is currently "TCGA", which will adjust the column order
-                of probe number and segment value.
+            Allows modification for different column order and file
+            content. The only alternative option to the "progenetix"
+            default is currently "TCGA", which will adjust the column order
+            of probe number and segment value.
 
--genome         Genome edition, for setting the correct coordinate space.
-                Default: GRCh38
-                Both "hg" and "GRCh" styles can be used.
+-genome     Genome edition, for setting the correct coordinate space.
+            Default: GRCh38
+            Both "hg" and "GRCh" styles can be used.
 
 -cna_loss_threshold
-                Theshold for calling loss segments.
-                Default: -0.15
-                Alternative values provided by local defaults file or through
-                  command line parameters.
+            Theshold for calling loss segments.
+            Default: -0.15
+            Alternative values provided by local defaults file or through
+            command line parameters.
 
 -cna_gain_threshold
-                Theshold for calling gain segments.
-                Default: 0.15
-                ... as above ...
+            Theshold for calling gain segments.
+            Default: 0.15
+            ... as above ...
                 
 -plot_adjust_baseline
-                Value is added to both probes and segment values, before 
-                applying thresholds to the segments
-                Default: 0
+            Value is added to both probes and segment values, before 
+            applying thresholds to the segments
+            Default: 0
 
 -plot_adjust_baseline
-                Value is added to both probes and segment values, before
-                applying thresholds to the segments
-                Default: 0
+            Value is added to both probes and segment values, before
+            applying thresholds to the segments
+            Default: 0
 
--chr2plot       Chromosomes to be plotted (comma separated)
-                Default: 1 => Y
-                Example: "7,8,18"
+-chr2plot   Chromosomes to be plotted (comma separated)
+            Default: 1 => Y
+            Example: "7,8,18"
 
--plotregions    For generating a single plot, with one or more plot regions
-                Syntax: 9:20000000-22000000,17:0-25000000
-                The filename will be adjusted accordingly (here
-                  "arrayplot,chr9_20000000-22000000,17_0-25000000.svg").
-                This overrides the "-chr2plot" parameter.
+-plotregions
+            For generating a single plot, with one or more plot regions
+            Syntax: 9:20000000-22000000,17:0-25000000
+            The filename will be adjusted accordingly (here
+            `arrayplot,chr9_20000000-22000000,17_0-25000000.svg`).
+            This overrides the "-chr2plot" parameter.
 
--markers        For adding colored overlay block on one or more specified
-                regions, with an optional text label. Colors can be added, or
-                will be ranomised.
-                Example:
-                  11:2000000-3000000:marker:#ffcc00,11:2900000-3400000:another
+-markers    For adding colored overlay block on one or more specified
+            regions, with an optional text label. Colors can be added, or
+            will be ranomised.
+            Example:
+                11:2000000-3000000:marker:#ffcc00,11:2900000-3400000:another
 
 -value_plot_y_max
-                Maximum Y value of the plot
-                Default: 3.2
-                Can be adjusted depending on probe dynamics.
+            Maximum Y value of the plot
+            Default: 3.2
+            Can be adjusted depending on probe dynamics.
 
 -factor_probedots
-                Relative size of the probe dots
-                Default: 3
-                Can be lowered or increased, depending on probe number
+            Relative size of the probe dots
+            Default: 3
+            Can be lowered or increased, depending on probe number
 
 -size_chromosome_w_px
-                pixel width of the chromosomal bands
-                Default: 12
-                Cytoband plotting can be ski[pped by setting this to "0".
+            pixel width of the chromosomal bands
+            Default: 12
+            Cytoband plotting can be ski[pped by setting this to "0".
 
 -do_chromosomes_proportional
-                When giving a single chromosome in "-chr2plot", the size of the
-                  plot is adjusted relative to chromosome 1.
-                Default: y
-                Setting this to "n" will keep the full plot size.
-
+            When giving a single chromosome in "-chr2plot", the size of the
+            plot is adjusted relative to chromosome 1.
+            Default: y
+            Setting this to "n" will keep the full plot size.
 
 END
 

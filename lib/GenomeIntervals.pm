@@ -66,19 +66,19 @@ Returns:
 	my @refNames = ((sort {$a <=> $b } grep{ /^\d\d?$/ } keys %$refLims), (sort grep{ ! /\d/ } keys %$refLims));
 
 	my $i = 1;
+
 	for my $chro (@refNames) {
 
-		my $rbl = $refLims->{$chro};
-		
+		my $rbl = $refLims->{$chro};		
 		my $p_max = $rbl->{"p"}->[1];
 		my $q_max = $rbl->{"size"};
-        my $arm = "p";		
+    	my $arm = "p";		
 		my $start = 0;
 		
-        # calculate first interval to end p-arm with a full sized one
-        my $p_first = $p_max;
-        while ($p_first >= ($intSize + $terminal_intervals_soft_expansion)) {
-            $p_first -= $intSize }
+    # calculate first interval to end p-arm with a full sized one
+    my $p_first = $p_max;
+    while ($p_first >= ($intSize + $terminal_intervals_soft_expansion)) {
+        $p_first -= $intSize }
 		
 		my $end = $start + $p_first;
 
@@ -92,7 +92,8 @@ Returns:
 			elsif ($q_max < ($end + $terminal_intervals_soft_expansion) ){
 				$end = $q_max;
 				$int_p += $terminal_intervals_soft_expansion;
-			} 
+			}
+
 			if ($end >= $p_max) {
 				$arm = "q" }
 
@@ -143,13 +144,20 @@ Expects:
     ]
 
 Returns:
-  - a hash reference with each value consisting of a list of 2 integers, representing
-    the reference's min and max bases:
-    [
-      { __string__  =>  [  __integer__,  __integer__ ] },
-      { ... },
-    ]
+  - a hash reference with keys for each chromosome and various [ start, end ]
+  	arrays of integers representing the reference's (or arm's) min and max bases:
+  	
+    {
+    	__chro__ : {
+    		"size": __integer__,
+    		"chro": [  __integer__,  __integer__ ],
+    		"p": [  __integer__,  __integer__ ],
+    		"q": [  __integer__,  __integer__ ],
+    	}
 
+      { __string__  =>  [  __integer__,  __integer__ ] }
+     },
+     { ... },
 =cut
 
 ########    ####    ####    ####    ####    ####    ####    ####    ####    ####
@@ -159,6 +167,7 @@ Returns:
 	my $refLims = {};
 
 	foreach my $ref (map{ $_->{"reference_name"} } @$allRefs) {
+
 		my @refRefs = grep{ $_->{"reference_name"} =~ /^$ref$/i } @$allRefs;
 		my @pRefs = grep{ $_->{"band"} =~ /^p/i } @refRefs;
 		my @qRefs = grep{ $_->{"band"} =~ /^q/i } @refRefs;
@@ -169,6 +178,7 @@ Returns:
 		$refLims->{$ref}->{"p"} = [ $bases[0], $bases[-1] ];
 		@bases = sort { $a <=> $b } ((map{ $_->{start} } @qRefs), (map{ $_->{end} } @qRefs));
 		$refLims->{$ref}->{"q"} = [ $bases[0], $bases[-1] ];
+
 	}
 
 	return $refLims;

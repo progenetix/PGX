@@ -14,7 +14,6 @@ Current implementations (in `bin`):
 * example implementations
   - [CNVsegfilePlotter.pl](bin/CNVsegfilePlotter.pl)
   - for progenetix and TCGA style segmentation & probe files
-  
 
 #### Example
   
@@ -33,7 +32,7 @@ perl CNVsegfilePlotter.pl -outdir ./out -f ./data/testfile_segments.tab  -sf ./d
 
 * installation as above
 * for more about Progenetix see
-  - <http://info.progenetix.org>
+  - <http://docs.progenetix.org>
   - <http://github.com/progenetix/schemas>
   - <http://github.com/progenetix/bycon>
 
