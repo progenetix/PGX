@@ -30,7 +30,7 @@ sub pgx_open_handover {
 	my $accessid = shift;
 
 	if ($accessid !~ /..../) { return $pgx }
-
+	
 	$pgx->{handover} = MongoDB::MongoClient->new()->get_database( $config->{handover_db} )->get_collection( $config->{handover_coll} )->find_one( { id => $accessid } );
 	$pgx->{dataconn} = MongoDB::MongoClient->new()->get_database( $pgx->{handover}->{source_db} );
 
@@ -43,14 +43,15 @@ sub pgx_open_handover {
 sub pgx_samples_from_handover {
 
 	my $pgx = shift;
+	
 
 	if (! $pgx->{handover}) { return $pgx }
 	if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
 	my $cscoll = $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
 	my $dataQuery = { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
-	my $cursor = $cscoll->find( $dataQuery )->fields( { _id => 1, id => 1, biosample_id => 1, info => 1 } );
+	my $cursor = $cscoll->find( $dataQuery );
 	my $callsets = [ $cursor->all ];
-	$callsets = [ grep{ exists $_->{info}->{statusmaps} } @$callsets ];
+	$callsets = [ grep{ exists $_->{cnv_statusmaps} } @$callsets ];
 
 	$pgx->{datasetid} = $pgx->{handover}->{source_db};
 
@@ -59,8 +60,8 @@ sub pgx_samples_from_handover {
 			{
 				id => $_->{id},
 				biosample_id => $_->{biosample_id},
-				statusmaps => $_->{info}->{statusmaps},
-				info => { cnvstatistics => $_->{info}->{cnvstatistics} },
+				cnv_statusmaps => $_->{cnv_statusmaps},
+				cnv_statistics => $_->{cnv_statistics},
 				paths => $_->{info}->{paths},
 			}
 		} @$callsets
@@ -115,7 +116,6 @@ sub pgx_create_samples_from_segments {
 	my $pgx = shift;
 
 	if (! $pgx->{segmentdata}) { return $pgx }
-	
 
 	my %csIds = map{ $_->{callset_id} => 1 } @{ $pgx->{segmentdata} };
 
@@ -130,7 +130,7 @@ sub pgx_create_samples_from_segments {
 		  @{ $pgx->{samples} },
 		  {
 			id => $csId,
-			statusmaps => $pgx->{statusmaps},
+			cnv_statusmaps => $pgx->{cnv_statusmaps},
 			variants => $segments,
 			name => $csId,
 		  }
@@ -186,7 +186,7 @@ sub pgx_create_sample_collections {
 		  {
 			labels => [ $label ],
 			name => $name,
-			statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
+			statusmapsets => [ map{  { cnv_statusmaps => $_->{cnv_statusmaps} } } @{ $theseSamples } ],
 		  },
 		);
 

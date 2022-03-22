@@ -115,14 +115,14 @@ maps:
 	foreach my $ind (grep{ $valueMap->[$_]->[0] < 0 } 0..$#{ $pgx->{genomeintervals} }) {
 		$maps->{min}->[$ind] = 1 * (sprintf "%.4f", $valueMap->[$ind]->[0]) }
 
-	$pgx->{statusmaps} = $maps;
-	$pgx->{cnvstatistics} = $cnvStats;
+	$pgx->{cnv_statusmaps} = $maps;
+	$pgx->{cnv_statistics} = $cnvStats;
   
 	if ($pgx->{genomesize} > 1) {
 		foreach my $covK (keys %$cnvStats) {
 			my $fracK = $covK;
 			$fracK =~ s/coverage/fraction/;
-			$pgx->{cnvstatistics}->{$fracK}	= 1 * (sprintf "%.3f", $pgx->{cnvstatistics}->{$covK} / $pgx->{genomesize});
+			$pgx->{cnv_statistics}->{$fracK}	= 1 * (sprintf "%.3f", $pgx->{cnv_statistics}->{$covK} / $pgx->{genomesize});
 		} 
 	}
 
@@ -293,8 +293,8 @@ sub cluster_samples {
 		push(
 		  @matrix,
 		  [
- 			(map{ $sample->{statusmaps}->{dup}->[$_] >= $covThresh ? $sample->{statusmaps}->{dup}->[$_] : 0 } @{ $pgx->{matrixindex} }),
- 			(map{ $sample->{statusmaps}->{del}->[$_] >= $covThresh ? $sample->{statusmaps}->{del}->[$_] : 0 } @{ $pgx->{matrixindex} })
+ 			(map{ $sample->{cnv_statusmaps}->{dup}->[$_] >= $covThresh ? $sample->{cnv_statusmaps}->{dup}->[$_] : 0 } @{ $pgx->{matrixindex} }),
+ 			(map{ $sample->{cnv_statusmaps}->{del}->[$_] >= $covThresh ? $sample->{cnv_statusmaps}->{del}->[$_] : 0 } @{ $pgx->{matrixindex} })
 		  ]
 		);
 	}

@@ -272,7 +272,7 @@ Returns:
 	
 	my $covThresh = $pgx->{parameters}->{bin_match_min} * 1;
 
-	if (! $pgx->{samples}->[0]->{statusmaps}) { return $pgx }
+	if (! $pgx->{samples}->[0]->{cnv_statusmaps}) { return $pgx }
   
 	if (! -d $pgx->{parameters}->{path_loc}) {
 		warn "No correct specification for output path $pgx->{parameters}->{path_loc} $!";
@@ -302,8 +302,8 @@ Returns:
 	$label =~ s/_$//g;      
 	print FILE $label."\t";
 	print FILE join("\t",
- 			(map{ $sample->{statusmaps}->{dupcoverage}->[$_] >= $covThresh ? $sample->{statusmaps}->{dupcoverage}->[$_] : 0 } @{ $pgx->{matrixindex} }),
- 			(map{ $sample->{statusmaps}->{delcoverage}->[$_] >= $covThresh ? $sample->{statusmaps}->{delcoverage}->[$_] : 0 } @{ $pgx->{matrixindex} })
+ 			(map{ $sample->{cnv_statusmaps}->{dup}->[$_] >= $covThresh ? $sample->{cnv_statusmaps}->{dup}->[$_] : 0 } @{ $pgx->{matrixindex} }),
+ 			(map{ $sample->{cnv_statusmaps}->{del}->[$_] >= $covThresh ? $sample->{cnv_statusmaps}->{del}->[$_] : 0 } @{ $pgx->{matrixindex} })
 	)."\n";
 	}
 	close FILE;
@@ -334,7 +334,7 @@ Returns:
   my $file = shift;
 
   if (! $file) { die "No file $file $!" }
-  if (! $pgx->{samples}->[0]->{statusmaps}) { return $pgx }
+  if (! $pgx->{samples}->[0]->{cnv_statusmaps}) { return $pgx }
 
   my $i = 0;
   open  FILE, '>'."$file";
@@ -353,8 +353,8 @@ Returns:
     else {
       print FILE 'sample_'.$i."\t" }
     print FILE join("\t",
-      (map{ $sample->{statusmaps}->{max}->[$_] + 0 } @{ $pgx->{matrixindex} }),
-      (map{ $sample->{statusmaps}->{min}->[$_] + 0 } @{ $pgx->{matrixindex} }),
+      (map{ $sample->{cnv_statusmaps}->{max}->[$_] + 0 } @{ $pgx->{matrixindex} }),
+      (map{ $sample->{cnv_statusmaps}->{min}->[$_] + 0 } @{ $pgx->{matrixindex} }),
     )."\n";
   }
   close FILE;

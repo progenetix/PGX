@@ -198,7 +198,7 @@ my $progBar;
 foreach my $dataset (@{ $config->{ dataset_names } }) {
 
   my $dbconn = MongoDB::MongoClient->new()->get_database($dataset);
-  my $cursor = $dbconn->get_collection( 'biosamples' )->find( $biosampleQ )->fields( { id => 1, histological_diagnosis => 1, icdo_morphology => 1, icdo_topography => 1, external_references => 1, "info.cnvstatistics" => 1 } );
+  my $cursor = $dbconn->get_collection( 'biosamples' )->find( $biosampleQ )->fields( { id => 1, histological_diagnosis => 1, icdo_morphology => 1, icdo_topography => 1, external_references => 1, "cnv_statistics" => 1 } );
   my $bioS = [ $cursor->all ];
 
   if ($args{'-randno'} > 0) {
@@ -258,21 +258,21 @@ foreach my $dataset (@{ $config->{ dataset_names } }) {
     my $label = $bioByID->{$sampleID}->{label};
     my $code = $bioByID->{$sampleID}->{id};
 
-    $code =~  s/pgx\://;
+    $code =~ s/pgx\://;
     if ($args{'-stem_code'} =~ /y/i) {
-      $code =~  s/[\.\/]\d?\d?$//;
+      $code =~ s/[\.\/]\d?\d?$//;
       $label = $code;
     }
     if ($args{'-split_sets'} =~ /y/i) {
-      $label    .= ', '.$dataset;
-      $code   .= $dataset;
+      $label .= ', '.$dataset;
+      $code .= $dataset;
     }
 
     my $sample = {
       id => $sampleID,
       $sortValuesK => $code,
       $sortValuesL => $label,
-      statusmaps => $cs->{info}->{statusmaps},
+      cnv_statusmaps => $cs->{cnv_statusmaps},
       variants => [ grep{ $_->{biosample_id} eq $sampleID } @$vars ],
     };
 
@@ -365,7 +365,7 @@ foreach (sort grep{ /\w\w/ } keys %sortValues) {
     {
       labels => [ $label ],
       name => $name,
-      statusmapsets => [ map{  { statusmaps => $_->{statusmaps} } } @{ $theseSamples } ],
+      statusmapsets => [ map{  { cnv_statusmaps => $_->{cnv_statusmaps} } } @{ $theseSamples } ],
     },
   );
 

@@ -98,7 +98,7 @@ sub pgx_add_frequencymaps {
 
 	foreach my $csColl (@$csColls) {
 			$pgx->interval_cnv_frequencies(
-			[ map{$_->{statusmaps}} @{ $csColl->{statusmapsets} } ],
+			[ map{$_->{cnv_statusmaps}} @{ $csColl->{statusmapsets} } ],
 			$csColl->{name},
 			$csColl->{labels},
 		);
@@ -196,7 +196,7 @@ sub pgx_add_segmentsets_from_samples {
         id => $cs->{$idName},
         name => $cs->{name},
         variants => $cs->{variants},
-        statusmaps => $cs->{statusmaps},        
+        cnv_statusmaps => $cs->{cnv_statusmaps},        
       }
     );
 

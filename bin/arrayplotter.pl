@@ -152,7 +152,7 @@ foreach my $chro (@$chr2plot) {
     my $callset = {
         id => $arrayName,
         variants => [ grep{ $_->{variant_type} =~ /^D(?:UP)|(?:EL)$/ } @{ $pgx->{segmentdata} }],
-        statusmaps => $pgx->{statusmaps},
+        cnv_statusmaps => $pgx->{cnv_statusmaps},
     };
 
     open (FILE, ">", $outdir.'/'.$args{'-callsetfilename'});
