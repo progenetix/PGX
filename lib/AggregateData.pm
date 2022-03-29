@@ -14,6 +14,7 @@ require Exporter;
   pgx_segmentdata_from_sample_0
   pgx_add_variants_from_db
   pgx_create_samples_from_segments
+  pgx_remap_vrsified_segments
   pgx_callset_labels_from_header
   pgx_callset_labels_from_biosamples
   pgx_callset_labels_from_file
@@ -104,6 +105,24 @@ sub pgx_segmentdata_from_sample_0 {
 	if ($pgx->{segmentdata}) { return $pgx }
 	
 	$pgx->{segmentdata} = $pgx->{samples}->[0]->{variants};
+	
+	return $pgx;
+}
+
+################################################################################
+
+sub pgx_remap_vrsified_segments {
+
+	my $pgx = shift;
+	if (! $pgx->{segmentdata}) { return $pgx }
+	
+	for my $i (0..$#{ $pgx->{segmentdata} }) {	
+		if ($pgx->{segmentdata}->[$i]->{location}) {		
+			my $loc = $pgx->{segmentdata}->[$i]->{location};
+			$pgx->{segmentdata}->[$i]->{start} = $loc->{interval}->{start}->{value};
+			$pgx->{segmentdata}->[$i]->{end} = $loc->{interval}->{end}->{value};
+		}
+	}
 	
 	return $pgx;
 
