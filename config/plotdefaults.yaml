@@ -3,6 +3,8 @@
 path_loc: ""
 path_web: ""
 path_arraydata: ""
+skip: 0
+limit: 2000
 chr2plot: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
 genome: 'GRCh38'
 plotid: 'genomeplot'
@@ -16,7 +18,7 @@ title: ''
 subtitle: ''
 title_left: ''
 text_bottom_left: ""
-text_bottom_right: "CC-BY progenetix.org 2020-2021"
+text_bottom_right: "CC-BY progenetix.org 2020-2022"
 min_group_no: 2
 text_labels_left_max_letters: 40
 text_title_max_letters: 100

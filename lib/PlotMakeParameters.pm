@@ -72,10 +72,16 @@ Returns:
 	}
 
 	# arguments to parameters
+	
+	my @no_prefix_p =  qw(skip limit);
 	foreach my $par (keys %$plotPars) {
 	
-		my $formPar = '-'.$par;
-
+		my $formPar = $par;
+		
+		#TODO
+		if (! grep{ /$par/ } @no_prefix_p) {
+			$formPar = '-'.$formPar }
+			
 		if (! defined($args->{$formPar}) || $args->{$formPar} !~ /\w/) { next }
 		# special evaluation: regions
 

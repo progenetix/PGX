@@ -14,6 +14,7 @@ require Exporter;
   pgx_segmentdata_from_sample_0
   pgx_add_variants_from_db
   pgx_create_samples_from_segments
+  pgx_paginate_samples
   pgx_remap_vrsified_segments
   pgx_callset_labels_from_header
   pgx_callset_labels_from_biosamples
@@ -44,7 +45,6 @@ sub pgx_open_handover {
 sub pgx_samples_from_handover {
 
 	my $pgx = shift;
-	
 
 	if (! $pgx->{handover}) { return $pgx }
 	if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
@@ -67,7 +67,41 @@ sub pgx_samples_from_handover {
 			}
 		} @$callsets
 	];
+	
+	$pgx->pgx_paginate_samples();
 
+	return $pgx;
+
+}
+
+################################################################################
+
+sub pgx_paginate_samples {
+
+	my $pgx = shift;
+	
+	my $sNo = scalar @{$pgx->{samples}};
+	my $maxI = $sNo - 1;
+		
+	if (! defined $pgx->{parameters}->{skip}) {
+		return $pgx }
+	if (! defined $pgx->{parameters}->{limit}) {
+		return $pgx }
+	if ($pgx->{parameters}->{limit} < 1) {
+		return $pgx }
+	if ($pgx->{parameters}->{limit} > $sNo) {
+		return $pgx }
+		
+	my @range = (
+		$pgx->{parameters}->{skip} * $pgx->{parameters}->{limit},
+		$pgx->{parameters}->{skip} * $pgx->{parameters}->{limit} + $pgx->{parameters}->{limit} -1,
+	);
+	
+	if ($range[0] > $maxI) {
+		$pgx->{samples} = [] }
+	else {
+		$pgx->{samples} = [ @{$pgx->{samples}}[ $range[0]..$range[1] ] ] }
+		
 	return $pgx;
 
 }
@@ -116,11 +150,49 @@ sub pgx_remap_vrsified_segments {
 	my $pgx = shift;
 	if (! $pgx->{segmentdata}) { return $pgx }
 	
+	my %refseqs = (
+		"refseq:NC_000001.11" => "1",
+		"refseq:NC_000002.12" => "2",
+		"refseq:NC_000003.12" => "3",
+		"refseq:NC_000004.12" => "4",
+		"refseq:NC_000005.10" => "5",
+		"refseq:NC_000006.12" => "6",
+		"refseq:NC_000007.14" => "7",
+		"refseq:NC_000008.11" => "8",
+		"refseq:NC_000009.12" => "9",
+		"refseq:NC_000010.11" => "10",
+		"refseq:NC_000011.10" => "11",
+		"refseq:NC_000012.12" => "12",
+		"refseq:NC_000013.11" => "13",
+		"refseq:NC_000014.9" => "14",
+		"refseq:NC_000015.10" => "15",
+		"refseq:NC_000016.10" => "16",
+		"refseq:NC_000017.11" => "17",
+		"refseq:NC_000018.10" => "18",
+		"refseq:NC_000019.10" => "19",
+		"refseq:NC_000020.11" => "20",
+		"refseq:NC_000021.9" => "21",
+		"refseq:NC_000022.11" => "22",
+		"refseq:NC_000023.11" => "X",
+		"refseq:NC_000024.10" => "Y"
+	);
+	
+	my %varTypes = (
+		"EFO:0030070" => "DUP",
+		"EFO:0030067" => "DEL",
+		"EFO:0030073" => "DUP", #AMP
+		"EFO:0030069" => "DEL" #HOMODEL
+	);
+	
 	for my $i (0..$#{ $pgx->{segmentdata} }) {	
-		if ($pgx->{segmentdata}->[$i]->{location}) {		
+		if ($pgx->{segmentdata}->[$i]->{location}) {
 			my $loc = $pgx->{segmentdata}->[$i]->{location};
+			my $efo = $pgx->{segmentdata}->[$i]->{variant_state};
+			$pgx->{segmentdata}->[$i]->{variant_type} = $varTypes{ $efo->{id} };
+			$pgx->{segmentdata}->[$i]->{reference_name} = $refseqs{ $loc->{sequence_id} };
 			$pgx->{segmentdata}->[$i]->{start} = $loc->{interval}->{start}->{value};
 			$pgx->{segmentdata}->[$i]->{end} = $loc->{interval}->{end}->{value};
+			delete $pgx->{segmentdata}->[$i]->{location};
 		}
 	}
 	

@@ -9,7 +9,7 @@ $| = 1;
 # molecular cytogenetics, Comparative Genomic Hybridization, genomic arrays    #
 # data analysis & visualization                                                #
 #                                                                              #
-# © 2000-2021 Michael Baudis: m@baud.is                                        #
+# © 2000-2022 Michael Baudis: michael@baud.is                                  #
 #                                                                              #
 ################################################################################
 
@@ -59,7 +59,8 @@ my $api = {
 	datasetid => '',
 	coll => '',
 	path_var => '/_process_'."$^T"."$$",
-	plotargs =>	{ map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) },
+# 	plotargs =>	{ map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) },
+	plotargs =>	{ map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-?\w+?$/ } keys %{ $params }) },
 	handover_db => $config->{handover_db},
 	handover_coll => $config->{handover_coll},
 	accessid => $accessid,
