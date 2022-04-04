@@ -15,23 +15,17 @@ $| = 1;
 
 =podmd
 
-### Examples
-
-* <https://progenetix.org/cgi/PGX/cgi/deliveries.cgi?accessid=0fab5ffb-6d1b-45e6-8149-7a5ae9a67286&group_by=PMID>
-  - obv. real accessid neeeded ...
 =cut
 
 use strict;
 use CGI::Simple;
 use CGI::Carp qw(fatalsToBrowser);
+use Data::Dumper;
 
 use File::Basename;
+use JSON::XS;
 use MongoDB;
 $MongoDB::Cursor::timeout = 120000;
-
-use JSON::XS;
-
-use Data::Dumper;
 
 BEGIN { unshift @INC, ('..') };
 use PGX;
@@ -41,10 +35,14 @@ use lib::Helpers;
 my $config = PGX::read_config();
 my $params = lib::CGItools::deparse_query_string();
 
+my $debug_mode = 0;
 if ($params->{debug}->[0] > 0) {
-	print 'Content-type: text/plain'."\n\n" }
+	$debug_mode = 1;
+	print 'Content-type: text/plain'."\n\n";
+}
 
 my $accessid = $params->{accessid}->[0];
+
 if (! $params->{datasetIds}) {
 	$params->{datasetIds} = [ 'progenetix' ] }
 if (
@@ -56,6 +54,7 @@ if (
 	
 my $api = {
 	config => $config,
+	debug_mode => $debug_mode,
 	datasetid => '',
 	coll => '',
 	path_var => '/_process_'."$^T"."$$",
@@ -129,7 +128,7 @@ sub _retrieve_samples {
 
 	my $api = shift;
 
-	my $pgx = new PGX($api->{plotargs});
+	my $pgx = new PGX($api->{plotargs}, $api->{debug_mode});
 
 	$pgx->pgx_add_segments_from_file($api->{segfile});
 
@@ -149,7 +148,8 @@ sub _retrieve_samples {
 	$pgx->pgx_callset_labels_from_biosamples($api->{config});
 	$pgx->pgx_callset_labels_from_header();
 	$pgx->pgx_add_variants_from_db();
-	
+	$pgx->pgx_remap_vrsified_segments();
+
 	$api->{samples}	= $pgx->{samples};
 	$api->{datasetid} = $pgx->{datasetid};
 	
@@ -175,7 +175,7 @@ sub _return_histogram {
 	else {	
 		$plotargs->{-text_bottom_left} = $api->{datasetid}.': '.scalar(@{ $api->{samples} }).' samples' }	
 
-	my $pgx = new PGX($plotargs);
+	my $pgx = new PGX($plotargs, $api->{debug_mode});
 
 	$pgx->{datasetid} = $api->{datasetid};
 	$pgx->{parameters}->{plotid} = 'histogram';
@@ -197,7 +197,7 @@ sub _add_samplecollections {
 
 	my $api = shift;
 
-	my $pgx = new PGX($api->{plotargs});
+	my $pgx = new PGX($api->{plotargs}, $api->{debug_mode});
 	$pgx->{samples} = $api->{samples};
 
 	$pgx->pgx_create_sample_collections();	
@@ -228,7 +228,7 @@ sub _return_multihistogram {
 	else {	
 		$plotargs->{-text_bottom_left} = $api->{datasetid}.': '.scalar(@{ $api->{samples} }).' samples' }	
 	
-	my $pgx = new PGX($plotargs);
+	my $pgx = new PGX($plotargs, $api->{debug_mode});
 	$pgx->{samples} = $api->{samples};
 
 	$pgx->{datasetid} = $api->{datasetid};
@@ -266,7 +266,7 @@ sub _return_samplematrix {
 	else {	
 		$plotargs->{-text_bottom_left} = $api->{datasetid}.': '.scalar(@{ $api->{samples} }).' samples' }	
 	
-	my $pgx = new PGX($plotargs);
+	my $pgx = new PGX($plotargs, $api->{debug_mode});
 	$pgx->{samples} = $api->{samples};
 	$pgx->{datasetid} = $api->{datasetid};
 	$pgx->{parameters}->{plotid} = $plotType;

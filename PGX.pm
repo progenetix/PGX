@@ -32,9 +32,12 @@ sub new {
 
 	my $class = shift;
 	my $args = shift;
+	my $debug_mode = shift || 0;
+
 	$args = args_modify_plot_parameters(read_plot_defaults(), $args);
 	my $self = {
 		parameters => $args,
+		debug_mode => $debug_mode,
 		config => read_config(),
 		cytobands => read_cytobands($args->{genome}),
 		datasetid => q{},
