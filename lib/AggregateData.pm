@@ -14,13 +14,15 @@ require Exporter;
   pgx_segmentdata_from_sample_0
   pgx_add_variants_from_db
   pgx_create_samples_from_segments
-  pgx_paginate_samples
+  pgx_handover_pagination_range
   pgx_remap_vrsified_segments
   pgx_callset_labels_from_header
   pgx_callset_labels_from_biosamples
   pgx_callset_labels_from_file
   pgx_create_sample_collections
   pgx_geo_markers_from_provenance
+  pgx_paginate_this
+  pgx_samples_from_callsets
 );
 
 ################################################################################
@@ -44,17 +46,59 @@ sub pgx_open_handover {
 
 sub pgx_samples_from_handover {
 
+
 	my $pgx = shift;
 
 	if (! $pgx->{handover}) { return $pgx }
-	if ($pgx->{handover}->{target_collection} ne 'callsets') { return $pgx }
-	my $cscoll = $pgx->{dataconn}->get_collection( $pgx->{handover}->{target_collection} );
-	my $dataQuery = { $pgx->{handover}->{target_key} => { '$in' => $pgx->{handover}->{target_values} } };
-	my $cursor = $cscoll->find( $dataQuery );
-	my $callsets = [ $cursor->all ];
-	$callsets = [ grep{ exists $_->{cnv_statusmaps} } @$callsets ];
 
 	$pgx->{datasetid} = $pgx->{handover}->{source_db};
+
+	$pgx->pgx_handover_pagination_range();
+	my $t_vs = $pgx->pgx_paginate_this($pgx->{handover}->{target_values});
+
+	if ($pgx->{debug_mode} > 0) {
+		print Dumper($skip_docs, $limit_docs, $doc_no, $range_i);
+		print Dumper($t_vs);
+	}
+
+	my $t_k = "id";
+
+	if ($pgx->{handover}->{target_collection} eq 'biosamples') {
+		# get the callset ids
+		# $csIds = ...
+		if ($pgx->{handover}->{target_key} eq "id") {
+			$t_k = "biosample_id";
+		} else {
+			return $pgx;
+		}
+	} elsif ($pgx->{handover}->{target_collection} eq 'callsets') {
+		$t_vs = $pgx->{handover}->{target_values};
+		$t_k = $pgx->{handover}->{target_key};
+	} else {
+		return $pgx }
+
+	my $query = { $t_k => { '$in' => $t_vs } };
+
+	$pgx->pgx_samples_from_callsets($query);
+
+	return $pgx;
+
+}
+
+################################################################################
+
+sub pgx_samples_from_callsets {
+
+	my $pgx = shift;
+	my $query = shift;
+
+	my $cscoll = $pgx->{dataconn}->get_collection( 'callsets' );
+	my $cursor = $cscoll->find( $query );
+	my $callsets = [ $cursor->all ];
+
+	$callsets = [ grep{ exists $_->{cnv_statusmaps} } @$callsets ];
+# print Dumper($query);
+# print Dumper($callsets);	
 
 	$pgx->{samples} = [
 		map{
@@ -67,8 +111,6 @@ sub pgx_samples_from_handover {
 			}
 		} @$callsets
 	];
-	
-	$pgx->pgx_paginate_samples();
 
 	return $pgx;
 
@@ -76,33 +118,52 @@ sub pgx_samples_from_handover {
 
 ################################################################################
 
-sub pgx_paginate_samples {
+sub pgx_handover_pagination_range {
 
 	my $pgx = shift;
 	
-	my $sNo = scalar @{$pgx->{samples}};
-	my $maxI = $sNo - 1;
-		
-	if (! defined $pgx->{parameters}->{skip}) {
-		return $pgx }
-	if (! defined $pgx->{parameters}->{limit}) {
-		return $pgx }
-	if ($pgx->{parameters}->{limit} < 1) {
-		return $pgx }
-	if ($pgx->{parameters}->{limit} > $sNo) {
-		return $pgx }
-		
-	my @range = (
-		$pgx->{parameters}->{skip} * $pgx->{parameters}->{limit},
-		$pgx->{parameters}->{skip} * $pgx->{parameters}->{limit} + $pgx->{parameters}->{limit} -1,
-	);
-	
-	if ($range[0] > $maxI) {
-		$pgx->{samples} = [] }
-	else {
-		$pgx->{samples} = [ @{$pgx->{samples}}[ $range[0]..$range[1] ] ] }
+	if (! $pgx->{handover}) { return $pgx }
+
+	$pgx->{datasetid} = $pgx->{handover}->{source_db};
+
+	my $skip_docs = $pgx->{parameters}->{skip} || 0;
+	my $limit_docs = $pgx->{parameters}->{limit} || 0;
+
+	$skip_docs *= $limit_docs;
+
+	my $doc_no = $pgx->{handover}->{target_count};
+	my $left_no = $doc_no - $skip_docs;
+
+	if ($left_no < 1) {
+		$pgx->{samples} = [];
+		return $pgx;
+	} elsif ($limit_docs > $left_no) {
+		$limit_docs = $left_no;
+	}
+
+	my $range_i = $skip_docs + $limit_docs - 1;
+
+	$pgx->{handover_pagination_range} = ([$skip_docs, $range_i]);
 		
 	return $pgx;
+
+}
+
+################################################################################
+
+sub pgx_paginate_this {
+
+	my $pgx = shift;
+	my $this = shift || [];
+	my $range = $pgx->{handover_pagination_range};
+
+	if ($range->[0] > scalar @$this) {
+		return [] }
+
+	if ($range->[1] > scalar @$this) {
+		$range->[1] = scalar @$this }
+
+	return [ @$this[ $range->[0]..$range->[1] ] ]
 
 }
 
@@ -113,7 +174,6 @@ sub pgx_add_variants_from_db {
 	my $pgx = shift;
 	my $query = shift;
 
-	if (! $pgx->{handover}) { return $pgx }
 	if (! $pgx->{dataconn}) { return $pgx }
 
 	my $vcoll = $pgx->{dataconn}->get_collection('variants');
@@ -122,6 +182,8 @@ sub pgx_add_variants_from_db {
 		my $dataQuery = { 'callset_id' => $pgx->{samples}->[$i]->{id} };
 		my $cursor = $vcoll->find( $dataQuery )->fields( { _id => 0, updated => 0, created => 0 } );
 		$pgx->{samples}->[$i]->{variants} = [ $cursor->all ];
+		$pgx->{samples}->[$i]->{variants} = $pgx->pgx_remap_vrsified_segments($pgx->{samples}->[$i]->{variants});
+
 	}
 
 	return $pgx;
@@ -138,7 +200,7 @@ sub pgx_segmentdata_from_sample_0 {
 	if (! $pgx->{samples}->[0]->{variants}) { return $pgx }
 	if ($pgx->{segmentdata}) { return $pgx }
 	
-	$pgx->{segmentdata} = $pgx->{samples}->[0]->{variants};
+	$pgx->{segmentdata} = $pgx->pgx_remap_vrsified_segments($pgx->{samples}->[0]->{variants});
 	
 	return $pgx;
 }
@@ -148,7 +210,7 @@ sub pgx_segmentdata_from_sample_0 {
 sub pgx_remap_vrsified_segments {
 
 	my $pgx = shift;
-	if (! $pgx->{segmentdata}) { return $pgx }
+	my $segmentdata = shift || [];
 	
 	my %refseqs = (
 		"refseq:NC_000001.11" => "1",
@@ -184,19 +246,19 @@ sub pgx_remap_vrsified_segments {
 		"EFO:0030069" => "DEL" #HOMODEL
 	);
 	
-	for my $i (0..$#{ $pgx->{segmentdata} }) {	
-		if ($pgx->{segmentdata}->[$i]->{location}) {
-			my $loc = $pgx->{segmentdata}->[$i]->{location};
-			my $efo = $pgx->{segmentdata}->[$i]->{variant_state};
-			$pgx->{segmentdata}->[$i]->{variant_type} = $varTypes{ $efo->{id} };
-			$pgx->{segmentdata}->[$i]->{reference_name} = $refseqs{ $loc->{sequence_id} };
-			$pgx->{segmentdata}->[$i]->{start} = $loc->{interval}->{start}->{value};
-			$pgx->{segmentdata}->[$i]->{end} = $loc->{interval}->{end}->{value};
-			delete $pgx->{segmentdata}->[$i]->{location};
+	for my $i (0..$#{ $segmentdata }) {	
+		if ($segmentdata->[$i]->{location}) {
+			my $loc = $segmentdata->[$i]->{location};
+			my $efo = $segmentdata->[$i]->{variant_state};
+			$segmentdata->[$i]->{variant_type} = $varTypes{ $efo->{id} };
+			$segmentdata->[$i]->{reference_name} = $refseqs{ $loc->{sequence_id} };
+			$segmentdata->[$i]->{start} = $loc->{interval}->{start}->{value};
+			$segmentdata->[$i]->{end} = $loc->{interval}->{end}->{value};
+			delete $segmentdata->[$i]->{location};
 		}
 	}
 	
-	return $pgx;
+	return $segmentdata;
 
 }
 

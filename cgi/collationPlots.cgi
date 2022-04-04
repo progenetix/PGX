@@ -29,8 +29,11 @@ use PGX;
 my $config = PGX::read_config();
 my $params = lib::CGItools::deparse_query_string();
 
+my $debug_mode = 0;
 if ($params->{debug}->[0] > 0) {
-	print 'Content-type: text/plain'."\n\n" }
+	$debug_mode = 1;
+	print 'Content-type: text/plain'."\n\n";
+}
 
 ################################################################################
 
@@ -59,7 +62,7 @@ my $subset = MongoDB::MongoClient->new()->get_database( $dataset )->get_collecti
 my $plotargs = { map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) };
 
 if (! grep{ /id/ } keys %{ $subset }) {
-	my $plot = new PGX($plotargs);
+	my $plot = new PGX($plotargs, $debug_mode);
 	$plot->return_error_svg('No match for histogram with id "'.$id.'" in dataset "'.$dataset.'" ...');
 	print 'Content-type: image/svg+xml'."\n\n";
 	print $plot->{svg};
@@ -71,8 +74,8 @@ if ($subset->{label} =~ /.../) {
 else {
 	$plotargs->{-title} = $subset->{id} }
 
-my $plot = new PGX($plotargs);
-$plot->{parameters}->{plotid} = 'histoplot';
+my $plot = new PGX($plotargs, $debug_mode);
+$plot->{rameters}->{plotid} = 'histoplot';
 $plot->{parameters}->{text_bottom_left} = $subset->{counts}->{biosamples}.' samples';
 
 $plot->{frequencymaps} = [ $subset->{ frequencymap } ];
