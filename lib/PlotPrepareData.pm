@@ -177,32 +177,32 @@ sub pgx_add_frequencymaps_from_file {
 
 sub pgx_add_segmentsets_from_samples {
 
-  my $pgx = shift;
-  my $callsets = shift;
-  my $idName = shift;
-  if ($idName !~ /\w\w/) {
-    $idName = 'id'}
-  
-  $pgx->{segmentsets} = [];
-       
-  foreach my $cs (@$callsets) {
-  
-    if (! $cs->{name}) {
-      $cs->{name} = $cs->{$idName} }
-      
-    push (
-      @{ $pgx->{segmentsets} },
-      {
-        id => $cs->{$idName},
-        name => $cs->{name},
-        variants => $cs->{variants},
-        cnv_statusmaps => $cs->{cnv_statusmaps},        
-      }
-    );
+	my $pgx = shift;
+	my $callsets = shift;
+	my $idName = shift;
+	if ($idName !~ /\w\w/) {
+	$idName = 'id'}
 
-  }
+	$pgx->{segmentsets} = [];
+   
+	foreach my $cs (@$callsets) {
+
+		if (! $cs->{name}) {
+			$cs->{name} = $cs->{$idName} }
   
-  return $pgx;
+		push (
+			@{ $pgx->{segmentsets} },
+			{
+				id => $cs->{$idName},
+				name => $cs->{name},
+				variants => $cs->{variants},
+				cnv_statusmaps => $cs->{cnv_statusmaps},        
+			}
+		);
+
+	}
+
+	return $pgx;
 
 }
 

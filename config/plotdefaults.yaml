@@ -218,17 +218,17 @@ cluster_linkage_method: m
 
 # Wikimedia/OpenStreetMap tiles
 map_attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://maps.wikimedia.org/">Wikimedia</a>'
-map_tiles: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
+# map_tiles: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
 map_extra_JS: ""
+map_tiles: 'https://tile.openstreetmap.org/${z}/${x}/${y}.png'
 
 ## MapBox tiles (for-pay beyond a certain nr. of access per month)
 # map_tiles:  = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=...'
 # map_attribution: 'Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
 # map_extra_JS: 'id: "mapbox.streets",'
 
-map_head: |
+map_head: >-
   <meta charset="utf-8">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
 map_marker_type: 'circle'
 map_marker_scale: 2
 map_latitude: 10.0

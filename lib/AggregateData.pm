@@ -56,9 +56,8 @@ sub pgx_samples_from_handover {
 	$pgx->pgx_handover_pagination_range();
 	my $t_vs = $pgx->pgx_paginate_this($pgx->{handover}->{target_values});
 
-	if ($pgx->{debug_mode} > 0) {
-		print Dumper($skip_docs, $limit_docs, $doc_no, $range_i);
-		print Dumper($t_vs);
+	if ($pgx->{debug_mode} > 0) {		
+		print Dumper("IDs from HANDOVER",$t_vs);
 	}
 
 	my $t_k = "id";
@@ -97,7 +96,10 @@ sub pgx_samples_from_callsets {
 	my $callsets = [ $cursor->all ];
 
 	$callsets = [ grep{ exists $_->{cnv_statusmaps} } @$callsets ];
-# print Dumper($query);
+
+	if ($pgx->{debug_mode} > 0) {		
+		print Dumper("QUERY", $query);
+	}
 # print Dumper($callsets);	
 
 	$pgx->{samples} = [
@@ -111,6 +113,10 @@ sub pgx_samples_from_callsets {
 			}
 		} @$callsets
 	];
+
+	if ($pgx->{debug_mode} > 0) {		
+		print Dumper("FIRST SAMPLE", $pgx->{samples}->[0]);
+	}
 
 	return $pgx;
 
@@ -364,7 +370,7 @@ sub pgx_callset_labels_from_biosamples {
 			if ($grt eq $pgx->{parameters}->{group_by}) {
 				$groupType = $pgx->{parameters}->{group_by};
 				$groupAttr = $pgx->{config}->{datacollections}->{$grt}->{samplefield};			
-	} } }
+	}}}
 
 	if ($groupAttr !~ /.../)  { $groupAttr = 'histological_diagnosis' }
 	if ($groupType !~ /.../)  { $groupType = 'xxxx' }

@@ -1,8 +1,8 @@
 package lib::Helpers;
 
 require Exporter;
-@ISA    =   qw(Exporter);
-@EXPORT =   qw(
+@ISA = qw(Exporter);
+@EXPORT = qw(
 	MaxTextWidthPix
 	RandArr
 );
@@ -11,8 +11,8 @@ require Exporter;
 
 sub MaxTextWidthPix {
 
-	my $texts			=		shift;
-	my $fontSize	=		shift;
+	my $texts = shift;
+	my $fontSize = shift;
 
 	return	( sort {$a <=> $b} (map{ length($_) } @$texts) )[-1] * $fontSize * 0.5;
 
@@ -43,34 +43,34 @@ index elements.
 
 =cut
 
-  my $arr = shift;
-  my $iL = shift;
-  my $overSamp = 7;
+	my $arr = shift;
+	my $iL = shift;
+	my $overSamp = 7;
 
-  if (ref $arr ne 'ARRAY') { return \0 }
+	if (ref $arr ne 'ARRAY') { return \0 }
 
-  # if no number of array elements => all
-  if ($iL !~ /^\d+?$/) {
-    $iL = scalar @$arr }
-  # ... not more than all
-  elsif ($iL > @$arr) {
-    $iL = scalar @$arr }
+	# if no number of array elements => all
+	if ($iL !~ /^\d+?$/) {
+		$iL = scalar @$arr }
+	# ... not more than all
+	elsif ($iL > @$arr) {
+		$iL = scalar @$arr }
 
-  $overSamp *= $iL;
+	$overSamp *= $iL;
 
-  # maximum index number, for filtering the oversampled values
-  my $maxI = @$arr - 1;
-  if ($maxI < 0) { return \0 }
+	# maximum index number, for filtering the oversampled values
+	my $maxI = @$arr - 1;
+	if ($maxI < 0) { return \0 }
 
-  # use of a hash to have unique index numbers (keys of the hash)
-  my %randNo = ();
+	# use of a hash to have unique index numbers (keys of the hash)
+	my %randNo = ();
 
-  # adding to the hash keys until equal or more than needed
-  while (keys %randNo < $iL) {
-    %randNo = map{ $_ => 1 } (grep{ $_ <= $maxI } (keys %randNo, map{ int(rand($_)) } 0..$overSamp) );
-  }
+	# adding to the hash keys until equal or more than needed
+	while (keys %randNo < $iL) {
+		%randNo = map{ $_ => 1 } (grep{ $_ <= $maxI } (keys %randNo, map{ int(rand($_)) } 0..$overSamp) );
+	}
 
-  return [ @$arr[ (keys %randNo)[0..($iL-1)] ] ];
+	return [ @$arr[ (keys %randNo)[0..($iL-1)] ] ];
 
 }
 

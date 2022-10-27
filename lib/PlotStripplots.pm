@@ -28,13 +28,15 @@ sub return_stripplot_svg {
 	my $plotW = $pp->{size_plotimage_w_px};
 	$pgx->{areastartx} = $pp->{size_plotmargin_px} + $pp->{size_title_left_w_px};
 
-	if (
-		$pp->{size_clustertree_w_px} < 1
-		 ||
-		 (scalar @{ $pgx->{clustertree} } < 2)
-	) { $pp->{size_clustertree_w_px} = 0 }
+	if ($pgx->{clustertree}) {
+		if (
+			$pp->{size_clustertree_w_px} < 1
+			 ||
+			 (scalar @{ $pgx->{clustertree} } < 2)
+		) { $pp->{size_clustertree_w_px} = 0 }
+	}
+
 	$pgx->{areawidth} = $plotW - ($pgx->{areastartx} + $pp->{size_plotmargin_px} + $pp->{size_label_right_px} + $pp->{size_clustertree_w_px});
-	;
 	
 	if (
 		$pp->{do_chromosomes_proportional} =~ /y/i
@@ -196,42 +198,44 @@ Returns:
 
 		foreach my $chro (@{ $pp->{chr2plot} }) {
 
-		  my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$chro}->[1] - $pgx->{referencebounds}->{$chro}->[0]) * $pgx->{basepixfrac};
-		  $gdArea->filledRectangle($area_x0, $gd_y0, ($area_x0 + $areaW), $gd_yn, $gdAreaCol);
+			my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$chro}->[1] - $pgx->{referencebounds}->{$chro}->[0]) * $pgx->{basepixfrac};
+			$gdArea->filledRectangle($area_x0, $gd_y0, ($area_x0 + $areaW), $gd_yn, $gdAreaCol);
 
-		  my $areaSegs = [ grep{ $_->{reference_name} eq $chro } @{ $segSet } ];
-		  $areaSegs = [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegs];
-		  $areaSegs = [ grep{ $_->{start} <= $pgx->{referencebounds}->{$chro}->[1] } @$areaSegs];
-		  $areaSegs = [ grep{ $_->{end} >= $pgx->{referencebounds}->{$chro}->[0] } @$areaSegs ];
-		  foreach my $seg (@$areaSegs) {
-			if ($seg->{start} < $pgx->{referencebounds}->{$chro}->[0]) {
-			  $seg->{start} = $pgx->{referencebounds}->{$chro}->[0] }
-			if ($seg->{end} > $pgx->{referencebounds}->{$chro}->[1]) {
-			  $seg->{end} = $pgx->{referencebounds}->{$chro}->[1] }
+			my $areaSegs = [ grep{ $_->{reference_name} eq $chro } @{ $segSet } ];
+			$areaSegs = [ grep{ $_->{variant_type} =~ /\w/ } @$areaSegs];
+			$areaSegs = [ grep{ $_->{start} <= $pgx->{referencebounds}->{$chro}->[1] } @$areaSegs];
+			$areaSegs = [ grep{ $_->{end} >= $pgx->{referencebounds}->{$chro}->[0] } @$areaSegs ];
 
-			my $seg_x0 = sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start} - $pgx->{referencebounds}->{$chro}->[0]);
-			my $segPixEnd = sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($seg->{end} - $seg->{start} ));
-			# providing a minimum sub-pixel segment plot length
-			if ($segPixEnd < 0.02) { $segPixLen = 0.02 }
+			foreach my $seg (@$areaSegs) {
+				if ($seg->{start} < $pgx->{referencebounds}->{$chro}->[0]) {
+					$seg->{start} = $pgx->{referencebounds}->{$chro}->[0] }
+				if ($seg->{end} > $pgx->{referencebounds}->{$chro}->[1]) {
+					$seg->{end} = $pgx->{referencebounds}->{$chro}->[1] }
 
-			if ($seg->{variant_type} =~ /DEL/i) {
-			  $gdArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdDelCol) }
-			elsif ($seg->{variant_type} =~ /DUP/i) {
-			  $gdArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdDupCol) }
+				my $seg_x0 = sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($seg->{start} - $pgx->{referencebounds}->{$chro}->[0]);
+				my $segPixEnd = sprintf "%.2f", ($seg_x0 + $pgx->{basepixfrac} * ($seg->{end} - $seg->{start} ));
+				# providing a minimum sub-pixel segment plot length
+				if ($segPixEnd < 0.02) {
+					$segPixLen = 0.02 }
 
-		  }
+				if ($seg->{variant_type} =~ /DEL/i) {
+					$gdArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdDelCol) }
+				elsif ($seg->{variant_type} =~ /DUP/i) {
+					$gdArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdDupCol) }
+			}
 
-		  $area_x0 += $areaW + $pp->{size_chromosome_padding_px};
+			$area_x0 += $areaW + $pp->{size_chromosome_padding_px};
 
 		}
 
 		my $labels_R = [];
-		if ($sample->{labels}) { $labels_R = $sample->{labels} }
+		if ($sample->{labels}) {
+			$labels_R = $sample->{labels} }
 		# fallback color; defined here for alternation...
 		if ($labCol eq $altLabCol) { 
-		  $labCol = $defLabCol }
+			$labCol = $defLabCol }
 		else { 
-		  $labCol = $altLabCol }
+			$labCol = $altLabCol }
 		$pgx->svg_add_labels_right($labels_R, $pp->{size_strip_h_px}, $labCol);
 
 		$pgx->{Y} += $pp->{size_strip_h_px};
@@ -256,8 +260,8 @@ Returns:
 
 sub get_frequencystripplot_area_gd {
 
-  use GD::Simple;
-  use MIME::Base64 qw(encode_base64);
+	use GD::Simple;
+	use MIME::Base64 qw(encode_base64);
 
 =pod
 
@@ -271,110 +275,111 @@ Returns:
 
   ######    ####    ####    ####    ####    ####    ####    ####    ####    ####
 
-  my $pgx = shift;
-  my $pp = $pgx->{parameters};
+	my $pgx = shift;
+	my $pp = $pgx->{parameters};
 
-  if ($pp->{size_strip_h_px} < 1) { return $pgx }
-  if (! $pgx->{frequencymaps}->[0]) { return $pgx }
+	if ($pp->{size_strip_h_px} < 1) { return $pgx }
+	if (! $pgx->{frequencymaps}->[0]) { return $pgx }
 
-  $pgx->{Y} += $pp->{size_plotarea_padding};
-  $pgx->{areastarty} = $pgx->{Y};
+	$pgx->{Y} += $pp->{size_plotarea_padding};
+	$pgx->{areastarty} = $pgx->{Y};
 
-  my $defLabCol = '#dddddd';
-  my $altLabCol = '#fefefe';
-  my $labCol = '#dddddd';
+	my $defLabCol = '#dddddd';
+	my $altLabCol = '#fefefe';
+	my $labCol = '#dddddd';
 
-  my $areaH = $pp->{size_strip_h_px} * @{ $pgx->{frequencymaps} };
-  my $gdArea = GD::Image->new($pgx->{areawidth}, $areaH, 1);
-  my $gdBgCol = $gdArea->colorAllocate( @{ hex2rgb($pp->{color_plotarea_hex}) } );
-  $gdArea->filledRectangle(0, 0, $pgx->{areawidth}, $areaH, $gdBgCol);
+	my $areaH = $pp->{size_strip_h_px} * @{ $pgx->{frequencymaps} };
+	my $gdArea = GD::Image->new($pgx->{areawidth}, $areaH, 1);
+	my $gdBgCol = $gdArea->colorAllocate( @{ hex2rgb($pp->{color_plotarea_hex}) } );
+	$gdArea->filledRectangle(0, 0, $pgx->{areawidth}, $areaH, $gdBgCol);
 
-  my $gd_y0 = 0;
-  my $gd_yn;
-  my $area_x0;
-    
-  foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
+	my $gd_y0 = 0;
+	my $gd_yn;
+	my $area_x0;
 
-    $fMapIndex++;
+	foreach my $frequencymapsSet (@{ $pgx->{frequencymaps} }) {
 
-    if ($frequencymapsSet->{name} =~ /\w\w/) {
-      my $titeL = {
-        text => $frequencymapsSet->{name},
-        pos_y => $pgx->{Y} + $pp->{size_strip_h_px} * 0.5,
-        linkout => q{},
-      };
-      $pgx->svg_add_title_left($titeL);
-    }
+		$fMapIndex++;
 
-    $gd_yn = $gd_y0 + $pp->{size_strip_h_px};
-    $area_x0 = 0;
+		if ($frequencymapsSet->{name} =~ /\w\w/) {
+			my $titeL = {
+				text => $frequencymapsSet->{name},
+				pos_y => $pgx->{Y} + $pp->{size_strip_h_px} * 0.5,
+				linkout => q{},
+			};
+			$pgx->svg_add_title_left($titeL);
+		}
 
-    my $maxF = (sort {$a <=> $b} (map{ $_->{gain_frequency}, $_->{loss_frequency} } @{ $frequencymapsSet->{intervals} }) )[-1];
+		$gd_yn = $gd_y0 + $pp->{size_strip_h_px};
+		$area_x0 = 0;
 
-    foreach my $chro (@{ $pp->{chr2plot} }) {
+		my $maxF = (sort {$a <=> $b} (map{ $_->{gain_frequency}, $_->{loss_frequency} } @{ $frequencymapsSet->{intervals} }) )[-1];
 
-      my $areaBases = $pgx->{referencebounds}->{$chro}->[1] - $pgx->{referencebounds}->{$chro}->[0];
-      my $areaW = sprintf "%.1f", $areaBases * $pgx->{basepixfrac};
+		foreach my $chro (@{ $pp->{chr2plot} }) {
 
-      # intervals through index #    ####    ####    ####    ####    ####    ####
-      my @ind = grep{ $chro eq $pgx->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $pgx->{genomeintervals} };
-      @ind = grep{ $pgx->{genomeintervals}->[$_]->{start} <= $pgx->{referencebounds}->{$chro}->[1]  } @ind;
-      @ind = grep{ $pgx->{genomeintervals}->[$_]->{end} >= $pgx->{referencebounds}->{$chro}->[0]  } @ind;
+			my $areaBases = $pgx->{referencebounds}->{$chro}->[1] - $pgx->{referencebounds}->{$chro}->[0];
+			my $areaW = sprintf "%.1f", $areaBases * $pgx->{basepixfrac};
 
-      foreach my $i (@ind) {
+			# intervals through index #    ####    ####    ####    ####    ####    ####
+			my @ind = grep{ $chro eq $pgx->{genomeintervals}->[$_]->{reference_name} } 0..$#{ $pgx->{genomeintervals} };
+			@ind = grep{ $pgx->{genomeintervals}->[$_]->{start} <= $pgx->{referencebounds}->{$chro}->[1]  } @ind;
+			@ind = grep{ $pgx->{genomeintervals}->[$_]->{end} >= $pgx->{referencebounds}->{$chro}->[0]  } @ind;
 
-        my $start = $pgx->{genomeintervals}->[$i]->{start};
-        my $end = $pgx->{genomeintervals}->[$i]->{end};
+			foreach my $i (@ind) {
 
-        if ($start < $pgx->{referencebounds}->{$chro}->[0]) {
-          $start = $pgx->{referencebounds}->{$chro}->[0] }
-        if ($end > $pgx->{referencebounds}->{$chro}->[1]) {
-          $end = $pgx->{referencebounds}->{$chro}->[1] }
+				my $start = $pgx->{genomeintervals}->[$i]->{start};
+				my $end = $pgx->{genomeintervals}->[$i]->{end};
 
-        my $seg_x0 = sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($start - $pgx->{referencebounds}->{$chro}->[0]);
-        my $segPixEnd = sprintf "%.1f", ($seg_x0 + $pgx->{basepixfrac} * ($end - $start));
-        # providing a minimum sub-pixel segment plot length
-        if ($segPixEnd - $seg_x0 < 0.2) {
-        	$segPixEnd = $seg_x0 + 0.2 }
+				if ($start < $pgx->{referencebounds}->{$chro}->[0]) {
+					$start = $pgx->{referencebounds}->{$chro}->[0] }
+				if ($end > $pgx->{referencebounds}->{$chro}->[1]) {
+					$end = $pgx->{referencebounds}->{$chro}->[1] }
 
-        my $fill = frequencies2rgb(
-			$pp,
-			$frequencymapsSet->{intervals}->[$i]->{gain_frequency},
-			$frequencymapsSet->{intervals}->[$i]->{loss_frequency},
-			$maxF,
-		);
+				my $seg_x0 = sprintf "%.1f", $area_x0 + $pgx->{basepixfrac} * ($start - $pgx->{referencebounds}->{$chro}->[0]);
+				my $segPixEnd = sprintf "%.1f", ($seg_x0 + $pgx->{basepixfrac} * ($end - $start));
+				# providing a minimum sub-pixel segment plot length
+				if ($segPixEnd - $seg_x0 < 0.2) {
+					$segPixEnd = $seg_x0 + 0.2 }
 
-        my $gdCol = $gdArea->colorAllocate( split(',', $fill) );
-        $gdArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdCol);
+				my $fill = frequencies2rgb(
+					$pp,
+					$frequencymapsSet->{intervals}->[$i]->{gain_frequency},
+					$frequencymapsSet->{intervals}->[$i]->{loss_frequency},
+					$maxF,
+				);
 
-      }
-      
-      $area_x0 += $areaW + $pp->{size_chromosome_padding_px};
+				my $gdCol = $gdArea->colorAllocate( split(',', $fill) );
+				$gdArea->filledRectangle($seg_x0, $gd_y0, $segPixEnd, $gd_yn, $gdCol);
 
-    }
-    
-    my $labels_R = [];
-    if ($frequencymapsSet->{labels}) { $labels_R = $frequencymapsSet->{labels} }
+			}
 
-    # fallback color; defined here for alternation...
-    $labCol = _alt_col($labCol, $defLabCol, $altLabCol);
-    $pgx->svg_add_labels_right($labels_R, $pp->{size_strip_h_px}, $labCol);
+			$area_x0 += $areaW + $pp->{size_chromosome_padding_px};
 
-    $pgx->{Y} += $pp->{size_strip_h_px};
-    $gd_y0 += $pp->{size_strip_h_px};
+		}
 
-  }
+		my $labels_R = [];
+		if ($frequencymapsSet->{labels}) {
+			$labels_R = $frequencymapsSet->{labels} }
 
-  $pgx->{svg} .= '
+		# fallback color; defined here for alternation...
+		$labCol = _alt_col($labCol, $defLabCol, $altLabCol);
+		$pgx->svg_add_labels_right($labels_R, $pp->{size_strip_h_px}, $labCol);
+
+		$pgx->{Y} += $pp->{size_strip_h_px};
+		$gd_y0 += $pp->{size_strip_h_px};
+
+	}
+
+	$pgx->{svg} .= '
 <image
-  x="'.$pgx->{areastartx}.'"
-  y="'.$pgx->{areastarty}.'"
-  width="'.$pgx->{areawidth}.'"
-  height="'.$areaH.'"
-  xlink:href="data:image/png;base64,'.encode_base64($gdArea->png).'"
+	x="'.$pgx->{areastartx}.'"
+	y="'.$pgx->{areastarty}.'"
+	width="'.$pgx->{areawidth}.'"
+	height="'.$areaH.'"
+	xlink:href="data:image/png;base64,'.encode_base64($gdArea->png).'"
 />';
 
-  return $pgx;
+	return $pgx;
 
 }
 
@@ -394,6 +399,5 @@ sub _alt_col {
 }
 
 ################################################################################
-
 
 1;

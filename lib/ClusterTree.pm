@@ -193,7 +193,7 @@ sub _checkNode {
 				$sortNodes
 			);
 		}
-	
+
 	}
 
 	return	$sortNodes;
@@ -217,34 +217,34 @@ sub _drawNodes {
 	foreach (@$sortNodes) {
 
 		if ($tree->{ $_ }->{LEFT} =~ /^\-/) {
-			$tree->{ $_ }->{LY}	=	1 * $tree->{ $tree->{ $_ }->{LEFT} }->{NODEY};
-			$tree->{ $_ }->{LX}	=	1 * $tree->{ $tree->{ $_ }->{LEFT} }->{NODEX};
+			$tree->{ $_ }->{LY} = 1 * $tree->{ $tree->{ $_ }->{LEFT} }->{NODEY};
+			$tree->{ $_ }->{LX} = 1 * $tree->{ $tree->{ $_ }->{LEFT} }->{NODEX};
 		} else {
 			$sampleI	-=	1;
-			$tree->{ $_ }->{LY}	=	1 * $sampleI;
-			$tree->{ $_ }->{LX}	=	0;
+			$tree->{ $_ }->{LY} = 1 * $sampleI;
+			$tree->{ $_ }->{LX} = 0;
 			push(@$order, $tree->{ $_ }->{LEFT});
 		}
 
 		 if ($tree->{ $_ }->{RIGHT} =~ /^\-/) {
-			$tree->{ $_ }->{RY}	=	1 * $tree->{ $tree->{ $_ }->{RIGHT} }{ NODEY };
-			$tree->{ $_ }->{RX}	=	1 * $tree->{ $tree->{ $_ }->{RIGHT} }{ NODEX };
+			$tree->{ $_ }->{RY} = 1 * $tree->{ $tree->{ $_ }->{RIGHT} }{ NODEY };
+			$tree->{ $_ }->{RX} = 1 * $tree->{ $tree->{ $_ }->{RIGHT} }{ NODEX };
 		} else {
 			$sampleI	-=	1;
-			$tree->{ $_ }->{RY}	=	1 * $sampleI;
-			$tree->{ $_ }->{RX}	=	0;
+			$tree->{ $_ }->{RY} = 1 * $sampleI;
+			$tree->{ $_ }->{RX} = 0;
 			push(@$order, $tree->{ $_ }->{RIGHT});
 		}
 
-		$tree->{ $_ }->{NODEX}	=	1 * (sort {$a <=> $b } ($tree->{ $_ }->{LX}, $tree->{ $_ }->{RX}))[-1] + $tree->{ $_ }->{DIST};
-		$tree->{ $_ }->{NODEY}	=	($tree->{ $_ }->{LY} + $tree->{ $_ }->{RY}) / 2;
+		$tree->{ $_ }->{NODEX} = 1 * (sort {$a <=> $b } ($tree->{ $_ }->{LX}, $tree->{ $_ }->{RX}))[-1] + $tree->{ $_ }->{DIST};
+		$tree->{ $_ }->{NODEY} = ($tree->{ $_ }->{LY} + $tree->{ $_ }->{RY}) / 2;
 
 	}
 
 	return	(
-    [ map{ $tree->{ $_ } } sort { $a <=> $b } keys %{ $tree } ],
-    $order
-  );
+		[ map{ $tree->{ $_ } } sort { $a <=> $b } keys %{ $tree } ],
+		$order
+	);
 
 }
 
