@@ -58,7 +58,6 @@ my $api = {
 	datasetid => '',
 	coll => '',
 	path_var => '/_process_'."$^T"."$$",
-# 	plotargs =>	{ map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } keys %{ $params }) },
 	plotargs =>	{ map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-?\w+?$/ } keys %{ $params }) },
 	handover_db => $config->{handover_db},
 	handover_coll => $config->{handover_coll},
