@@ -181,16 +181,18 @@ sub read_frequencyfile {
 	my $headerValues = _objectify_header($header);	
 	$pgx->{pgxfileheader} = $headerValues;
 	
-	my %colOrder = (
-		group_id => 0,
-		reference_name => 1,
-		start => 2,
-		end => 3,
-		gain_frequency => 4,
-		loss_frequency => 5,
-		"index" => 6
-	);
-	
+	my @col_headers = qw(group_id reference_name start end gain_frequency loss_frequency index);
+	if (grep{ /reference_name/ } @{$table->[0]}) {
+		@col_headers = @{ shift @$table };
+	}
+
+	my %colOrder = ();	
+	my $c_i =0;
+	foreach (@col_headers) {
+		$colOrder{$_} = $c_i;
+		$c_i += 1;
+	}
+			
 	if ($table->[0]->[ $colOrder{reference_name} ] !~ /^([12]\d?)|X|Y/i) {
 		shift @$table }
 
