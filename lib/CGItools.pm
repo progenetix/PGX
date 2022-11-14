@@ -60,10 +60,10 @@ sub send_Google_tracking_no_log {
 	my $query = $ENV{ QUERY_STRING };
 
 	my %googleParams = (
-	tid => $conf_cgi->{google_tid},
-	ua  => $userAgent,
-	cid => create_UUID_as_string(UUID_V3, $userIP.'_'.$userAgent),
-	uip => $userIP,
+		tid => $conf_cgi->{google_tid},
+		ua  => $userAgent,
+		cid => create_UUID_as_string(UUID_V3, $userIP.'_'.$userAgent),
+		uip => $userIP,
 	);
 
 	if ($lang =~ /^[^\,]*?(\w\w(\-\w\w)?)/) { $googleParams{ul} = lc($1) }
