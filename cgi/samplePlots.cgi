@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 $| = 1;
 
@@ -111,11 +111,6 @@ $api->_return_histogram();
 $api->_add_samplecollections();
 $api->_return_multihistogram();
 $api->_return_samplematrix();
-
-send_Google_tracking_no_log(
-	$config->{cgi},
-	"/cgi/PGX/cgi/samplePlots.cgi"
-);
 
 $api->_return_json();
 

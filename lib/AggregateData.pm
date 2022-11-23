@@ -189,7 +189,6 @@ sub pgx_add_variants_from_db {
 		my $cursor = $vcoll->find( $dataQuery )->fields( { _id => 0, updated => 0, created => 0 } );
 		$pgx->{samples}->[$i]->{variants} = [ $cursor->all ];
 		$pgx->{samples}->[$i]->{variants} = $pgx->pgx_remap_vrsified_segments($pgx->{samples}->[$i]->{variants});
-
 	}
 
 	return $pgx;

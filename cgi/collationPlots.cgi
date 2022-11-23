@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl -w
 
 $| = 1;
 
@@ -9,7 +9,7 @@ $| = 1;
 # molecular cytogenetics, Comparative Genomic Hybridization, genomic arrays    #
 # data analysis & visualization                                                #
 #                                                                              #
-# © 2000-2021 Michael Baudis: m@baud.is                                        #
+# © 2000-2022 Michael Baudis: m@baud.is                                        #
 #                                                                              #
 ################################################################################
 
@@ -80,11 +80,6 @@ $plot->{parameters}->{text_bottom_left} = $subset->{counts}->{biosamples}.' samp
 
 $plot->{frequencymaps} = [ $subset->{ frequencymap } ];
 $plot->return_histoplot_svg();
-
-lib::CGItools::send_Google_tracking_no_log(
-	$config->{cgi},
-	"/cgi/PGX/cgi/collationPlots.cgi"
-);
 
 print 'Content-type: image/svg+xml'."\n\n";
 print $plot->{svg};
