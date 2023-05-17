@@ -9,7 +9,7 @@ $| = 1;
 # molecular cytogenetics, Comparative Genomic Hybridization, genomic arrays    #
 # data analysis & visualization                                                #
 #                                                                              #
-# © 2000-2022 Michael Baudis: michael@baud.is                                  #
+# © 2000-2023 Michael Baudis: michael@baud.is                                  #
 #                                                                              #
 ################################################################################
 
@@ -73,6 +73,10 @@ my $api = {
 	warnings => [ ]
 };
 bless $api;
+
+my $server_path = $ENV{SERVER_NAME};
+$server_path =~ s/^(\w+\.)?(\w+?)\.\w+$/$2/;
+$api->{config}->{paths}->{dir_tmp_base_path} =~ s/___datasetid___/$server_path/;
 
 $api->{plotargs}->{-path_loc} = $api->{config}->{paths}->{dir_tmp_base_path}.$api->{path_var};
 $api->{plotargs}->{-plotid} = 'arrayplot';

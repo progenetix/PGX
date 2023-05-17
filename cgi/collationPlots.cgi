@@ -9,7 +9,7 @@ $| = 1;
 # molecular cytogenetics, Comparative Genomic Hybridization, genomic arrays    #
 # data analysis & visualization                                                #
 #                                                                              #
-# © 2000-2022 Michael Baudis: m@baud.is                                        #
+# © 2000-2023 Michael Baudis: m@baud.is                                        #
 #                                                                              #
 ################################################################################
 
@@ -24,6 +24,7 @@ use Data::Dumper;
 use MongoDB;
 
 BEGIN { unshift @INC, ('..') };
+# BEGIN { unshift @INC, ('/Library/WebServer/cgi-bin/PGX') };
 use PGX;
 
 my $config = PGX::read_config();
@@ -63,7 +64,7 @@ my $plotargs = { map{ $_ => join(',', @{ $params->{$_} }) } (grep{ /^\-\w+?$/ } 
 
 if (! grep{ /id/ } keys %{ $subset }) {
 	my $plot = new PGX($plotargs, $debug_mode);
-	$plot->return_error_svg('No match for histogram with id "'.$id.'" in dataset "'.$dataset.'" ...');
+	$plot->return_error_svg('No matching CNV data for "'.$id.'" in dataset "'.$dataset.'" ...');
 	print 'Content-type: image/svg+xml'."\n\n";
 	print $plot->{svg};
 	exit;
@@ -75,8 +76,8 @@ else {
 	$plotargs->{-title} = $subset->{id} }
 
 my $plot = new PGX($plotargs, $debug_mode);
-$plot->{rameters}->{plotid} = 'histoplot';
-$plot->{parameters}->{text_bottom_left} = $subset->{counts}->{biosamples}.' samples';
+$plot->{parameters}->{plotid} = 'histoplot';
+$plot->{parameters}->{text_bottom_left} = $subset->{analysis_count}.' samples';
 
 $plot->{frequencymaps} = [ $subset->{ frequencymap } ];
 $plot->return_histoplot_svg();

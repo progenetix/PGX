@@ -5,7 +5,7 @@ paths:
 # dir_array_base_path/__genome__/__series_dir__/array__dir__/(files)
   dir_array_base_path: '/Library/WebServer/Documents/Sites/arraymap'
 #  dir_tmp_base_path: '/Library/WebServer/Documents/tmp'
-  dir_tmp_base_path: '/Library/WebServer/Documents/Sites/progenetix/tmp'
+  dir_tmp_base_path: '/Library/WebServer/Documents/Sites/___datasetid___/tmp'
   web_tmp_base_path: '/tmp'
   dir_ontology_maps: 'ICDOntologies/current'
 cgi:

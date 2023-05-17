@@ -9,7 +9,7 @@ $| = 1;
 # molecular cytogenetics, Comparative Genomic Hybridization, genomic arrays    #
 # data analysis & visualization                                                #
 #                                                                              #
-# © 2000-2022 Michael Baudis: michael@baud.is                                  #
+# © 2000-2023 Michael Baudis: michael@baud.is                                  #
 #                                                                              #
 ################################################################################
 
@@ -52,6 +52,11 @@ if (
 ) {
 	$params->{datasetIds} = [ 'progenetix' ] }
 	
+
+my $server_path = $ENV{SERVER_NAME};
+$server_path =~ s/^(\w+\.)?(\w+?)\.\w+$/$2/;
+$config->{paths}->{dir_tmp_base_path} =~ s/___datasetid___/$server_path/;
+
 my $api = {
 	config => $config,
 	debug_mode => $debug_mode,

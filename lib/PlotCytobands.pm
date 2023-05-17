@@ -112,12 +112,13 @@ Returns:
 
 	my $chrolabY = $pgx->{Y} + $pgx->{parameters}->{size_text_px} + $pgx->{parameters}->{size_plotarea_padding};
 	my $chroBandY = $chrolabY + $pgx->{parameters}->{size_plotarea_padding};
-
+	# print Dumper($pgx->{referencebounds});
 	foreach my $refName (@{ $pgx->{parameters}->{chr2plot} }) {
 	
-
 		my $areaW = sprintf "%.1f", ($pgx->{referencebounds}->{$refName}->[1] - $pgx->{referencebounds}->{$refName}->[0]) * $pgx->{basepixfrac};
 		my $chroX = sprintf "%.1f", $areaX_0 + $areaW / 2;
+
+		# print Dumper($areaX_0, $chroX);
 
 		my $areabands = [ grep{ $_->{reference_name} eq $refName } @{ $pgx->{cytobands} } ];
 		my $chrolabel = $refName;
