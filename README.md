@@ -1,3 +1,5 @@
+**This is a retired version of the Progenetix software. Development has been moved to the [`bycon`](https://github.com/progenetix/bycon) and [`progenetix-web`](https://github.com/progenetix/progenetix-web) projects.**
+
 ## PGX - Genome visualisation from the Progenetix project
 
 This repository contains code and resources for visualizing different types of genome data, focussed on copy number variants (CNV). The software is mostly used for the [progenetix.org](http://progenetix.org) visualizations; however, users can just download the package & use with their own data (though documentatuion is ... sparse).
